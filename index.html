@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f3eb">
+  <meta name="description" content="Объединяй домики, открывай новые здания и построй уютный город для котов.">
+  <title>Котоквартал — уютная головоломка</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23dbe7d2'/%3E%3Cpath d='M12 33 32 14 52 33v21H12Z' fill='%23e68b64'/%3E%3Cpath d='M24 54V36h16v18' fill='%23faf4dd'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./src/style.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Котоквартал"><span class="brand-mark" aria-hidden="true">к<span>•</span></span><span data-i18n="brand">котоквартал</span></a>
+      <div class="header-right"><span class="edition" data-i18n="edition">МАЛЕНЬКИЙ ГОРОД. БОЛЬШАЯ ЛЮБОВЬ.</span><button id="sound" class="icon-button" aria-label="Включить звук" aria-pressed="false">♪<span class="sound-slash">/</span></button><button id="help" class="icon-button" aria-label="Как играть">?</button></div>
+    </header>
+    <main>
+      <section class="intro">
+        <div><div class="eyebrow"><span class="live-dot"></span><span data-i18n="eyebrow">ТВОЙ УЮТНЫЙ УГОЛОК</span></div><h1 data-i18n="headline">Большой город<br>начинается с домика<span>.</span></h1><p data-i18n="subtitle">Соединяй одинаковое. Создавай новое. Не спеши.</p></div>
+        <div class="intro-art" id="intro-art" aria-hidden="true"></div>
+      </section>
+      <section class="game-layout" aria-label="Игра">
+        <aside class="sidebar">
+          <section class="next-card"><div class="card-label" data-i18n="next">СЛЕДУЮЩИЙ ДОМИК</div><div id="next-art"></div><div class="next-copy"><h2 id="next-name"></h2><p data-i18n="placeHint">Выбери свободную клетку</p></div><span class="next-badge">+<span id="next-level">1</span></span></section>
+          <section class="goal-card"><div class="card-label" data-i18n="goal">МАЛЕНЬКАЯ БОЛЬШАЯ ЦЕЛЬ</div><div class="goal-heading"><span id="goal-art"></span><h2 data-i18n="goalTitle">Построй<br>котобашню</h2></div><div class="progress-track"><div id="goal-progress"></div></div><p id="goal-caption"></p></section>
+          <div class="tip"><span class="tip-icon">✦</span><p data-i18n="tip">Три одинаковых здания рядом станут одним новым. Попробуй собрать цепочку!</p></div>
+        </aside>
+        <div class="play-column">
+          <div class="scorebar"><div><span class="card-label" data-i18n="score">ТВОИ ОЧКИ</span><strong id="score">0</strong></div><div class="best-score"><span class="card-label"><span aria-hidden="true">♛ </span><span data-i18n="best">ЛИЧНЫЙ РЕКОРД</span></span><strong id="best">0</strong></div></div>
+          <div class="board-frame"><div id="board" class="board" role="group" aria-label="Игровое поле, 5 на 5"></div><div id="merge-message" class="merge-message" aria-live="polite"></div></div>
+          <div class="board-toolbar"><span id="board-hint" data-i18n="boardHint">Каждому коту — по домику</span><button id="undo" class="text-button" disabled><span aria-hidden="true">↶</span> <span data-i18n="undo">Отменить ход</span></button><button id="restart" class="text-button" aria-label="Начать заново">↻</button></div>
+        </div>
+      </section>
+      <section class="collection"><div class="collection-heading"><h2 data-i18n="collection">От домика до мечты</h2><span id="collection-count"></span></div><div id="collection" class="collection-items"></div></section>
+    </main>
+    <footer><span data-i18n="footer">Построено с мурчанием</span><span id="platform-status" data-i18n="local">Локальный прототип · без рекламы</span><span>v0.1</span></footer>
+  </div>
+  <dialog id="modal"><div id="modal-content"></div></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
