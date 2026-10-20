@@ -53,3 +53,28 @@ test('VK build loads modules and preserves a puzzle under the Pages /Games/ path
   expect((await state(page)).session.mode).toBe('puzzles');expect(errors).toEqual([]);
   expect(requested.every(url=>new URL(url).pathname.startsWith('/Games/'))).toBe(true);
 });
+
+test('VK wide iframe permits wheel scrolling to the lower activities and album',async({page})=>{
+  await page.setViewportSize({width:1920,height:1000});
+  await mockVK(page);
+  await page.route('**/vk-frame-host',route=>route.fulfill({contentType:'text/html',body:`<!doctype html>
+    <style>html,body{margin:0;height:100%;overflow:hidden}header{height:50px}iframe{display:block;width:100%;height:calc(100% - 110px);border:0}footer{height:60px}</style>
+    <header>Game platform header</header><iframe title="Game" scrolling="no" src="/?vk_app_id=12345"></iframe><footer>Game platform footer</footer>`}));
+  await page.goto('/vk-frame-host');
+  await page.frameLocator('iframe').locator('#activities .activity-card').first().waitFor();
+  const game=page.frames().find(frame=>frame.url().includes('vk_app_id=12345'));
+  await page.mouse.move(960,500);await page.mouse.wheel(0,1200);
+  await expect.poll(()=>game.evaluate(()=>Math.max(window.scrollY,document.body.scrollTop))).toBeGreaterThan(0);
+  const foods=await game.locator('[data-mode="foods"]').boundingBox(),bounds=await page.locator('iframe').boundingBox();
+  expect(foods.y).toBeGreaterThanOrEqual(bounds.y);
+  expect(foods.y+foods.height).toBeLessThanOrEqual(bounds.y+bounds.height);
+  await game.locator('[data-mode="foods"]').click();
+  await expect(game.locator('#task-title')).toBeVisible();
+  await game.locator('[data-choice="monkey"]').click();
+  expect((await game.evaluate(key=>JSON.parse(localStorage.getItem(key)),KEY)).session.completed).toBe(1);
+  await game.locator('#home').click();
+  await page.mouse.move(960,500);await page.mouse.wheel(0,1200);
+  await expect.poll(async()=>{const box=await game.locator('#see-album').boundingBox();return box.y+box.height<=bounds.y+bounds.height;}).toBe(true);
+  await game.locator('#see-album').click();await expect(game.locator('#modal')).toBeVisible();
+  await game.locator('#close-modal').click();await expect(game.locator('#modal')).not.toBeVisible();
+});
