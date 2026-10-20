@@ -18,6 +18,7 @@
     "test:vk": "playwright test --config playwright.vk.config.js",
     "export:vk": "npm run build:vk && node scripts/export-vk.mjs",
     "export:vk-icons": "node scripts/export-vk-icons.mjs",
+    "export:vk-images": "npm run build:vk && node scripts/export-vk-images.mjs",
     "publish:pages": "npm run build:vk && node scripts/publish-pages.mjs"
   },
   "devDependencies": {
