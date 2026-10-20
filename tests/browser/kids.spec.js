@@ -1,6 +1,8 @@
 import { test,expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { createSession,answer,advance } from '../../kids/engine.js';
+import { ACTIVITIES } from '../../kids/data.js';
+import { itemArt } from '../../kids/art.js';
 const KEY='lapki-i-kraski.v1';
 async function state(page){return page.evaluate(key=>JSON.parse(localStorage.getItem(key)),KEY);}
 async function chooseCorrect(page){const saved=await state(page);await page.locator(`[data-choice="${saved.session.task.target}"]`).click();}
@@ -22,7 +24,8 @@ test('desktop home and task render without errors or external assets',async({pag
   await expect(page.locator('[data-mode]')).toHaveCount(3);
   await page.screenshot({path:'artifacts/kids-home.png',fullPage:true});
   await page.locator('#play').click();await expect(page.locator('.choice')).toHaveCount(3);
-  await expect(page.locator('#target')).toHaveAttribute('aria-label','Образец: Зайчик');
+  await expect(page.locator('#target')).toHaveAttribute('aria-label','Силуэт: Зайчик');
+  await expect(page.locator('#target')).toHaveAttribute('data-stage','hidden');
   await page.screenshot({path:'artifacts/kids-desktop.png',fullPage:true});
   expect(errors).toEqual([]);expect(external).toEqual([]);
 });
@@ -72,7 +75,7 @@ test('speech prompt, repeat and mute are controlled by the user',async({page})=>
     Object.defineProperty(window,'speechSynthesis',{value:{cancel(){},getVoices(){return[];},speak(u){window.spoken.push(u.text);}}});
     window.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};
   });
-  await page.goto('/');await page.locator('#play').click();expect(await page.evaluate(()=>window.spoken)).toEqual(['Найди зайчика']);
+  await page.goto('/');await page.locator('#play').click();expect(await page.evaluate(()=>window.spoken)).toEqual(['Кто спрятался в тени? Найди зверёнка.']);
   await page.locator('#repeat').click();expect(await page.evaluate(()=>window.spoken.length)).toBe(2);
   await page.locator('#sound').click();await page.locator('#repeat').click();expect(await page.evaluate(()=>window.spoken.length)).toBe(2);
   await expect(page.locator('#sound')).toHaveAttribute('aria-pressed','false');
@@ -105,4 +108,51 @@ test('standalone HTML runs with no server or asset requests',async({page})=>{
   await page.setContent(await readFile(new URL('../../artifacts/lapki-i-kraski-demo.html',import.meta.url),'utf8'));
   await page.locator('#play').click();await page.getByRole('button',{name:'Зайчик',exact:true}).click();await expect(page.locator('.correct')).toBeVisible();
   expect(errors).toEqual([]);expect(requests).toEqual([]);
+});
+
+test('all animal and shape silhouettes render as a single flat color without facial details',async({page})=>{
+  await page.goto('/');
+  const examples=['animals','shapes'].flatMap(mode=>ACTIVITIES[mode].items.map(item=>({id:`${mode}:${item.id}`,svg:itemArt(mode,item.id,true)})));
+  const rendered=await page.evaluate(async examples=>{
+    const result=[];
+    for(const example of examples){
+      const image=new Image();
+      await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(example.svg);});
+      const canvas=document.createElement('canvas');canvas.width=240;canvas.height=220;
+      const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);
+      const pixels=ctx.getImageData(0,0,240,220).data,colors=new Set();let opaque=0;
+      for(let i=0;i<pixels.length;i+=4)if(pixels[i+3]>250){opaque++;colors.add(`${pixels[i]},${pixels[i+1]},${pixels[i+2]}`);}
+      result.push({id:example.id,opaque,colors:[...colors]});
+    }
+    return result;
+  },examples);
+  for(const example of rendered){
+    expect(example.opaque,example.id).toBeGreaterThan(1000);
+    expect(example.colors,example.id).toContain('105,120,111');
+    // Canvas unpremultiplication at antialiased edges can round a channel by 1.
+    // Any facial details or original colors would differ by much more.
+    for(const color of example.colors)color.split(',').map(Number).forEach((channel,i)=>expect(Math.abs(channel-[105,120,111][i]),`${example.id}: ${color}`).toBeLessThanOrEqual(1));
+  }
+});
+
+for(const mode of ['animals','shapes'])test(`${mode}: shadow gives a gentle hint, reveals on success and resets for the next task`,async({page})=>{
+  if(mode==='animals')await page.setViewportSize({width:390,height:844});
+  await page.goto('/');await page.locator(`[data-mode="${mode}"]`).click();
+  await expect(page.locator('#target')).toHaveAttribute('data-kind','shadow');
+  await expect(page.locator('.reference-color')).toHaveCSS('opacity','0');
+  await page.screenshot({path:`artifacts/kids-${mode==='animals'?'shadow-mobile':'shapes'}.png`,fullPage:true});
+  const saved=(await state(page)).session,wrong=saved.task.choices.find(id=>id!==saved.task.target);
+  await page.locator(`[data-choice="${wrong}"]`).click();await expect(page.locator('#target')).toHaveAttribute('data-stage','hidden');
+  await page.locator(`[data-choice="${wrong}"]`).click();await expect(page.locator('#target')).toHaveAttribute('data-stage','hint');
+  await expect(page.locator('.reference-color')).toHaveCSS('opacity','0.6');
+  await page.locator(`[data-choice="${saved.task.target}"]`).click();await expect(page.locator('#target')).toHaveAttribute('data-stage','revealed');
+  await expect(page.locator('.reference-color')).toHaveCSS('opacity','1');
+  await expect.poll(async()=>(await state(page)).session.status).toBe('playing');
+  await expect(page.locator('#target')).toHaveAttribute('data-stage','hidden');await expect(page.locator('.reference-color')).toHaveCSS('opacity','0');
+});
+
+test('color activity retains its colored reference',async({page})=>{
+  await page.goto('/');await page.locator('[data-mode="colors"]').click();
+  await expect(page.locator('#target')).toHaveAttribute('data-kind','color');await expect(page.locator('.reference-shadow')).toHaveCount(0);
+  await expect(page.locator('#target ellipse').first()).toHaveAttribute('fill','#e97f77');
 });

@@ -4,7 +4,7 @@ function svg(content,extra='') {return `<svg viewBox="0 0 240 220" fill="none" x
 function face(y=98,nose='#a9776b',gap=23) {
   return `<ellipse cx="${120-gap}" cy="${y}" rx="4.5" ry="6" fill="#4f4b49"/><ellipse cx="${120+gap}" cy="${y}" rx="4.5" ry="6" fill="#4f4b49"/><circle cx="${119-gap}" cy="${y-2}" r="1.4" fill="#fff"/><circle cx="${119+gap}" cy="${y-2}" r="1.4" fill="#fff"/><ellipse cx="83" cy="${y+16}" rx="10" ry="6" fill="#e79f91" opacity=".45"/><ellipse cx="157" cy="${y+16}" rx="10" ry="6" fill="#e79f91" opacity=".45"/><path d="m114 ${y+10} 6 5 6-5" stroke="${nose}" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M120 ${y+15}v6m0-1q-8 9-15 0m15 0q8 9 15 0" stroke="${nose}" stroke-width="2.5" stroke-linecap="round"/>`;
 }
-export function animal(id) {
+export function animal(id,shadow=false) {
   const ground='<ellipse cx="120" cy="200" rx="67" ry="9" fill="#6b8a6915"/>';
   let body='';
   if(id==='bunny') body=`<ellipse cx="94" cy="49" rx="18" ry="43" transform="rotate(-12 94 49)" fill="#f1e8da"/><ellipse cx="147" cy="49" rx="18" ry="43" transform="rotate(12 147 49)" fill="#f1e8da"/><ellipse cx="94" cy="44" rx="8" ry="28" transform="rotate(-12 94 44)" fill="#e8b4ae"/><ellipse cx="147" cy="44" rx="8" ry="28" transform="rotate(12 147 44)" fill="#e8b4ae"/><circle cx="167" cy="172" r="17" fill="#f7f1e7"/><ellipse cx="120" cy="162" rx="45" ry="39" fill="#e7dac9"/><ellipse cx="120" cy="163" rx="27" ry="29" fill="#faf5eb"/><ellipse cx="86" cy="192" rx="24" ry="11" fill="#eee3d5"/><ellipse cx="153" cy="192" rx="24" ry="11" fill="#eee3d5"/><ellipse cx="120" cy="100" rx="58" ry="49" fill="#f7f0e5"/>${face(97,'#b48a80')}<path d="M85 145q-12 8-6 20m76-20q12 8 6 20" stroke="#cfbfaa" stroke-width="5" stroke-linecap="round"/>`;
@@ -13,20 +13,25 @@ export function animal(id) {
   if(id==='bear') body=`<circle cx="78" cy="59" r="24" fill="#b69677"/><circle cx="162" cy="59" r="24" fill="#b69677"/><circle cx="78" cy="59" r="13" fill="#d8b99a"/><circle cx="162" cy="59" r="13" fill="#d8b99a"/><ellipse cx="120" cy="161" rx="48" ry="40" fill="#b59a7e"/><ellipse cx="120" cy="164" rx="28" ry="28" fill="#dfc7aa"/><ellipse cx="84" cy="191" rx="25" ry="13" fill="#a88b70"/><ellipse cx="156" cy="191" rx="25" ry="13" fill="#a88b70"/><ellipse cx="120" cy="97" rx="59" ry="52" fill="#c2a487"/><ellipse cx="120" cy="119" rx="30" ry="24" fill="#e9d4b7"/>${face(96,'#7e6656',24)}`;
   if(id==='fox') body=`<path d="M150 178q64 1 50-54-6 30-47 21" fill="#d69667"/><path d="M195 130q-1 25-24 28l23 13q11-17 6-47Z" fill="#f7e8cf"/><ellipse cx="120" cy="165" rx="38" ry="35" fill="#da976a"/><path d="m98 140 23 6 22-7-11 45h-24Z" fill="#f9e8d1"/><ellipse cx="92" cy="193" rx="20" ry="10" fill="#b77c59"/><ellipse cx="148" cy="193" rx="20" ry="10" fill="#b77c59"/><path d="m63 82 2-53q0-8 8-2l33 26h29l34-26q8-6 8 2l0 53" fill="#d58b5b"/><path d="m74 58-1-20 22 18Zm72-2 22-18-1 20Z" fill="#f0c8ac"/><path d="M61 88q7-43 59-38 52-5 59 38-8 51-59 60-52-9-59-60" fill="#e5a371"/><path d="M62 95q33-6 58 21 23-27 58-21-18 43-58 53-42-10-58-53" fill="#f8ead6"/>${face(95,'#886148',25)}`;
   if(id==='owl') body=`<ellipse cx="120" cy="139" rx="59" ry="58" fill="#b4a1c4"/><ellipse cx="73" cy="153" rx="17" ry="33" transform="rotate(-15 73 153)" fill="#9b86ae"/><ellipse cx="167" cy="153" rx="17" ry="33" transform="rotate(15 167 153)" fill="#9b86ae"/><path d="m69 73-3-37 35 16h38l35-16-3 38" fill="#a38eb5"/><ellipse cx="120" cy="97" rx="59" ry="49" fill="#bcaacf"/><circle cx="94" cy="99" r="26" fill="#f5ecdf"/><circle cx="146" cy="99" r="26" fill="#f5ecdf"/><circle cx="96" cy="99" r="8" fill="#65556c"/><circle cx="144" cy="99" r="8" fill="#65556c"/><circle cx="94" cy="96" r="3" fill="#fff"/><circle cx="142" cy="96" r="3" fill="#fff"/><path d="m112 120 8 12 8-12" fill="#ddaf6a"/><path d="m99 156 5 5 5-5m10 9 5 5 5-5m10-9 5 5 5-5" stroke="#e5daed" stroke-width="3" stroke-linecap="round"/><path d="M99 193v8m-6 0h12m36-8v8m-6 0h12" stroke="#caab78" stroke-width="5" stroke-linecap="round"/>`;
+  // Flatten the composed animal: hide facial and fur details, keep the outline.
+  // The ground ellipse is excluded so it cannot give the silhouette a pedestal.
+  if(shadow)return svg(`<defs><filter id="animal-shadow-${id}" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feFlood flood-color="#69786f"/><feComposite in2="SourceAlpha" operator="in"/></filter></defs><g filter="url(#animal-shadow-${id})">${body}</g>`);
   return svg(ground+body);
 }
 export function balloon(color) {
   return svg(`<path d="M121 163q-17 16 0 29 17 14 2 24" stroke="#b8b5a4" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="120" cy="88" rx="54" ry="68" fill="${color}"/><path d="m120 150-9 15h18Z" fill="${color}"/><path d="M89 54q-14 15-11 35" stroke="#ffffff80" stroke-width="9" stroke-linecap="round"/><ellipse cx="111" cy="101" rx="3" ry="4" fill="#685f5c" opacity=".55"/><ellipse cx="133" cy="101" rx="3" ry="4" fill="#685f5c" opacity=".55"/><path d="M115 115q7 6 14 0" stroke="#685f5c" opacity=".55" stroke-width="2.5" stroke-linecap="round"/>`);
 }
-export function shape(id,color='#8bbcaf') {
+export function shape(id,color='#8bbcaf',shadow=false) {
   const paths={circle:'<circle cx="120" cy="105" r="65"/>',square:'<rect x="57" y="42" width="126" height="126" rx="17"/>',triangle:'<path d="m120 31 75 132q5 9-6 9H51q-11 0-6-9l66-126q4-8 9-6"/>',star:'<path d="m120 25 25 52 57 8-41 40 10 57-51-27-51 27 10-57-41-40 57-8Z" stroke-linejoin="round" stroke-width="10"/>',heart:'<path d="M120 178 57 116C-3 45 86-1 120 60 155-1 242 45 183 116Z"/>',diamond:'<path d="m120 25 72 80-72 80-72-80Z" stroke-width="10" stroke-linejoin="round"/>'};
-  return svg(`<ellipse cx="120" cy="197" rx="55" ry="7" fill="#6b8a6910"/><g fill="${color}" stroke="${color}">${paths[id]||paths.circle}</g><ellipse cx="105" cy="109" rx="3.5" ry="5" fill="#4d635d"/><ellipse cx="135" cy="109" rx="3.5" ry="5" fill="#4d635d"/><path d="M113 124q7 7 14 0" stroke="#4d635d" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="92" cy="122" rx="7" ry="4" fill="#fff" opacity=".25"/><ellipse cx="148" cy="122" rx="7" ry="4" fill="#fff" opacity=".25"/>`);
+  const outline=`<g fill="${color}" stroke="${color}">${paths[id]||paths.circle}</g>`;
+  if(shadow)return svg(outline);
+  return svg(`<ellipse cx="120" cy="197" rx="55" ry="7" fill="#6b8a6910"/>${outline}<ellipse cx="105" cy="109" rx="3.5" ry="5" fill="#4d635d"/><ellipse cx="135" cy="109" rx="3.5" ry="5" fill="#4d635d"/><path d="M113 124q7 7 14 0" stroke="#4d635d" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="92" cy="122" rx="7" ry="4" fill="#fff" opacity=".25"/><ellipse cx="148" cy="122" rx="7" ry="4" fill="#fff" opacity=".25"/>`);
 }
 export function itemArt(mode,id,reference=false) {
-  if(mode==='animals')return animal(id);
+  if(mode==='animals')return animal(id,reference);
   const item=getItem(mode,id);
   if(mode==='colors')return balloon(item?.color||'#82b88b');
-  return shape(id,reference?'#8eaa9c':'#a6bdad');
+  return shape(id,reference?'#69786f':'#a6bdad',reference);
 }
 function inner(image){return image.replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'');}
 export function meadow() {

@@ -1,5 +1,5 @@
 export const ACTIVITIES = {
-  animals: { title:'Зверята', subtitle:'Найди маленького друга', badge:'УЗНАЁМ ЗВЕРЯТ', instruction:'Найди такого же друга', color:'#f6dfd4', items:[
+  animals: { title:'Зверята', subtitle:'Узнай друга по тени', badge:'УЗНАЁМ ЗВЕРЯТ', instruction:'Кто спрятался в тени?', color:'#f6dfd4', items:[
     {id:'bunny',label:'Зайчик',prompt:'Найди зайчика',color:'#f4ddd4'},
     {id:'cat',label:'Котёнок',prompt:'Найди котёнка',color:'#f8e2b6'},
     {id:'dog',label:'Щенок',prompt:'Найди щенка',color:'#f2d6b5'},
@@ -15,7 +15,7 @@ export const ACTIVITIES = {
     {id:'purple',label:'Фиолетовый',prompt:'Найди фиолетовый цвет',color:'#ad96cb'},
     {id:'orange',label:'Оранжевый',prompt:'Найди оранжевый цвет',color:'#efa25f'},
   ]},
-  shapes: {title:'Формы',subtitle:'Всё найдёт свою пару',badge:'ОТКРЫВАЕМ ФОРМЫ',instruction:'Найди такую же форму',color:'#e9e0f0',items:[
+  shapes: {title:'Формы',subtitle:'Найди фигуру по тени',badge:'ОТКРЫВАЕМ ФОРМЫ',instruction:'Чья это тень?',color:'#e9e0f0',items:[
     {id:'circle',label:'Круг',prompt:'Найди круг',color:'#83b9ac'},
     {id:'square',label:'Квадрат',prompt:'Найди квадрат',color:'#d9a263'},
     {id:'triangle',label:'Треугольник',prompt:'Найди треугольник',color:'#99afd1'},

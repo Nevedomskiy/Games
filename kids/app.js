@@ -52,14 +52,27 @@ function renderTask(){
   $('activity-label').textContent=activity.badge;
   $('flowers').innerHTML=Array.from({length:SESSION_LENGTH},(_,i)=>`<span class="progress-flower ${i<session.completed?'done':''}">${icon('flower')}</span>`).join('');
   $('flowers').setAttribute('aria-label',`Выполнено ${session.completed} из ${SESSION_LENGTH} заданий`);
-  $('task-title').textContent=activity.instruction;$('target').innerHTML=itemArt(session.mode,item.id,true);$('target').setAttribute('aria-label',`Образец: ${item.label}`);
-  $('task-hint').textContent=session.mode==='animals'?'Кто из зверят похож на нашего друга?':'Нажми на такую же картинку внизу';
   const solved=session.status==='feedback';
+  const shadow=session.mode!=='colors',help=session.task.attempts>=2;
+  $('task-title').textContent=activity.instruction;
+  $('target').dataset.kind=shadow?'shadow':'color';
+  $('target').dataset.stage=solved?'revealed':help?'hint':'hidden';
+  $('target').innerHTML=shadow?`<span class="reference-shadow">${itemArt(session.mode,item.id,true)}</span><span class="reference-color">${itemArt(session.mode,item.id)}</span>`:itemArt(session.mode,item.id);
+  // Keep a text equivalent for assistive technology; the visible and spoken
+  // riddle does not name the hidden animal or shape before a correct answer.
+  $('target').setAttribute('aria-label',`${shadow?'Силуэт':'Образец'}: ${item.label}`);
+  $('task-title').previousElementSibling.textContent=shadow?'УЗНАЙ ПО ТЕНИ':'ПОСМОТРИ И ВЫБЕРИ';
+  $('task-hint').textContent=shadow?(solved?'Тень ожила — ты нашёл пару!':help?'В тени появилась маленькая подсказка':session.mode==='animals'?'Посмотри на ушки, лапки и хвостик':'Найди фигуру с таким же контуром'):'Нажми на такую же картинку внизу';
   $('choices').innerHTML=session.task.choices.map(id=>`<button class="choice ${solved&&id===item.id?'correct':''} ${session.task.attempts>=2&&id===item.id?'gentle-hint':''}" data-choice="${id}" aria-label="${getItem(session.mode,id).label}" ${solved?'disabled':''}>${itemArt(session.mode,id)}<span class="choice-name">${getItem(session.mode,id).label}</span>${solved&&id===item.id?`<span class="correct-mark">${icon('check')}</span>`:''}</button>`).join('');
-  $('feedback').classList.toggle('success',solved);$('feedback').textContent=solved?`Вот и ${item.label.toLocaleLowerCase('ru')}! Здорово получилось!`:session.task.attempts?'Посмотри на образец. Попробуем ещё раз?':'Не спеши. У тебя всё получится!';
+  $('feedback').classList.toggle('success',solved);$('feedback').textContent=solved?`Вот и ${item.label.toLocaleLowerCase('ru')}! Здорово получилось!`:help&&shadow?'Подсказка поможет. Попробуем ещё раз?':session.task.attempts?`Посмотри на ${shadow?'тень':'образец'}. Попробуем ещё раз?`:'Не спеши. У тебя всё получится!';
   if(keyboardUser)$('choices').querySelector('button:not(:disabled)')?.focus({preventScroll:true});
 }
-function promptTask(){if(session?.status==='playing'&&screen==='game')say(getItem(session.mode,session.task.target).prompt);}
+function promptTask(){
+  if(session?.status!=='playing'||screen!=='game')return;
+  if(session.mode==='colors')say(getItem(session.mode,session.task.target).prompt);
+  else if(session.task.attempts>=2)say('В тени появилась подсказка. Найди подходящую картинку.');
+  else say(session.mode==='animals'?'Кто спрятался в тени? Найди зверёнка.':'Чья это тень? Найди подходящую фигуру.');
+}
 function begin(mode,force=false){if(force||!session||session.mode!==mode||session.status==='finished')session=createSession(mode);feedbackTime=0;save();showScreen('game');renderTask();promptTask();}
 function finishSession(){
   if(!session.rewarded){lastReward=STICKERS.find(id=>!album.includes(id))||STICKERS[completedSessions%STICKERS.length];if(!album.includes(lastReward))album.push(lastReward);completedSessions++;session={...session,rewarded:true};save();}
@@ -80,7 +93,7 @@ $('choices').addEventListener('click',event=>{
   if(result.kind==='correct'){feedbackTime=0;chime(true);say(`Здорово! Это ${getItem(session.mode,session.task.target).label.toLocaleLowerCase('ru')}.`);syncPlatform();}
   else{const wrong=$('choices').querySelector(`[data-choice="${button.dataset.choice}"]`);wrong?.classList.add('try-again');promptTask();}
 });
-$('parents').addEventListener('click',()=>showModal(`<div class="modal-symbol">${icon('heart')}</div><h2>Играем вместе</h2><p>Игра рассчитана на знакомство с картинками, цветами и формами в 2–4 года. Покажите малышу образец и предложите найти такой же.</p><p>Здесь нет таймера, проигрыша и рекламы. Пять заданий — одна короткая прогулка. Можно остановиться в любой момент.</p><p>Кнопка с динамиком повторяет задание. Голос зависит от доступных голосов браузера и устройства; картинки позволяют играть и без озвучки.</p><p>Альбом сохраняется только в этом браузере. Игра не запрашивает имя, возраст ребёнка или регистрацию.</p>`));
+$('parents').addEventListener('click',()=>showModal(`<div class="modal-symbol">${icon('heart')}</div><h2>Играем вместе</h2><p>В 2–4 года интересно узнавать знакомое по контуру. В «Зверятах» и «Формах» покажите малышу тень и предложите найти того, кто спрятался. В «Цветах» подбираем шарик по цветному образцу.</p><p>После двух неточных нажатий в тени проявляется подсказка. При правильном ответе тень оживает и становится цветной.</p><p>Здесь нет таймера, проигрыша и рекламы. Пять заданий — одна короткая прогулка. Можно остановиться в любой момент.</p><p>Кнопка с динамиком повторяет задание, не называя спрятанного зверёнка или фигуру. Голос зависит от устройства; картинки позволяют играть и без озвучки.</p><p>Альбом сохраняется только в этом браузере. Игра не запрашивает имя, возраст ребёнка или регистрацию.</p>`));
 function showAlbum(){showModal(`<span class="eyebrow">МАЛЕНЬКИЕ ДРУЗЬЯ</span><h2>Твой альбом</h2><p>За пять заданий — одна наклейка. Все друзья обязательно встретятся!</p><div class="album-grid">${STICKERS.map(id=>`<div class="album-item ${album.includes(id)?'':'waiting'}">${animal(id)}<span>${album.includes(id)?getItem('animals',id).label:'Ещё встретимся'}</span></div>`).join('')}</div>`);}
 $('album-button').addEventListener('click',showAlbum);$('see-album').addEventListener('click',showAlbum);$('close-modal').addEventListener('click',()=>$('modal').close());$('modal').addEventListener('close',syncPlatform);
 document.addEventListener('keydown',event=>{if(event.key==='Tab'||event.key.startsWith('Arrow'))keyboardUser=true;});document.addEventListener('pointerdown',()=>{keyboardUser=false;});
