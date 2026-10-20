@@ -16,7 +16,8 @@
     "build:vk": "npm run build && node scripts/build-vk.mjs",
     "preview:vk": "node scripts/serve.mjs dist-vk",
     "test:vk": "playwright test --config playwright.vk.config.js",
-    "export:vk": "npm run build:vk && node scripts/export-vk.mjs"
+    "export:vk": "npm run build:vk && node scripts/export-vk.mjs",
+    "publish:pages": "npm run build:vk && node scripts/publish-pages.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.64.1",

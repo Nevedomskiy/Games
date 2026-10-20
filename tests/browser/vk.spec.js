@@ -34,3 +34,22 @@ test('VK build remains usable on a phone including puzzles and navigation',async
   expect((await state(page)).session.completed).toBe(1);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.locator('#home').tap();await expect(page.locator('#home-screen')).toBeVisible();await context.close();
 });
+
+test('VK build loads modules and preserves a puzzle under the Pages /Games/ path',async({page})=>{
+  const {readFile}=await import('node:fs/promises');
+  const requested=[],errors=[];page.on('request',r=>requested.push(r.url()));page.on('pageerror',e=>errors.push(e.message));
+  await page.route('**/Games/**',async route=>{
+    const pathname=new URL(route.request().url()).pathname;
+    const relative=pathname.slice('/Games/'.length)||'index.html';
+    const type=relative.endsWith('.html')?'text/html':relative.endsWith('.css')?'text/css':relative.endsWith('.js')?'application/javascript':'application/octet-stream';
+    try{await route.fulfill({contentType:type,body:await readFile(new URL(`../../dist-vk/${relative}`,import.meta.url))});}
+    catch{await route.fulfill({status:404,body:'Missing project asset'});}
+  });
+  await page.goto('/Games/');await page.locator('#play').click();await page.locator('[data-choice="bunny"]').click();
+  expect((await state(page)).session.completed).toBe(1);
+  await page.locator('#home').click();await page.locator('[data-mode="puzzles"]').click();
+  await page.locator('[data-piece="0"]').click();await page.locator('[data-slot="0"]').click();
+  await page.reload();await page.locator('#play').click();await expect(page.locator('.filled')).toHaveCount(1);
+  expect((await state(page)).session.mode).toBe('puzzles');expect(errors).toEqual([]);
+  expect(requested.every(url=>new URL(url).pathname.startsWith('/Games/'))).toBe(true);
+});
