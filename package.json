@@ -11,7 +11,8 @@
     "export:demo": "npm run build && node scripts/export-demo.mjs",
     "preview": "node scripts/serve.mjs dist",
     "test": "node --test tests/kids.test.mjs",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "export:store": "npm run build && node scripts/export-store.mjs"
   },
   "devDependencies": { "@playwright/test": "1.64.1" }
 }
