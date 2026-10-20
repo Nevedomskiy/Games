@@ -19,7 +19,7 @@ with zipfile.ZipFile(${JSON.stringify(path.join(root, 'artifacts/lapki-i-kraski.
 `], { stdio: 'inherit' });
 // A downloadable offline demo for a first playtest, without Node or a web server.
 // These fixed modules have unique top-level names; the normal platform build keeps native ESM.
-const order = ['kids/data.js', 'kids/engine.js', 'kids/art.js', 'kids/platform.js', 'kids/app.js'];
+const order = ['kids/data.js', 'kids/engine.js', 'kids/world-art.js', 'kids/art.js', 'kids/platform.js', 'kids/app.js'];
 const demoScript = (await Promise.all(order.map(file => readFile(path.join(root, file), 'utf8'))))
   .map(source => source.replace(/^import .+ from .+;\n/gm, '').replace(/^export /gm, ''))
   .join('\n');

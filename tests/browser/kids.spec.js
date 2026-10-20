@@ -2,10 +2,15 @@ import { test,expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { createSession,answer,advance } from '../../kids/engine.js';
 import { ACTIVITIES } from '../../kids/data.js';
-import { itemArt } from '../../kids/art.js';
+import { itemArt,animal,puzzlePiece } from '../../kids/art.js';
 const KEY='lapki-i-kraski.v1';
 async function state(page){return page.evaluate(key=>JSON.parse(localStorage.getItem(key)),KEY);}
-async function chooseCorrect(page){const saved=await state(page);await page.locator(`[data-choice="${saved.session.task.target}"]`).click();}
+async function chooseCorrect(page){
+  const saved=await state(page);
+  if(saved.session.mode==='puzzles'){
+    for(const p of saved.session.task.choices.filter(p=>!saved.session.task.placed.includes(p))){await page.locator(`[data-piece="${p}"]`).click();await page.locator(`[data-slot="${p}"]`).click();}
+  }else await page.locator(`[data-choice="${saved.session.task.target}"]`).click();
+}
 async function complete(page){
   for(let i=0;i<5;i++){
     await chooseCorrect(page);
@@ -21,7 +26,7 @@ function mockPlatform(page){return page.addInitScript(()=>{
 test('desktop home and task render without errors or external assets',async({page})=>{
   const errors=[],external=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>{if(/^https?:/.test(r.url())&&!r.url().includes('127.0.0.1'))external.push(r.url());});
   await page.setViewportSize({width:1440,height:1000});await page.goto('/');
-  await expect(page.locator('[data-mode]')).toHaveCount(3);
+  await expect(page.locator('[data-mode]')).toHaveCount(6);
   await page.screenshot({path:'artifacts/kids-home.png',fullPage:true});
   await page.locator('#play').click();await expect(page.locator('.choice')).toHaveCount(3);
   await expect(page.locator('#target')).toHaveAttribute('aria-label','Силуэт: Зайчик');
@@ -119,7 +124,7 @@ test('all animal and shape silhouettes render as a single flat color without fac
       const image=new Image();
       await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(example.svg);});
       const canvas=document.createElement('canvas');canvas.width=240;canvas.height=220;
-      const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);
+      const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0,240,220);
       const pixels=ctx.getImageData(0,0,240,220).data,colors=new Set();let opaque=0;
       for(let i=0;i<pixels.length;i+=4)if(pixels[i+3]>250){opaque++;colors.add(`${pixels[i]},${pixels[i+1]},${pixels[i+2]}`);}
       result.push({id:example.id,opaque,colors:[...colors]});
@@ -155,4 +160,79 @@ test('color activity retains its colored reference',async({page})=>{
   await page.goto('/');await page.locator('[data-mode="colors"]').click();
   await expect(page.locator('#target')).toHaveAttribute('data-kind','color');await expect(page.locator('.reference-shadow')).toHaveCount(0);
   await expect(page.locator('#target ellipse').first()).toHaveAttribute('fill','#e97f77');
+});
+
+for(const mode of ['puzzles','homes','foods'])test(`${mode}: full new activity saves progress and awards one sticker`,async({page})=>{
+  test.setTimeout(35000);
+  await page.goto('/');await page.locator(`[data-mode="${mode}"]`).click();
+  await page.screenshot({path:`artifacts/kids-${mode}.png`,fullPage:true});
+  await complete(page);const saved=await state(page);expect(saved.completedSessions).toBe(1);expect(saved.album).toEqual(['bunny']);
+  await page.locator('#again').click();expect((await state(page)).session.completed).toBe(0);
+});
+
+test('animal-home and animal-food matching draws a connection and explains the pair',async({page})=>{
+  for(const [mode,answerText] of [['homes','Пруд'],['foods','Банан']]){
+    await page.goto('/');await page.locator(`[data-mode="${mode}"]`).click();
+    await expect(page.locator('#target')).toHaveAttribute('data-kind','color');
+    await page.getByRole('button',{name:answerText,exact:true}).click();
+    await expect(page.locator('#pair-line')).toBeVisible();await expect(page.locator('#pair-line path')).toHaveAttribute('d',/^M/);
+    await expect(page.locator('#feedback')).toContainText(mode==='homes'?'пруда':'бананом');
+    await page.locator('#home').click();
+  }
+});
+
+test('mobile puzzle: wrong slot, hint, partial save and touch completion',async({browser})=>{
+  const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});const page=await context.newPage();
+  await page.goto('/');await page.locator('[data-mode="puzzles"]').tap();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.locator('[data-piece="0"]').tap();await page.locator('[data-slot="1"]').tap();await page.locator('[data-slot="1"]').tap();
+  await expect(page.locator('[data-slot="0"]')).toHaveClass(/gentle-hint/);
+  expect((await state(page)).session.completed).toBe(0);
+  await page.locator('[data-slot="0"]').tap();await expect(page.locator('.filled')).toHaveCount(1);
+  await page.screenshot({path:'artifacts/kids-puzzle-mobile.png',fullPage:true});
+  await page.reload();await page.locator('#play').tap();await expect(page.locator('.filled')).toHaveCount(1);
+  for(const p of ['1','2','3']){await page.locator(`[data-piece="${p}"]`).tap();await page.locator(`[data-slot="${p}"]`).tap();}
+  await expect(page.locator('.filled')).toHaveCount(4);expect((await state(page)).session.completed).toBe(1);
+  await page.locator('#home').tap();await page.locator('[data-mode="homes"]').tap();await page.getByRole('button',{name:'Пруд',exact:true}).tap();await expect(page.locator('#pair-line')).toBeVisible();
+  await page.locator('#home').tap();await page.locator('[data-mode="foods"]').tap();await page.getByRole('button',{name:'Банан',exact:true}).tap();await expect(page.locator('#pair-line')).toBeVisible();
+  await context.close();
+});
+
+test('cat and fox have different outlines and puzzle quarters reconstruct the original picture',async({page})=>{
+  await page.goto('/');
+  const result=await page.evaluate(async data=>{
+    async function image(svg){const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);});return img;}
+    function canvas(){const c=document.createElement('canvas');c.width=240;c.height=220;return c;}
+    const masks=[];
+    for(const svg of data.shadows){const c=canvas(),ctx=c.getContext('2d');ctx.drawImage(await image(svg),0,0,240,220);masks.push(ctx.getImageData(0,0,240,220).data);}
+    let union=0,intersection=0;
+    for(let i=3;i<masks[0].length;i+=4){const a=masks[0][i]>128,b=masks[1][i]>128;if(a||b)union++;if(a&&b)intersection++;}
+    const whole=canvas(),pieces=canvas();whole.getContext('2d').drawImage(await image(data.whole),0,0,240,220);
+    for(let i=0;i<4;i++)pieces.getContext('2d').drawImage(await image(data.pieces[i]),i%2*120,Math.floor(i/2)*110,120,110);
+    const a=whole.getContext('2d').getImageData(0,0,240,220).data,b=pieces.getContext('2d').getImageData(0,0,240,220).data;
+    // Chrome rasterizes the same curves slightly differently in separate SVG
+    // viewports. Compare image error and coverage, not exact antialiased bytes.
+    let error=0,pictureUnion=0,pictureIntersection=0;
+    for(let i=0;i<a.length;i++)error+=Math.abs(a[i]-b[i]);
+    for(let i=3;i<a.length;i+=4){const x=a[i]>128,y=b[i]>128;if(x||y)pictureUnion++;if(x&&y)pictureIntersection++;}
+    return{iou:intersection/union,meanError:error/a.length,pictureIou:pictureIntersection/pictureUnion};
+  },{shadows:[itemArt('animals','cat',true),itemArt('animals','fox',true)],whole:animal('bunny'),pieces:[0,1,2,3].map(p=>puzzlePiece('bunny',String(p)))});
+  expect(result.iou).toBeLessThan(.65);expect(result.meanError).toBeLessThan(.1);expect(result.pictureIou).toBeGreaterThan(.995);
+});
+
+test('updated cat and fox are visible together in the shadow game',async({page})=>{
+  const s=createSession('animals');s.task={...s.task,target:'cat',choices:['cat','fox','bunny']};
+  await page.addInitScript(({key,s})=>localStorage.setItem(key,JSON.stringify({session:s,sound:false})),{key:KEY,s});
+  await page.goto('/');await page.locator('#play').click();
+  await page.screenshot({path:'artifacts/kids-animals.png',fullPage:true});
+  await page.locator('[data-choice="cat"]').click();await expect(page.locator('.correct')).toBeVisible();
+});
+
+test('new modes also run from the standalone export without external requests',async({page})=>{
+  const errors=[],requests=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>requests.push(r.url()));
+  await page.setContent(await readFile(new URL('../../artifacts/lapki-i-kraski-demo.html',import.meta.url),'utf8'));
+  await page.locator('[data-mode="puzzles"]').click();await page.locator('[data-piece="0"]').click();await page.locator('[data-slot="0"]').click();await expect(page.locator('.filled')).toHaveCount(1);
+  await page.locator('#home').click();await page.locator('[data-mode="homes"]').click();await page.getByRole('button',{name:'Пруд',exact:true}).click();await expect(page.locator('#pair-line')).toBeVisible();
+  await page.locator('#home').click();await page.locator('[data-mode="foods"]').click();await page.getByRole('button',{name:'Банан',exact:true}).click();await expect(page.locator('#pair-line')).toBeVisible();
+  expect(errors).toEqual([]);expect(requests).toEqual([]);
 });

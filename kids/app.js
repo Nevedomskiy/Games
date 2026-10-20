@@ -1,6 +1,6 @@
-import { ACTIVITIES, STICKERS, SESSION_LENGTH, getItem } from './data.js';
-import { createSession, answer, advance, validSession } from './engine.js';
-import { animal, balloon, shape, itemArt, meadow, icon } from './art.js';
+import { ACTIVITIES, STICKERS, SESSION_LENGTH, PIECE_LABELS, getItem, choiceLabel } from './data.js';
+import { createSession, answer, advance, validSession, selectPiece, placePiece } from './engine.js';
+import { animal, balloon, shape, itemArt, puzzlePiece, meadow, icon } from './art.js';
 import { Platform } from './platform.js';
 
 const $=id=>document.getElementById(id);
@@ -43,7 +43,8 @@ function syncPlatform(){if(active()&&screen==='game'&&session?.status==='playing
 function showScreen(next){cancelVoice();screen=next;for(const name of ['home','game','reward'])$(`${name}-screen`).hidden=name!==next;document.body.dataset.screen=next;syncPlatform();}
 function renderHome(){
   $('play-label').textContent=session&&session.status!=='finished'?'Продолжить играть':'Начать играть';
-  $('activities').innerHTML=Object.entries(ACTIVITIES).map(([id,activity],i)=>`<button class="activity-card ${id}" data-mode="${id}" aria-label="Играть: ${activity.title}"><div class="activity-art">${id==='animals'?animal('cat'):id==='colors'?`${balloon('#e99a91')}${balloon('#e7c56d')}${balloon('#8eb8b0')}`:`${shape('circle','#a2b9ad')}${shape('triangle','#c0a9cf')}${shape('star','#e4c172')}`}</div><span class="activity-number">0${i+1}</span><div class="activity-copy"><h3>${activity.title}</h3><p>${activity.subtitle}</p></div><span class="activity-arrow">${icon('arrow')}</span></button>`).join('');
+  const covers={animals:animal('cat'),colors:`${balloon('#e99a91')}${balloon('#e7c56d')}${balloon('#8eb8b0')}`,shapes:`${shape('circle','#a2b9ad')}${shape('triangle','#c0a9cf')}${shape('star','#e4c172')}`,puzzles:animal('bunny'),homes:itemArt('homes','frog'),foods:itemArt('foods','monkey')};
+  $('activities').innerHTML=Object.entries(ACTIVITIES).map(([id,activity],i)=>`<button class="activity-card ${id}" data-mode="${id}" aria-label="Играть: ${activity.title}"><div class="activity-art">${covers[id]}</div><span class="activity-number">0${i+1}</span><div class="activity-copy"><h3>${activity.title}</h3><p>${activity.subtitle}</p></div><span class="activity-arrow">${icon('arrow')}</span></button>`).join('');
   $('album-preview').innerHTML=STICKERS.map(id=>`<span class="little-sticker ${album.includes(id)?'unlocked':'waiting'}" title="${album.includes(id)?getItem('animals',id).label:'Ещё встретимся'}">${animal(id)}</span>`).join('');
 }
 function renderSound(){$('sound').innerHTML=icon('sound')+(!sound?'<span class="mute-line"></span>':'');$('sound').setAttribute('aria-label',sound?'Выключить звук':'Включить звук');$('sound').setAttribute('aria-pressed',String(sound));}
@@ -53,22 +54,42 @@ function renderTask(){
   $('flowers').innerHTML=Array.from({length:SESSION_LENGTH},(_,i)=>`<span class="progress-flower ${i<session.completed?'done':''}">${icon('flower')}</span>`).join('');
   $('flowers').setAttribute('aria-label',`Выполнено ${session.completed} из ${SESSION_LENGTH} заданий`);
   const solved=session.status==='feedback';
-  const shadow=session.mode!=='colors',help=session.task.attempts>=2;
+  const shadow=['animals','shapes'].includes(session.mode),help=session.task.attempts>=2,puzzle=session.mode==='puzzles',pair=['homes','foods'].includes(session.mode);
+  $('game-screen').dataset.mode=session.mode;
+  $('choices').hidden=puzzle;$('puzzle-area').hidden=!puzzle;$('pair-line').setAttribute('hidden','');
   $('task-title').textContent=activity.instruction;
   $('target').dataset.kind=shadow?'shadow':'color';
   $('target').dataset.stage=solved?'revealed':help?'hint':'hidden';
-  $('target').innerHTML=shadow?`<span class="reference-shadow">${itemArt(session.mode,item.id,true)}</span><span class="reference-color">${itemArt(session.mode,item.id)}</span>`:itemArt(session.mode,item.id);
+  $('target').innerHTML=shadow?`<span class="reference-shadow">${itemArt(session.mode,item.id,true)}</span><span class="reference-color">${itemArt(session.mode,item.id)}</span>`:pair||puzzle?animal(item.id):itemArt(session.mode,item.id);
   // Keep a text equivalent for assistive technology; the visible and spoken
   // riddle does not name the hidden animal or shape before a correct answer.
   $('target').setAttribute('aria-label',`${shadow?'Силуэт':'Образец'}: ${item.label}`);
-  $('task-title').previousElementSibling.textContent=shadow?'УЗНАЙ ПО ТЕНИ':'ПОСМОТРИ И ВЫБЕРИ';
-  $('task-hint').textContent=shadow?(solved?'Тень ожила — ты нашёл пару!':help?'В тени появилась маленькая подсказка':session.mode==='animals'?'Посмотри на ушки, лапки и хвостик':'Найди фигуру с таким же контуром'):'Нажми на такую же картинку внизу';
-  $('choices').innerHTML=session.task.choices.map(id=>`<button class="choice ${solved&&id===item.id?'correct':''} ${session.task.attempts>=2&&id===item.id?'gentle-hint':''}" data-choice="${id}" aria-label="${getItem(session.mode,id).label}" ${solved?'disabled':''}>${itemArt(session.mode,id)}<span class="choice-name">${getItem(session.mode,id).label}</span>${solved&&id===item.id?`<span class="correct-mark">${icon('check')}</span>`:''}</button>`).join('');
-  $('feedback').classList.toggle('success',solved);$('feedback').textContent=solved?`Вот и ${item.label.toLocaleLowerCase('ru')}! Здорово получилось!`:help&&shadow?'Подсказка поможет. Попробуем ещё раз?':session.task.attempts?`Посмотри на ${shadow?'тень':'образец'}. Попробуем ещё раз?`:'Не спеши. У тебя всё получится!';
-  if(keyboardUser)$('choices').querySelector('button:not(:disabled)')?.focus({preventScroll:true});
+  $('task-title').previousElementSibling.textContent=shadow?'УЗНАЙ ПО ТЕНИ':puzzle?'ЧЕТЫРЕ КУСОЧКА — ОДИН ДРУГ':pair?'НАЙДИ ПАРУ':'ПОСМОТРИ И ВЫБЕРИ';
+  $('task-hint').textContent=puzzle?'Выбери кусочек, затем нажми на его место':pair?(session.mode==='homes'?'Помоги зверёнку найти свой домик':'Выбери подходящее угощение'):shadow?(solved?'Тень ожила — ты нашёл пару!':help?'В тени появилась маленькая подсказка':session.mode==='animals'?'Посмотри на ушки, лапки и хвостик':'Найди фигуру с таким же контуром'):'Нажми на такую же картинку внизу';
+  if(puzzle)renderPuzzle();
+  else $('choices').innerHTML=session.task.choices.map(id=>`<button class="choice ${solved&&id===item.id?'correct':''} ${help&&id===item.id?'gentle-hint':''}" data-choice="${id}" aria-label="${choiceLabel(session.mode,id)}" ${solved?'disabled':''}>${itemArt(session.mode,id)}<span class="choice-name">${choiceLabel(session.mode,id)}</span>${solved&&id===item.id?`<span class="correct-mark">${icon('check')}</span>`:''}</button>`).join('');
+  $('feedback').classList.toggle('success',solved);
+  $('feedback').textContent=solved?(pair?item.fact:puzzle?'Все четыре кусочка на месте!':`Вот и ${item.label.toLocaleLowerCase('ru')}! Здорово получилось!`):puzzle?(session.task.selected!==null?'Теперь нажми на место для этого кусочка':`На месте ${session.task.placed.length} из 4 кусочков`):help&&shadow?'Подсказка поможет. Попробуем ещё раз?':session.task.attempts?`Посмотри на ${shadow?'тень':pair?'нашего друга':'образец'}. Попробуем ещё раз?`:'Не спеши. У тебя всё получится!';
+  if(solved&&pair)requestAnimationFrame(drawConnection);
+  if(keyboardUser)(puzzle?$('piece-tray'):$('choices')).querySelector('button:not(:disabled)')?.focus({preventScroll:true});
+}
+function renderPuzzle(){
+  const {target,placed,selected,attempts}=session.task,locked=session.status!=='playing';
+  $('puzzle-board').innerHTML=['0','1','2','3'].map(part=>`<button class="puzzle-slot ${placed.includes(part)?'filled':''} ${!locked&&attempts>=2&&selected===part?'gentle-hint':''}" data-slot="${part}" aria-label="${PIECE_LABELS[Number(part)]}${placed.includes(part)?', на месте':', пустое место'}" ${locked||placed.includes(part)?'disabled':''}><span class="${placed.includes(part)?'placed-piece':'piece-guide'}">${puzzlePiece(target,part)}</span></button>`).join('');
+  $('piece-tray').innerHTML=session.task.choices.map(part=>`<button class="puzzle-piece ${selected===part?'selected':''} ${placed.includes(part)?'used':''}" data-piece="${part}" aria-label="${PIECE_LABELS[Number(part)]}" aria-pressed="${selected===part}" ${locked||placed.includes(part)?'disabled':''}>${puzzlePiece(target,part)}</button>`).join('');
+}
+function drawConnection(){
+  if(screen!=='game'||session.status!=='feedback'||!['homes','foods'].includes(session.mode))return;
+  const from=$('target').getBoundingClientRect(),to=$('choices').querySelector('.correct')?.getBoundingClientRect(),root=$('playground').getBoundingClientRect();
+  if(!to)return;
+  const x=from.left+from.width/2-root.left,y=from.bottom-root.top,x2=to.left+to.width/2-root.left,y2=to.top-root.top;
+  $('pair-line').removeAttribute('hidden');$('pair-line').setAttribute('viewBox',`0 0 ${root.width} ${root.height}`);
+  $('pair-line').innerHTML=`<path d="M${x} ${y}C${x} ${y+22} ${x2} ${y2-18} ${x2} ${y2}"/><circle cx="${x2}" cy="${y2}" r="4"/>`;
 }
 function promptTask(){
   if(session?.status!=='playing'||screen!=='game')return;
+  if(session.mode==='puzzles'){say(session.task.selected===null?'Собери зверёнка из четырёх кусочков. Выбери кусочек.':'Теперь найди место для этого кусочка.');return;}
+  if(['homes','foods'].includes(session.mode)){say(getItem(session.mode,session.task.target).prompt);return;}
   if(session.mode==='colors')say(getItem(session.mode,session.task.target).prompt);
   else if(session.task.attempts>=2)say('В тени появилась подсказка. Найди подходящую картинку.');
   else say(session.mode==='animals'?'Кто спрятался в тени? Найди зверёнка.':'Чья это тень? Найди подходящую фигуру.');
@@ -89,11 +110,27 @@ $('repeat').addEventListener('click',()=>{if(session?.status==='playing')promptT
 $('sound').addEventListener('click',()=>{sound=!sound;cancelVoice();if(!sound)audioContext?.suspend();save();renderSound();if(sound){if(screen==='game')promptTask();else chime();}});
 $('choices').addEventListener('click',event=>{
   const button=event.target.closest('[data-choice]');if(!button||!active())return;
-  const result=answer(session,button.dataset.choice);if(!result)return;session=result.session;save();renderTask();
-  if(result.kind==='correct'){feedbackTime=0;chime(true);say(`Здорово! Это ${getItem(session.mode,session.task.target).label.toLocaleLowerCase('ru')}.`);syncPlatform();}
-  else{const wrong=$('choices').querySelector(`[data-choice="${button.dataset.choice}"]`);wrong?.classList.add('try-again');promptTask();}
+  const result=answer(session,button.dataset.choice);if(!result)return;processAnswer(result);
+  if(result.kind==='tryAgain')$('choices').querySelector(`[data-choice="${button.dataset.choice}"]`)?.classList.add('try-again');
 });
-$('parents').addEventListener('click',()=>showModal(`<div class="modal-symbol">${icon('heart')}</div><h2>Играем вместе</h2><p>В 2–4 года интересно узнавать знакомое по контуру. В «Зверятах» и «Формах» покажите малышу тень и предложите найти того, кто спрятался. В «Цветах» подбираем шарик по цветному образцу.</p><p>После двух неточных нажатий в тени проявляется подсказка. При правильном ответе тень оживает и становится цветной.</p><p>Здесь нет таймера, проигрыша и рекламы. Пять заданий — одна короткая прогулка. Можно остановиться в любой момент.</p><p>Кнопка с динамиком повторяет задание, не называя спрятанного зверёнка или фигуру. Голос зависит от устройства; картинки позволяют играть и без озвучки.</p><p>Альбом сохраняется только в этом браузере. Игра не запрашивает имя, возраст ребёнка или регистрацию.</p>`));
+function processAnswer(result){
+  session=result.session;save();renderTask();
+  if(result.kind==='correct'){
+    feedbackTime=0;chime(true);const item=getItem(session.mode,session.task.target);
+    say(item.fact||(session.mode==='puzzles'?'Молодец! Картинка собрана.':`Здорово! Это ${item.label.toLocaleLowerCase('ru')}.`));syncPlatform();
+  }else if(result.kind==='piece'){chime();}else promptTask();
+}
+$('piece-tray').addEventListener('click',event=>{
+  const button=event.target.closest('[data-piece]');if(!button||!active())return;
+  const selected=selectPiece(session,button.dataset.piece);if(!selected)return;
+  session=selected;save();renderTask();promptTask();
+  if(keyboardUser)$('puzzle-board').querySelector('button:not(:disabled)')?.focus({preventScroll:true});
+});
+$('puzzle-board').addEventListener('click',event=>{
+  const button=event.target.closest('[data-slot]');if(!button||!active())return;
+  const result=placePiece(session,button.dataset.slot);if(result)processAnswer(result);else if(session.task.selected===null)say('Сначала выбери кусочек внизу.');
+});
+$('parents').addEventListener('click',()=>showModal(`<div class="modal-symbol">${icon('heart')}</div><h2>Играем вместе</h2><p>Шесть занятий для малышей 2–4 лет: тени зверят и фигур, цвета, пазлы из четырёх частей, домики и угощения животных.</p><p>В пазле сначала нажмите на кусочек, затем на его место. Перетаскивание не требуется. Прозрачная картинка помогает понять, что получится.</p><p>В занятиях с домиками и едой нажмите на пару для зверёнка. При успехе появится соединяющая линия. Угощения — знакомые примеры еды, а не полный рацион животных; домики — примеры жилищ.</p><p>После двух неточных попыток появляется мягкая подсказка. Здесь нет таймера, проигрыша и рекламы. Пять заданий — одна прогулка; можно остановиться в любой момент.</p><p>Голос зависит от устройства. Альбом сохраняется только в этом браузере. Игра не запрашивает данные ребёнка или регистрацию.</p>`));
 function showAlbum(){showModal(`<span class="eyebrow">МАЛЕНЬКИЕ ДРУЗЬЯ</span><h2>Твой альбом</h2><p>За пять заданий — одна наклейка. Все друзья обязательно встретятся!</p><div class="album-grid">${STICKERS.map(id=>`<div class="album-item ${album.includes(id)?'':'waiting'}">${animal(id)}<span>${album.includes(id)?getItem('animals',id).label:'Ещё встретимся'}</span></div>`).join('')}</div>`);}
 $('album-button').addEventListener('click',showAlbum);$('see-album').addEventListener('click',showAlbum);$('close-modal').addEventListener('click',()=>$('modal').close());$('modal').addEventListener('close',syncPlatform);
 document.addEventListener('keydown',event=>{if(event.key==='Tab'||event.key.startsWith('Arrow'))keyboardUser=true;});document.addEventListener('pointerdown',()=>{keyboardUser=false;});
@@ -101,6 +138,7 @@ function pause(){cancelVoice();audioContext?.suspend();platform.stop();save();}
 platform.onPause=()=>{sdkPaused=true;pause();};platform.onResume=()=>{sdkPaused=false;syncPlatform();};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();else syncPlatform();});window.addEventListener('blur',pause);window.addEventListener('focus',syncPlatform);window.addEventListener('pagehide',save);
 document.addEventListener('contextmenu',event=>{if(event.target.closest('.choice,.target,.activity-art'))event.preventDefault();});
-function tick(timestamp){const dt=Math.min(100,timestamp-lastTime||0);lastTime=timestamp;if(screen==='game'&&session?.status==='feedback'&&active()){feedbackTime+=dt;if(feedbackTime>=1600){session=advance(session);feedbackTime=0;save();if(session.status==='finished')finishSession();else{renderTask();promptTask();syncPlatform();}}}requestAnimationFrame(tick);}
+window.addEventListener('resize',drawConnection);
+function tick(timestamp){const dt=Math.min(100,timestamp-lastTime||0);lastTime=timestamp;if(screen==='game'&&session?.status==='feedback'&&active()){feedbackTime+=dt;const duration=['homes','foods'].includes(session.mode)?3200:1600;if(feedbackTime>=duration){session=advance(session);feedbackTime=0;save();if(session.status==='finished')finishSession();else{renderTask();promptTask();syncPlatform();}}}requestAnimationFrame(tick);}
 $('brand-picture').innerHTML=animal('bunny');$('hero-art').innerHTML=meadow();$('play-arrow').innerHTML=icon('arrow');$('album-icon').innerHTML=icon('book');$('album-button').innerHTML=icon('book');$('home-icon').innerHTML=icon('home');$('repeat-icon').innerHTML=icon('sound');$('game-heart').innerHTML=icon('heart');$('again-icon').innerHTML=icon('arrow');
 renderHome();renderSound();requestAnimationFrame(tick);await platform.init();platform.ready();syncPlatform();

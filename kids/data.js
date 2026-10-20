@@ -24,6 +24,33 @@ export const ACTIVITIES = {
     {id:'diamond',label:'Ромб',prompt:'Найди ромб',color:'#b69dcd'},
   ]},
 };
+ACTIVITIES.puzzles = {
+  title:'Пазлы',subtitle:'Собери зверёнка из 4 частей',badge:'СОБИРАЕМ ПАЗЛЫ',instruction:'Собери зверёнка',color:'#e8e2f2',
+  items:ACTIVITIES.animals.items,
+};
+ACTIVITIES.homes = {
+  title:'Чей домик?',subtitle:'Помоги друзьям найти дом',badge:'ЗНАКОМИМСЯ С ДОМИКАМИ',instruction:'Где живёт наш друг?',color:'#e0ebdc',items:[
+    {id:'frog',label:'Лягушка',answerId:'pond',answerLabel:'Пруд',prompt:'Где живёт лягушка? Найди её домик.',fact:'Лягушку можно встретить у пруда.'},
+    {id:'bee',label:'Пчела',answerId:'hive',answerLabel:'Улей',prompt:'Найди домик пчелы.',fact:'Пчёлы живут в улье.'},
+    {id:'bird',label:'Птичка',answerId:'nest',answerLabel:'Гнездо',prompt:'Где птичка растит птенцов?',fact:'Птичка растит птенцов в гнезде.'},
+    {id:'squirrel',label:'Белочка',answerId:'hollow',answerLabel:'Дупло',prompt:'Найди домик белочки в дереве.',fact:'Белочка может устроить домик в дупле.'},
+    {id:'dog',label:'Щенок',answerId:'kennel',answerLabel:'Будка',prompt:'Какой домик построили для щенка?',fact:'Для щенка построили будку.'},
+    {id:'ant',label:'Муравей',answerId:'anthill',answerLabel:'Муравейник',prompt:'Найди домик муравья.',fact:'Муравьи живут в муравейнике.'},
+  ],
+};
+ACTIVITIES.foods = {
+  title:'Кто что любит?',subtitle:'Подбери вкусное угощение',badge:'УГОЩАЕМ ДРУЗЕЙ',instruction:'Чем угостим нашего друга?',color:'#f4e5cc',items:[
+    {id:'monkey',label:'Обезьянка',answerId:'banana',answerLabel:'Банан',prompt:'Чем угостим обезьянку?',fact:'Угостим обезьянку бананом.'},
+    {id:'bunny',label:'Зайчик',answerId:'carrot',answerLabel:'Морковка',prompt:'Найди угощение для зайчика.',fact:'Угостим зайчика морковкой.'},
+    {id:'squirrel',label:'Белочка',answerId:'acorn',answerLabel:'Жёлудь',prompt:'Что любит белочка?',fact:'Белочке подойдёт жёлудь.'},
+    {id:'cow',label:'Корова',answerId:'grass',answerLabel:'Трава',prompt:'Найди еду для коровы.',fact:'Корова ест траву.'},
+    {id:'bee',label:'Пчела',answerId:'flower',answerLabel:'Нектар цветка',prompt:'Где пчела найдёт сладкий нектар?',fact:'Пчела собирает нектар с цветка.'},
+    {id:'cat',label:'Котёнок',answerId:'fish',answerLabel:'Рыбка',prompt:'Выбери угощение для котёнка.',fact:'Котёнку подойдёт рыбка.'},
+  ],
+};
+export const PUZZLE_PARTS = ['0','1','2','3'];
+export const PIECE_LABELS = ['Верхняя левая часть','Верхняя правая часть','Нижняя левая часть','Нижняя правая часть'];
 export const STICKERS = ['bunny','cat','dog','bear','fox','owl'];
 export const SESSION_LENGTH = 5;
 export function getItem(mode,id) { return ACTIVITIES[mode]?.items?.find(item=>item.id===id); }
+export function choiceLabel(mode,id) {const item=getItem(mode,id);return item?.answerLabel||item?.label||'';}

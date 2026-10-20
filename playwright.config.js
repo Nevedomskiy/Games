@@ -3,7 +3,9 @@ export default defineConfig({
   testDir: './tests/browser',
   testMatch: 'kids.spec.js',
   fullyParallel: true,
-  workers: 2,
+  // Each game pauses on blur. Run one foreground page at a time so another
+  // worker cannot pause a session while it is waiting for the next task.
+  workers: 1,
   timeout: 20000,
   use: {
     baseURL: 'http://127.0.0.1:5173',
