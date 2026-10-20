@@ -1,43 +1,18 @@
 <!doctype html>
-<html lang="ru">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f5f3eb">
-  <meta name="description" content="Объединяй домики, открывай новые здания и построй уютный город для котов.">
-  <title>Котоквартал — уютная головоломка</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23dbe7d2'/%3E%3Cpath d='M12 33 32 14 52 33v21H12Z' fill='%23e68b64'/%3E%3Cpath d='M24 54V36h16v18' fill='%23faf4dd'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./src/style.css">
-  <script type="module" src="./src/app.js"></script>
-</head>
-<body>
-  <div class="app-shell">
-    <header class="topbar">
-      <a class="brand" href="./" aria-label="Котоквартал"><span class="brand-mark" aria-hidden="true">к<span>•</span></span><span data-i18n="brand">котоквартал</span></a>
-      <div class="header-right"><span class="edition" data-i18n="edition">МАЛЕНЬКИЙ ГОРОД. БОЛЬШАЯ ЛЮБОВЬ.</span><button id="sound" class="icon-button" aria-label="Включить звук" aria-pressed="false">♪<span class="sound-slash">/</span></button><button id="help" class="icon-button" aria-label="Как играть">?</button></div>
-    </header>
-    <main>
-      <section class="intro">
-        <div><div class="eyebrow"><span class="live-dot"></span><span data-i18n="eyebrow">ТВОЙ УЮТНЫЙ УГОЛОК</span></div><h1 data-i18n="headline">Большой город<br>начинается с домика<span>.</span></h1><p data-i18n="subtitle">Соединяй одинаковое. Создавай новое. Не спеши.</p></div>
-        <div class="intro-art" id="intro-art" aria-hidden="true"></div>
-      </section>
-      <section class="game-layout" aria-label="Игра">
-        <aside class="sidebar">
-          <section class="next-card"><div class="card-label" data-i18n="next">СЛЕДУЮЩИЙ ДОМИК</div><div id="next-art"></div><div class="next-copy"><h2 id="next-name"></h2><p data-i18n="placeHint">Выбери свободную клетку</p></div><span class="next-badge">+<span id="next-level">1</span></span></section>
-          <section class="goal-card"><div class="card-label" data-i18n="goal">МАЛЕНЬКАЯ БОЛЬШАЯ ЦЕЛЬ</div><div class="goal-heading"><span id="goal-art"></span><h2 data-i18n="goalTitle">Построй<br>котобашню</h2></div><div class="progress-track"><div id="goal-progress"></div></div><p id="goal-caption"></p></section>
-          <div class="tip"><span class="tip-icon">✦</span><p data-i18n="tip">Три одинаковых здания рядом станут одним новым. Попробуй собрать цепочку!</p></div>
-        </aside>
-        <div class="play-column">
-          <div class="scorebar"><div><span class="card-label" data-i18n="score">ТВОИ ОЧКИ</span><strong id="score">0</strong></div><div class="best-score"><span class="card-label"><span aria-hidden="true">♛ </span><span data-i18n="best">ЛИЧНЫЙ РЕКОРД</span></span><strong id="best">0</strong></div></div>
-          <div class="board-frame"><div id="board" class="board" role="group" aria-label="Игровое поле, 5 на 5"></div><div id="merge-message" class="merge-message" aria-live="polite"></div></div>
-          <div class="board-toolbar"><span id="board-hint" data-i18n="boardHint">Каждому коту — по домику</span><button id="undo" class="text-button" disabled><span aria-hidden="true">↶</span> <span data-i18n="undo">Отменить ход</span></button><button id="restart" class="text-button" aria-label="Начать заново">↻</button></div>
-        </div>
-      </section>
-      <section class="collection"><div class="collection-heading"><h2 data-i18n="collection">От домика до мечты</h2><span id="collection-count"></span></div><div id="collection" class="collection-items"></div></section>
-    </main>
-    <footer><span data-i18n="footer">Построено с мурчанием</span><span id="platform-status" data-i18n="local">Локальный прототип · без рекламы</span><span>v0.1</span></footer>
-  </div>
-  <dialog id="modal"><div id="modal-content"></div></dialog>
-  <div id="toast" role="status" aria-live="polite"></div>
-</body>
-</html>
+<html lang="ru"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#fcf9f0">
+  <meta name="description" content="Лапки и краски — спокойная игра для малышей: узнаём зверят, цвета и формы. Без таймера и проигрыша.">
+  <title>Лапки и краски — маленькие открытия</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23f0dac6'/%3E%3Cellipse cx='24' cy='20' rx='6' ry='14' fill='%23fff8ec'/%3E%3Cellipse cx='42' cy='20' rx='6' ry='14' fill='%23fff8ec'/%3E%3Cellipse cx='32' cy='40' rx='22' ry='17' fill='%23fff8ec'/%3E%3Ccircle cx='24' cy='38' r='2' fill='%236f6256'/%3E%3Ccircle cx='40' cy='38' r='2' fill='%236f6256'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./kids/style.css"><script type="module" src="./kids/app.js"></script>
+</head><body><div class="shell">
+  <header class="topbar"><button class="brand" id="brand" aria-label="Лапки и краски — домой"><span class="brand-picture" id="brand-picture"></span><span>лапки<span class="brand-and">и</span>краски<small>МАЛЕНЬКИЕ ОТКРЫТИЯ</small></span></button><nav><span class="age-label">для малышей 2–4 лет</span><button id="parents" class="parent-button">Родителям</button><button id="sound" class="round-button" aria-label="Выключить звук" aria-pressed="true"></button><button id="album-button" class="round-button" aria-label="Открыть альбом наклеек"></button></nav></header>
+  <main>
+    <section id="home-screen"><div class="hero"><div class="hero-copy"><span class="eyebrow"><span></span>РАСТЁМ, ИГРАЯ</span><h1>Маленькие лапки.<br>Большие <em>открытия.</em></h1><p>Знакомимся со зверятами, цветами и формами.<br>С улыбкой, в своём темпе и вместе с вами.</p><button id="play" class="primary-button"><span id="play-label">Начать играть</span><span class="button-arrow" id="play-arrow"></span></button><span class="hero-note">Без таймера. Без проигрыша. Просто игра.</span></div><div id="hero-art" class="hero-art"></div></div>
+    <section class="activities"><div class="section-heading"><h2>Куда отправимся сегодня?</h2><span>ТРИ МАЛЕНЬКИХ ПРИКЛЮЧЕНИЯ</span></div><div class="activity-grid" id="activities"></div></section>
+    <section class="album-strip"><div><span class="album-icon" id="album-icon"></span><div><h2>Мои маленькие друзья</h2><p>За каждую прогулку — новый друг в альбоме</p></div></div><div class="album-preview" id="album-preview"></div><button id="see-album" class="text-button">Весь альбом <span aria-hidden="true">↗</span></button></section></section>
+    <section id="game-screen" hidden><div class="game-top"><button id="home" class="back-button"><span id="home-icon"></span><span>Домой</span></button><span id="activity-label" class="eyebrow"></span><div class="flowers" id="flowers" aria-label="Выполнено заданий"></div></div><div class="playground"><div class="task"><div class="task-speech"><span class="eyebrow">ПОСМОТРИ И ВЫБЕРИ</span><h1 id="task-title"></h1><p id="task-hint">Нажми на такую же картинку внизу</p><button id="repeat" class="repeat-button"><span id="repeat-icon"></span>Послушать ещё</button></div><div id="target" class="target" role="img"></div></div><div id="choices" class="choices"></div><p class="feedback" id="feedback" role="status" aria-live="polite">Не спеши. У тебя всё получится!</p></div><div class="game-note"><span id="game-heart"></span>Каждое маленькое открытие — большая радость</div></section>
+    <section id="reward-screen" class="reward-screen" hidden><div class="eyebrow">ПЯТЬ МАЛЕНЬКИХ ОТКРЫТИЙ</div><h1>Вот это прогулка!</h1><p id="reward-caption"></p><div class="sticker-reward" id="sticker-reward"></div><h2 id="sticker-name"></h2><div class="reward-actions"><button id="again" class="primary-button">Ещё играть <span id="again-icon"></span></button><button id="reward-home" class="secondary-button">К другим приключениям</button></div></section>
+  </main><footer><span class="footer-paw">✿</span><span>Сделано для маленьких открывателей</span><span>Лучше играть вместе со взрослым</span></footer>
+  </div><dialog id="modal"><div id="modal-content"></div><button id="close-modal" class="primary-button">Понятно</button></dialog><div id="toast" role="status" aria-live="polite"></div>
+</body></html>

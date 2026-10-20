@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f3eb">
+  <meta name="description" content="Объединяй домики, открывай новые здания и построй уютный город для котов.">
+  <title>Котоквартал — уютная головоломка</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23dbe7d2'/%3E%3Cpath d='M12 33 32 14 52 33v21H12Z' fill='%23e68b64'/%3E%3Cpath d='M24 54V36h16v18' fill='%23faf4dd'/%3E%3C/svg%3E">
+  <style>:root{font-family:ui-rounded,"Trebuchet MS",Arial,sans-serif;color:#304b43;background:#f5f3eb;font-synthesis:none;--ink:#304b43;--muted:#7e897b;--green:#456b55;--line:#e2e3d7;--accent:#d98a61}
+*{box-sizing:border-box}body{margin:0;min-width:300px}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-visible,a:focus-visible{outline:3px solid #c67a4d;outline-offset:4px}button{color:inherit}a{color:inherit;text-decoration:none}.app-shell{max-width:1100px;padding:0 42px;margin:auto}.topbar{height:94px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:11px;font-size:25px;letter-spacing:-1.2px;font-weight:800}.brand-mark{width:38px;height:38px;background:#41654e;color:#fff5dc;border-radius:12px;font-family:Georgia,serif;font-size:34px;line-height:33px;padding-left:7px;position:relative}.brand-mark span{font-size:22px;color:#edc58a;position:absolute;right:4px;top:0}.header-right{display:flex;gap:12px;align-items:center}.edition{font-size:9px;font-weight:700;letter-spacing:1.3px;margin-right:18px;color:#86907d}.icon-button{border:1px solid #dce0d2;background:none;width:35px;height:35px;border-radius:50%;font-size:19px;position:relative}.sound-slash{display:none;position:absolute;right:9px;top:7px;font-size:18px}.muted .sound-slash{display:block}.intro{display:flex;justify-content:space-between;align-items:center;padding:35px 9px 31px}.eyebrow{font-size:10px;letter-spacing:1.7px;font-weight:800;display:flex;align-items:center;gap:7px;color:#889077}.live-dot{height:6px;width:6px;background:#87a277;border-radius:50%}h1{font-size:39px;line-height:1.16;letter-spacing:-1.8px;margin:16px 0 12px;font-weight:800}h1 span{color:#d88a61}.intro p{font-size:13px;color:#83907e;margin:0;line-height:1.6}.intro-art{width:278px;align-self:flex-end;margin-right:20px}.intro-art svg{width:100%;display:block}.game-layout{display:grid;grid-template-columns:238px minmax(0,1fr);gap:27px;max-width:860px;margin:0 auto}.sidebar{display:flex;flex-direction:column;gap:17px;padding-top:0}.card-label{font-size:9px;letter-spacing:1.4px;font-weight:800;color:#7c8877;display:block}.next-card{border-radius:20px;padding:23px 21px;background:#e8ecdd;border:1px solid #dce3d0;text-align:center;position:relative}.next-card>.card-label{text-align:left}.next-card #next-art{height:130px;margin:3px auto -2px}.next-card #next-art svg{height:100%;width:145px;filter:drop-shadow(0 6px 8px #9ba88622)}h2{margin:0}.next-copy h2{font-size:20px;letter-spacing:-.5px}.next-copy p{font-size:10px;color:#7a8975;margin:7px 0 0}.next-badge{position:absolute;right:20px;top:49px;font-size:10px;border-radius:7px;background:#f5f6ecb3;padding:5px 7px;color:#79906c}.goal-card{border:1px solid var(--line);border-radius:18px;padding:20px}.goal-card>.card-label{font-size:8px;letter-spacing:1px}.goal-heading{display:flex;align-items:center;gap:6px;margin:8px -5px 0}.goal-heading>span{width:75px}.goal-heading h2{font-size:19px;line-height:1.2;letter-spacing:-.5px}.progress-track{height:5px;background:#e4e7da;border-radius:5px;overflow:hidden;margin-top:8px}.progress-track>div{height:100%;background:#91a57d;border-radius:5px;transition:width .4s}.goal-card p{font-size:9px;color:#8a927f;margin:8px 0 0}.tip{display:flex;gap:12px;padding:0 10px;align-items:flex-start}.tip-icon{color:#d2a66b;font-size:26px;margin-top:5px}.tip p{font-size:11px;line-height:1.8;color:#89917f;margin:0}.play-column{min-width:0}.scorebar{display:flex;justify-content:space-between;padding:2px 7px 15px}.scorebar strong{display:block;font-size:31px;font-weight:700;letter-spacing:-1px;margin-top:5px;font-variant-numeric:tabular-nums;line-height:1.1}.scorebar .best-score{text-align:right}.best-score strong{font-size:26px;color:#8b937e;margin-top:10px}.board-frame{padding:11px;background:#dbe3d0;border:1px solid #ccd7bf;border-radius:19px;box-shadow:0 5px 0 #bdcbae55,0 15px 28px #45563707;position:relative}.board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;aspect-ratio:1}.cell{display:block;border:0;border-radius:10px;padding:0;position:relative;min-width:0;background:#eaf0e1;box-shadow:inset 0 -2px 0 #96ac7a0e;aspect-ratio:1;touch-action:manipulation;transition:background .15s,transform .15s;user-select:none;-webkit-user-select:none}.cell.empty:nth-child(3n){background:#e7eddc}.cell .building{width:100%;height:100%;display:block;pointer-events:none;filter:drop-shadow(0 3px 1px #7891650a)}.empty-sprout{color:#98ab89;opacity:0;font-size:24px;font-weight:300}.cell.empty:hover{background:#f4f5df;transform:translateY(-1px)}.cell.empty:hover .empty-sprout,.cell.empty:focus-visible .empty-sprout{opacity:.7}.cell.occupied{cursor:default;background:#edf0df}.tile-level{position:absolute;right:5px;bottom:4px;font-size:8px;color:#7b8c70;background:#f9faedaa;border-radius:4px;padding:1px 3px}.tier-3{background:#e1e9e3!important}.tier-4{background:#eee1d7!important}.tier-5{background:#dce8cf!important}.tier-6{background:#d8e4e5!important}.tier-7{background:#e8deeb!important}.tier-8{background:#eee3bf!important}.board-toolbar{display:flex;align-items:center;gap:14px;margin-top:16px;padding:0 3px;font-size:10px;color:#929986}.board-toolbar>span{margin-right:auto}.text-button{padding:5px 0;border:none;background:none;font-size:10px;color:#6d8068;white-space:nowrap}.text-button span[aria-hidden]{font-size:16px}.text-button:disabled{opacity:.35}#restart{font-size:22px;line-height:1;padding:0 5px}.merge-message{position:absolute;left:50%;top:43%;transform:translate(-50%,10px);font-size:14px;white-space:nowrap;padding:12px 19px;border-radius:25px;background:#355b45;color:#fff5dc;box-shadow:0 5px 20px #2d4e3d22;opacity:0;pointer-events:none;transition:transform .25s,opacity .25s}.merge-message.show{transform:translate(-50%,-10px);opacity:1}.collection{max-width:860px;margin:35px auto 0;padding-top:20px;border-top:1px solid var(--line)}.collection-heading{display:flex;justify-content:space-between;align-items:center}.collection h2{font-size:13px;font-weight:700}.collection-heading>span{font-size:10px;color:#8d957f;letter-spacing:1px}.collection-items{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;margin-top:10px}.collection-item{text-align:center;min-width:0}.collection-item .building{width:66px;max-width:100%;height:66px;display:block;margin:auto}.collection-item>span{display:block;font-size:9px;white-space:nowrap}.collection-item small{display:block;font-size:8px;color:#929a87;margin-top:4px}.collection-item.locked .building{opacity:.22;filter:grayscale(1)}.collection-item.locked>span{color:#a4aa96;letter-spacing:2px}footer{display:flex;gap:20px;align-items:center;justify-content:space-between;font-size:9px;color:#9aa18d;max-width:860px;margin:30px auto 0;padding:18px 0 25px;border-top:1px solid var(--line)}footer>span:first-child:after{content:' ♡';color:#c3997a}#toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:all .2s;background:#304b43;color:#fff7e7;border-radius:14px;padding:14px 22px;font-size:13px;text-align:center;max-width:90vw;width:max-content;z-index:10}#toast.visible{opacity:1;transform:translate(-50%,0)}dialog{border:1px solid #d5ddcc;border-radius:25px;padding:30px;max-width:420px;width:calc(100% - 30px);color:var(--ink);background:#faf8ef;box-shadow:0 25px 100px #19372b33;text-align:center;max-height:90dvh;overflow-y:auto}dialog::backdrop{background:#25433366;backdrop-filter:blur(5px)}dialog h2{font-size:25px;letter-spacing:-.7px;margin:10px 0 12px}dialog p{font-size:13px;color:#7d8775;line-height:1.8;margin:12px 0}dialog .eyebrow{justify-content:center}.primary-button,.secondary-button{display:block;width:100%;border-radius:12px;padding:14px 16px;font-size:13px;font-weight:700;margin-top:12px;border:0}.primary-button{background:#436a51;color:#fff8e5;box-shadow:0 3px 0 #2f4c3b}.primary-button:hover{background:#355c44}.secondary-button{background:#e9eddf;color:#586f50}.secondary-button:disabled{opacity:.45}.ad-caption{display:block;font-size:10px;color:#8e9781;margin-top:8px;line-height:1.5}.modal-art{display:flex;align-items:center;justify-content:center;color:#9ca38c}.modal-art svg{width:68px;min-width:0}.modal-art span{font-size:14px}.over-art{height:105px}.over-art svg{height:100%}.result-score{border-radius:14px;background:#edf0e2;padding:14px;margin:18px 0}.result-score span{display:block;font-size:10px;color:#89967e}.result-score strong{display:block;font-size:38px;margin-top:5px}.just-placed .building{animation:pop .22s ease-out}.just-merged .building{animation:merge .45s ease-out}@keyframes pop{0%{transform:scale(.65);opacity:.5}75%{transform:scale(1.08)}100%{transform:scale(1)}}@keyframes merge{0%{transform:scale(.7) translateY(10px)}55%{transform:scale(1.2) translateY(-5px)}100%{transform:scale(1)}}@media(min-width:1200px){.app-shell{padding:0 58px}.game-layout{grid-template-columns:238px 540px;gap:32px;max-width:810px}.collection,footer{max-width:810px}.intro{padding-left:42px;padding-right:20px}.intro-art{margin-right:12px}}@media(max-width:760px){.app-shell{padding:0 22px;max-width:650px}.topbar{height:72px}.edition{display:none}.brand{font-size:23px}.intro{padding:28px 2px 25px}.intro-art{width:180px;margin-right:-8px}h1{font-size:29px;letter-spacing:-1.1px}.intro p{font-size:11px}.eyebrow{font-size:8px;letter-spacing:1.2px}.game-layout{grid-template-columns:175px minmax(0,1fr);gap:18px}.next-card{padding:18px 14px}.next-card #next-art{height:100px}.next-copy h2{font-size:18px}.next-copy p{font-size:9px}.card-label{font-size:8px;letter-spacing:1px}.goal-card{padding:16px 12px}.goal-card>.card-label{font-size:7px;letter-spacing:.5px}.goal-heading h2{font-size:17px}.goal-heading>span{width:59px}.tip{padding:0 4px;gap:8px}.tip p{font-size:10px}.board{gap:5px}.board-frame{padding:8px;border-radius:15px}.cell{border-radius:7px}.board-toolbar>span{display:none}.board-toolbar{justify-content:flex-end}.collection{margin-top:27px}.collection-item>span{font-size:8px}.collection-item .building{height:52px}footer{font-size:8px}}@media(max-width:540px){.app-shell{padding:0 18px;max-width:450px}.topbar{height:65px}.brand{font-size:22px}.brand-mark{width:32px;height:32px;line-height:28px;font-size:29px;border-radius:10px}.brand-mark span{font-size:17px}.icon-button{width:31px;height:31px;font-size:17px}.header-right{gap:8px}.intro{padding:25px 0 20px;position:relative;min-height:163px}.intro>div:first-child{z-index:1}.intro-art{position:absolute;width:85px;right:-4px;bottom:3px;opacity:.85}h1{font-size:27px;line-height:1.18;letter-spacing:-1px;margin:13px 0 10px}.intro p{font-size:10px;max-width:255px}.eyebrow{font-size:7px;letter-spacing:1.3px}.game-layout{display:flex;flex-direction:column;gap:14px}.sidebar{display:contents}.next-card{order:0;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:13px;text-align:left;min-height:75px}.next-card>.card-label{width:73px;line-height:1.8;font-size:8px;letter-spacing:.7px}.next-card #next-art{height:61px;width:68px;margin:-6px 0;flex-shrink:0}.next-card #next-art svg{width:65px;height:65px}.next-copy h2{font-size:17px}.next-copy p{font-size:9px;margin-top:5px}.next-badge{right:12px;top:12px;font-size:8px;padding:3px 4px}.goal-card{order:2;display:grid;grid-template-columns:1fr 1fr;gap:0 12px;padding:15px 17px;border-radius:13px}.goal-card>.card-label{grid-column:1;grid-row:1;font-size:7px;align-self:end}.goal-heading{grid-column:1;grid-row:2;margin:0}.goal-heading>span{width:42px;height:43px}.goal-heading h2{font-size:13px}.goal-heading h2 br{display:none}.progress-track{grid-column:2;grid-row:1;align-self:end;margin-bottom:4px}.goal-card p{grid-column:2;grid-row:2;margin-top:8px;font-size:9px}.tip{display:none}.play-column{order:1}.scorebar{padding:0 3px 12px}.scorebar .card-label{font-size:8px;letter-spacing:1px}.scorebar strong{font-size:27px}.best-score strong{font-size:23px;margin-top:8px}.board-frame{padding:9px;border-radius:17px}.board{gap:6px}.cell{border-radius:8px}.tile-level{font-size:7px;right:4px;bottom:3px}.board-toolbar{margin-top:11px;gap:15px}.board-toolbar>span{display:block;font-size:9px}.text-button{font-size:9px}.collection{margin-top:23px;padding-top:17px}.collection h2{font-size:12px}.collection-items{grid-template-columns:repeat(4,minmax(0,1fr));row-gap:8px;margin-top:10px}.collection-item .building{height:55px;width:60px}.collection-item>span{font-size:9px}.collection-item small{font-size:7px;margin-top:3px}footer{font-size:7px;gap:8px;margin-top:20px;padding:16px 0 22px}footer>span:first-child{max-width:95px}.merge-message{font-size:12px;padding:10px 15px}}@media(max-width:350px){.app-shell{padding:0 12px}.intro-art{display:none}h1{font-size:25px}.intro p{font-size:9px}.next-card{gap:5px;padding:8px 10px}.next-card>.card-label{width:64px;font-size:7px}.next-copy p{font-size:8px}.board-toolbar>span{font-size:8px}.board{gap:5px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+  <script type="module">const SIZE = 5;
+const MAX_LEVEL = 8;
+const GOAL_LEVEL = 6;
+
+function randomTile(rng = Math.random) {
+  const n = rng();
+  return n < 0.82 ? 1 : n < 0.98 ? 2 : 3;
+}
+
+function createGame(rng = Math.random) {
+  const board = Array(SIZE * SIZE).fill(0);
+  // A small, deliberate opening: the first move can demonstrate a merge.
+  board[11] = 1;
+  board[12] = 1;
+  board[18] = 2;
+  return { board, score: 0, turns: 0, next: 1, later: randomTile(rng), maxLevel: 2, revives: 0 };
+}
+
+function neighbors(index) {
+  const result = [];
+  const x = index % SIZE;
+  const y = Math.floor(index / SIZE);
+  if (x > 0) result.push(index - 1);
+  if (x < SIZE - 1) result.push(index + 1);
+  if (y > 0) result.push(index - SIZE);
+  if (y < SIZE - 1) result.push(index + SIZE);
+  return result;
+}
+
+function connected(board, start) {
+  const level = board[start];
+  if (!level) return [];
+  const seen = new Set([start]);
+  const queue = [start];
+  for (let n = 0; n < queue.length; n++) {
+    for (const i of neighbors(queue[n])) {
+      if (!seen.has(i) && board[i] === level) { seen.add(i); queue.push(i); }
+    }
+  }
+  return queue;
+}
+
+function place(state, index, rng = Math.random) {
+  if (!Number.isInteger(index) || index < 0 || index >= SIZE * SIZE || state.board[index]) return null;
+  const board = [...state.board];
+  board[index] = state.next;
+  const merges = [];
+  let earned = 5;
+  while (board[index] < MAX_LEVEL) {
+    const group = connected(board, index);
+    if (group.length < 3) break;
+    const level = board[index];
+    for (const i of group) board[i] = 0;
+    board[index] = level + 1;
+    earned += group.length * 10 * 2 ** level * (merges.length + 1);
+    merges.push({ indices: group, level: level + 1 });
+  }
+  const nextState = {
+    ...state, board, score: state.score + earned, turns: state.turns + 1,
+    next: state.later, later: randomTile(rng), maxLevel: Math.max(state.maxLevel, ...board),
+  };
+  return { state: nextState, merges, earned, index, over: isGameOver(nextState) };
+}
+
+function isGameOver(state) { return state.board.every(Boolean); }
+
+function revive(state) {
+  if (!isGameOver(state) || state.revives >= 1) return null;
+  const board = [...state.board];
+  const lowest = board.map((value, index) => ({ value, index })).sort((a, b) => a.value - b.value || a.index - b.index).slice(0, 3);
+  for (const { index } of lowest) board[index] = 0;
+  return { ...state, board, revives: state.revives + 1 };
+}
+
+function validState(state) {
+  return Boolean(state && Array.isArray(state.board) && state.board.length === SIZE * SIZE &&
+    state.board.every(n => Number.isInteger(n) && n >= 0 && n <= MAX_LEVEL) &&
+    Number.isSafeInteger(state.score) && state.score >= 0 &&
+    Number.isSafeInteger(state.turns) && state.turns >= 0 &&
+    Number.isInteger(state.next) && state.next >= 1 && state.next <= 3 &&
+    Number.isInteger(state.later) && state.later >= 1 && state.later <= 3 &&
+    Number.isInteger(state.maxLevel) && state.maxLevel >= Math.max(1, ...state.board) && state.maxLevel <= MAX_LEVEL &&
+    Number.isInteger(state.revives) && state.revives >= 0 && state.revives <= 1);
+}
+
+// Original vector buildings: no external images, fonts or asset licenses required.
+const colors = [null, ['#edba88','#e17e58','#fff2cc'], ['#f1d2a1','#72a594','#fff9dc'], ['#a6c4d8','#678ea9','#fff0bd'], ['#efbaab','#c57261','#fff4d8'], ['#c6d49a','#7c9d76','#faf3cb'], ['#b7c9cf','#5b8194','#fff0b9'], ['#d5bfdb','#9982b4','#fff0cb'], ['#dfc995','#c39a57','#fff6d9']];
+function building(level, className = '') {
+  if (!level) return '';
+  const [wall, roof, windowColor] = colors[level] || colors[8];
+  let shape;
+  if (level === 1) {
+    shape = `<path d="M23 47 50 24 77 47v34H23Z" fill="${wall}"/><path d="M17 48 50 19 83 48l-5 5-28-24-28 24Z" fill="${roof}"/><path d="M65 23h8v18h-8Z" fill="${roof}"/><rect x="42" y="59" width="16" height="22" rx="7" fill="#ad795b"/><rect x="29" y="54" width="10" height="11" rx="2" fill="${windowColor}"/><rect x="62" y="54" width="10" height="11" rx="2" fill="${windowColor}"/><path d="M45 68v-6l4 3 4-3v6" fill="#4f6260"/>`;
+  } else if (level === 2) {
+    shape = `<rect x="22" y="44" width="58" height="37" rx="3" fill="${wall}"/><path d="M15 47 37 22h30l20 25Z" fill="${roof}"/><path d="M32 47V33l12-11 12 11v14Z" fill="${wall}"/><rect x="38" y="32" width="12" height="13" rx="5" fill="${windowColor}"/><rect x="33" y="55" width="12" height="13" rx="2" fill="${windowColor}"/><rect x="59" y="54" width="12" height="27" rx="6" fill="#ac956e"/><path d="M20 80h62v5H20Z" fill="#c4b68d"/><circle cx="23" cy="71" r="10" fill="#8eb07b"/>`;
+  } else if (level === 5) {
+    shape = `<path d="M31 81 48 46 64 81Z" fill="#dacaa4"/><rect x="28" y="37" width="6" height="37" rx="3" fill="#aa8964"/><circle cx="31" cy="35" r="18" fill="${roof}"/><circle cx="39" cy="27" r="15" fill="${wall}"/><rect x="66" y="41" width="5" height="35" rx="2" fill="#aa8964"/><circle cx="69" cy="38" r="15" fill="${roof}"/><path d="M46 65h23v5H46Zm3 5h3v7h-3Zm15 0h3v7h-3Z" fill="#9f775d"/><path d="m15 78 4-7 5 7v6h-9Z" fill="#e7b382"/>`;
+  } else {
+    const top = level === 3 || level === 4 ? 32 : 16;
+    shape = `<rect x="26" y="${top + 9}" width="49" height="${72 - top}" rx="3" fill="${wall}"/><path d="M21 ${top + 13} 30 ${top}h42l9 13Z" fill="${roof}"/><rect x="46" y="65" width="13" height="16" rx="6" fill="${roof}"/>`;
+    for (let y = top + 20; y < 63; y += 16) for (const x of [33, 48, 63]) shape += `<rect x="${x}" y="${y}" width="7" height="9" rx="2" fill="${windowColor}"/>`;
+    if (level === 4) shape += `<path d="M22 62h57v10H22Z" fill="#fbecd1"/><path d="M22 62h9v10h-9Zm18 0h9v10h-9Zm18 0h9v10h-9Z" fill="${roof}"/>`;
+    if (level >= 6) shape += `<path d="M37 ${top + 1}v-9l7 7 13-1 7-6v10" fill="${roof}"/><circle cx="47" cy="${top + 7}" r="2" fill="#f9edcf"/><circle cx="56" cy="${top + 7}" r="2" fill="#f9edcf"/>`;
+  }
+  return `<svg class="building ${className}" viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="83" rx="36" ry="7" fill="#547963" opacity=".13"/>${shape}<path d="M78 80v-6m-3 4 3 2 3-2" stroke="#7a9e72" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`;
+}
+
+function heroArt() {
+  return `<svg viewBox="0 0 300 170" aria-hidden="true"><ellipse cx="148" cy="137" rx="124" ry="23" fill="#e5e8d9"/><path d="m30 137 104-54 135 54-117 26Z" fill="#d5dfc9"/><path d="m114 94 18-9 108 55-18 8Z" fill="#ede6cd"/><g transform="translate(15 23) scale(.94)">${building(2).replace(/<svg[^>]*>|<\/svg>/g,'')}</g><g transform="translate(105 -2) scale(1.3)">${building(3).replace(/<svg[^>]*>|<\/svg>/g,'')}</g><g transform="translate(202 53) scale(.72)">${building(1).replace(/<svg[^>]*>|<\/svg>/g,'')}</g><path d="M62 132v-24m-12 0c-3-16 23-20 25-3 6 15-26 19-25 3" fill="#91ab7f"/><path d="m189 137 2-12 5 4 6-5 3 12c0 11-17 12-16 1" fill="#db9b76"/><path d="M205 139q15 1 12-9" stroke="#db9b76" stroke-width="5" fill="none" stroke-linecap="round"/><path d="m253 49 3-6 3 6 6 3-6 3-3 6-3-6-6-3Z" fill="#d9ad6d"/><path d="m57 25 2-4 2 4 4 2-4 2-2 4-2-4-4-2Z" fill="#d9ad6d"/></svg>`;
+}
+
+const ru = {
+  brand: 'котоквартал', edition: 'МАЛЕНЬКИЙ ГОРОД. БОЛЬШАЯ ЛЮБОВЬ.', eyebrow: 'ТВОЙ УЮТНЫЙ УГОЛОК',
+  headline: 'Большой город<br>начинается с домика<span>.</span>', subtitle: 'Соединяй одинаковое. Создавай новое. Не спеши.',
+  next: 'СЛЕДУЮЩИЙ ДОМИК', placeHint: 'Выбери свободную клетку', goal: 'МАЛЕНЬКАЯ БОЛЬШАЯ ЦЕЛЬ', goalTitle: 'Построй<br>котобашню',
+  score: 'ТВОИ ОЧКИ', best: 'ЛИЧНЫЙ РЕКОРД', tip: 'Три одинаковых здания рядом станут одним новым. Попробуй собрать цепочку!',
+  boardHint: 'Каждому коту — по домику', undo: 'Отменить ход', collection: 'От домика до мечты', footer: 'Построено с мурчанием', local: 'Локальный прототип · без рекламы',
+  names: ['', 'Домик', 'Коттедж', 'Особняк', 'Котокафе', 'Сквер', 'Котобашня', 'Обсерватория', 'Котодворец'],
+  level: 'ур.', free: 'Свободная клетка', row: 'ряд', col: 'столбец', open: 'открыто', levels: 'из 6 зданий открыто',
+  helpTitle: 'Место, где всем уютно', helpText: 'Нажми на пустую клетку, чтобы поставить следующий домик. Три или больше одинаковых здания, соединённых по стороне, объединятся в новое на месте твоего хода. Диагонали не считаются.', helpText2: 'Объединения могут продолжаться цепочкой. Следи за свободным местом: когда поле заполнится, партия закончится. Последний ход можно бесплатно отменить один раз.', play: 'Давай строить',
+  restartTitle: 'Начать новый город?', restartText: 'Текущий город будет заменён. Личный рекорд и открытые здания останутся.', restartYes: 'Новый город', cancel: 'Продолжить этот',
+  overTitle: 'Город застроен!', overText: 'Всем нашёлся дом. Попробуем построить ещё уютнее?', finalScore: 'Очки за эту партию', again: 'Построить ещё', revive: 'Освободить 3 клетки', adLabel: 'За просмотр рекламы · один раз за партию', noAd: 'Продолжение за рекламу доступно на Яндекс Играх.', adFailed: 'Реклама сейчас недоступна. Попробуй позже.', adSkipped: 'Просмотр не завершён. Награда не выдана.',
+  occupied: 'Выбери свободную клетку', merged: 'Новый дом!', chain: 'Цепочка', goalReached: 'Котобашня построена! Продолжай создавать город.',
+  soundOn: 'Выключить звук', soundOff: 'Включить звук', help: 'Как играть', restart: 'Начать заново', board: 'Игровое поле, 5 на 5', platform: 'Яндекс Игры', sdkFailed: 'Автономный режим · SDK недоступен', storageFailed: 'Хранилище недоступно: прогресс сохранится только до закрытия страницы.',
+};
+const en = {
+  brand: 'cat quarter', edition: 'A LITTLE CITY. A LOT OF LOVE.', eyebrow: 'YOUR OWN COZY CORNER', headline: 'Every big city<br>starts with a little home<span>.</span>', subtitle: 'Match the familiar. Make something new. Take your time.',
+  next: 'YOUR NEXT BUILDING', placeHint: 'Choose an empty square', goal: 'ONE LITTLE BIG DREAM', goalTitle: 'Build a<br>cat tower', score: 'YOUR SCORE', best: 'PERSONAL BEST', tip: 'Three matching buildings touching side by side become something new. Try a chain reaction!', boardHint: 'A little home for every cat', undo: 'Undo move', collection: 'From a house to a dream', footer: 'Built with a purr', local: 'Local prototype · no ads',
+  names: ['', 'Little home', 'Cottage', 'Townhouse', 'Cat café', 'Little park', 'Cat tower', 'Observatory', 'Cat palace'], level: 'lvl', free: 'Empty square', row: 'row', col: 'column', open: 'discovered', levels: 'of 6 buildings discovered',
+  helpTitle: 'Make room for cozy', helpText: 'Tap an empty square to place the next building. Three or more matching buildings connected along their sides merge into a new one at the square you chose. Diagonals do not count.', helpText2: 'Merges can trigger chain reactions. Keep some space free: a full board ends the game. You can undo your last move once, for free.', play: 'Let’s build', restartTitle: 'Start a new city?', restartText: 'This city will be replaced. Your record and discoveries will stay.', restartYes: 'New city', cancel: 'Keep building', overTitle: 'A city full of homes!', overText: 'Everyone has a home. Can your next city be even cozier?', finalScore: 'Score this round', again: 'Build another', revive: 'Clear 3 squares', adLabel: 'Watch an ad · once per game', noAd: 'Ad-supported continuation is available on Yandex Games.', adFailed: 'An ad is unavailable right now. Try again later.', adSkipped: 'The ad did not finish. No reward was given.', occupied: 'Choose an empty square', merged: 'A new home!', chain: 'Chain', goalReached: 'Cat tower built! Keep growing your city.', soundOn: 'Mute sound', soundOff: 'Enable sound', help: 'How to play', restart: 'Start again', board: 'Game board, 5 by 5', platform: 'Yandex Games', sdkFailed: 'Offline mode · SDK unavailable', storageFailed: 'Storage is unavailable: progress will last only until you close this page.',
+};
+let lang = 'ru';
+let t = ru;
+function setLanguage(value) { lang = value === 'en' ? 'en' : 'ru'; t = lang === 'en' ? en : ru; }
+
+class Platform {
+  sdk = null;
+  playing = false;
+  adOpen = false;
+  available = false;
+  failed = false;
+  onPause = () => {};
+  onResume = () => {};
+
+  async init() {
+    const isPlatform = /(^|\.)yandex\.(ru|com|net)$/.test(location.hostname) || /(^|\.)games\.s3\.yandex\.net$/.test(location.hostname);
+    // Local games do not request a third-party SDK. Injected SDKs are supported for platform testing.
+    if (!isPlatform && !window.YaGames) return null;
+    try {
+      if (!window.YaGames) {
+        await Promise.race([
+          new Promise((resolve, reject) => { const script = document.createElement('script'); script.src = '/sdk.js'; script.onload = resolve; script.onerror = reject; document.head.append(script); }),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('SDK loading timeout')), 5000)),
+        ]);
+      }
+      this.sdk = await Promise.race([window.YaGames.init(), new Promise((_, reject) => setTimeout(() => reject(new Error('SDK init timeout')), 5000))]);
+      this.available = true;
+      this.sdk.on?.('game_api_pause', () => { this.stop(); this.onPause(); });
+      this.sdk.on?.('game_api_resume', () => { this.onResume(); });
+      return this.sdk.environment?.i18n?.lang;
+    } catch { this.failed = true; return null; }
+  }
+
+  ready() { this.sdk?.features?.LoadingAPI?.ready(); }
+  start() {
+    if (this.playing || this.adOpen || document.hidden) return;
+    this.playing = true;
+    this.sdk?.features?.GameplayAPI?.start();
+  }
+  stop() {
+    if (!this.playing) return;
+    this.playing = false;
+    this.sdk?.features?.GameplayAPI?.stop();
+  }
+  reward() {
+    if (!this.available || !this.sdk?.adv?.showRewardedVideo || this.adOpen) return Promise.resolve('unavailable');
+    this.stop();
+    this.adOpen = true;
+    this.onPause();
+    return new Promise(resolve => {
+      let rewarded = false;
+      let finished = false;
+      const finish = (result) => {
+        if (finished) return;
+        finished = true;
+        this.adOpen = false;
+        this.onResume();
+        resolve(result);
+      };
+      try {
+        this.sdk.adv.showRewardedVideo({ callbacks: {
+          onOpen: () => { this.stop(); this.onPause(); },
+          onRewarded: () => { rewarded = true; },
+          onClose: () => finish(rewarded ? 'rewarded' : 'skipped'),
+          onError: () => finish('unavailable'),
+        }});
+      } catch { finish('unavailable'); }
+    });
+  }
+}
+
+
+const $ = id => document.getElementById(id);
+const STORAGE_KEY = 'kotokvartal.v1';
+const platform = new Platform();
+let state = createGame();
+let previous = null;
+let best = 0;
+let discovered = 2;
+let muted = true;
+let paused = false;
+let storageFailed = false;
+let audio;
+let toastTimer;
+let mergeTimer;
+
+try {
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  if (validState(saved?.state)) state = saved.state;
+  if (validState(saved?.previous)) previous = saved.previous;
+  if (Number.isSafeInteger(saved?.best) && saved.best >= 0) best = saved.best;
+  if (Number.isInteger(saved?.discovered) && saved.discovered >= 2 && saved.discovered <= 8) discovered = saved.discovered;
+  muted = saved?.muted !== false;
+} catch { /* Corrupt or unavailable storage must not prevent playing. */ }
+best = Math.max(best, state.score);
+discovered = Math.max(discovered, state.maxLevel);
+
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ state, previous, best, discovered, muted })); }
+  catch { if (!storageFailed) { storageFailed = true; toast(t.storageFailed); } }
+}
+
+function toast(message) {
+  $('toast').textContent = message;
+  $('toast').classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $('toast').classList.remove('visible'), 4000);
+}
+
+function chime(merged = false) {
+  if (muted || paused || document.hidden || platform.adOpen) return;
+  try {
+    audio ||= new (window.AudioContext || window.webkitAudioContext)();
+    audio.resume();
+    const notes = merged ? [523.25, 659.25, 783.99] : [349.23];
+    notes.forEach((frequency, i) => {
+      const oscillator = audio.createOscillator();
+      const gain = audio.createGain();
+      oscillator.type = 'sine'; oscillator.frequency.value = frequency;
+      const start = audio.currentTime + i * .065;
+      gain.gain.setValueAtTime(0, start); gain.gain.linearRampToValueAtTime(.055, start + .015); gain.gain.exponentialRampToValueAtTime(.001, start + .22);
+      oscillator.connect(gain); gain.connect(audio.destination); oscillator.start(start); oscillator.stop(start + .23);
+    });
+  } catch { /* Sound is optional. */ }
+}
+
+function syncPlaying() {
+  if (paused || document.hidden || !document.hasFocus() || $('modal').open || isGameOver(state) || platform.adOpen) platform.stop();
+  else platform.start();
+}
+
+function render() {
+  $('score').textContent = state.score.toLocaleString(lang);
+  $('best').textContent = best.toLocaleString(lang);
+  $('next-art').innerHTML = building(state.next);
+  $('next-name').textContent = t.names[state.next];
+  $('next-level').textContent = state.next;
+  $('undo').disabled = !previous;
+  $('goal-progress').style.width = `${Math.min(discovered, GOAL_LEVEL) / GOAL_LEVEL * 100}%`;
+  $('goal-caption').textContent = `${Math.min(discovered, GOAL_LEVEL)} ${t.levels}`;
+  $('collection-count').textContent = `${discovered} / 8`;
+  $('sound').setAttribute('aria-pressed', String(!muted));
+  $('sound').setAttribute('aria-label', muted ? t.soundOff : t.soundOn);
+  $('sound').classList.toggle('muted', muted);
+  $('board').innerHTML = state.board.map((level, index) => {
+    const label = `${t.row} ${Math.floor(index / SIZE) + 1}, ${t.col} ${index % SIZE + 1}: ${level ? t.names[level] : t.free}`;
+    return `<button class="cell ${level ? `occupied tier-${level}` : 'empty'}" data-index="${index}" aria-label="${label}" ${level ? 'aria-disabled="true"' : ''}>${level ? `${building(level)}<span class="tile-level">${level}</span>` : '<span class="empty-sprout" aria-hidden="true">+</span>'}</button>`;
+  }).join('');
+  $('collection').innerHTML = Array.from({ length: 8 }, (_, i) => i + 1).map(level => `<div class="collection-item ${level > discovered ? 'locked' : ''}">${building(level)}<span>${level > discovered ? '???' : t.names[level]}</span><small>${level} ${t.level}</small></div>`).join('');
+}
+
+function localize() {
+  document.documentElement.lang = lang;
+  document.title = lang === 'en' ? 'Cat Quarter — a cozy puzzle' : 'Котоквартал — уютная головоломка';
+  document.querySelectorAll('[data-i18n]').forEach(element => { element.innerHTML = t[element.dataset.i18n]; });
+  $('help').setAttribute('aria-label', t.help);
+  $('restart').setAttribute('aria-label', t.restart);
+  $('board').setAttribute('aria-label', t.board);
+  $('platform-status').textContent = platform.available ? t.platform : platform.failed ? t.sdkFailed : t.local;
+}
+
+function openModal(html, dismissible = true) {
+  $('modal-content').innerHTML = html;
+  $('modal').dataset.dismissible = String(dismissible);
+  if (!$('modal').open) $('modal').showModal();
+  platform.stop();
+}
+function closeModal() { $('modal').close(); syncPlaying(); }
+
+function showHelp() {
+  openModal(`<div class="modal-art">${building(1)}<span>+</span>${building(1)}<span>+</span>${building(1)}<span>→</span>${building(2)}</div><h2>${t.helpTitle}</h2><p>${t.helpText}</p><p>${t.helpText2}</p><button class="primary-button" data-action="close">${t.play}</button>`);
+}
+function showOver() {
+  openModal(`<div class="over-art">${building(state.maxLevel)}</div><div class="eyebrow">${t.brand}</div><h2>${t.overTitle}</h2><p>${t.overText}</p><div class="result-score"><span>${t.finalScore}</span><strong>${state.score.toLocaleString(lang)}</strong></div><button class="primary-button" data-action="new">${t.again}</button>${previous ? `<button class="secondary-button" data-action="undo">↶ ${t.undo}</button>` : ''}${state.revives === 0 ? `<button class="secondary-button" data-action="reward" ${platform.available ? '' : 'disabled'}>▷ ${t.revive}</button><small class="ad-caption">${platform.available ? t.adLabel : t.noAd}</small>` : ''}`, false);
+}
+function newGame() {
+  state = createGame(); previous = null;
+  clearTimeout(mergeTimer); $('merge-message').classList.remove('show');
+  save(); render(); closeModal();
+}
+function undo() {
+  if (!previous || paused || platform.adOpen) return;
+  state = previous; previous = null;
+  clearTimeout(mergeTimer); $('merge-message').classList.remove('show');
+  save(); render();
+  if ($('modal').open) closeModal();
+  syncPlaying();
+}
+
+$('board').addEventListener('click', event => {
+  const cell = event.target.closest('[data-index]');
+  if (!cell || paused || document.hidden || $('modal').open || platform.adOpen || isGameOver(state)) return;
+  const result = place(state, Number(cell.dataset.index));
+  if (!result) { toast(t.occupied); return; }
+  previous = structuredClone(state);
+  const oldMax = discovered;
+  state = result.state;
+  best = Math.max(best, state.score);
+  discovered = Math.max(discovered, state.maxLevel);
+  chime(result.merges.length > 0);
+  save(); render();
+  const target = $('board').querySelector(`[data-index="${result.index}"]`);
+  target.classList.add(result.merges.length ? 'just-merged' : 'just-placed');
+  target.focus({ preventScroll: true });
+  if (result.merges.length) {
+    $('merge-message').textContent = `${result.merges.length > 1 ? `${t.chain} ×${result.merges.length}` : t.merged} +${result.earned}`;
+    $('merge-message').classList.add('show');
+    clearTimeout(mergeTimer); mergeTimer = setTimeout(() => $('merge-message').classList.remove('show'), 1500);
+  }
+  if (oldMax < GOAL_LEVEL && discovered >= GOAL_LEVEL) toast(t.goalReached);
+  if (result.over) showOver();
+  syncPlaying();
+});
+$('undo').addEventListener('click', undo);
+$('help').addEventListener('click', showHelp);
+$('restart').addEventListener('click', () => openModal(`<h2>${t.restartTitle}</h2><p>${t.restartText}</p><button class="primary-button" data-action="new">${t.restartYes}</button><button class="secondary-button" data-action="close">${t.cancel}</button>`));
+$('sound').addEventListener('click', () => { muted = !muted; save(); render(); if (!muted) chime(true); });
+$('modal').addEventListener('cancel', event => { if ($('modal').dataset.dismissible === 'false' || platform.adOpen) event.preventDefault(); });
+$('modal').addEventListener('close', syncPlaying);
+$('modal-content').addEventListener('click', async event => {
+  const button = event.target.closest('[data-action]');
+  if (!button || platform.adOpen) return;
+  const action = button.dataset.action;
+  if (action === 'close') closeModal();
+  if (action === 'new') newGame();
+  if (action === 'undo') undo();
+  if (action === 'reward') {
+    button.disabled = true;
+    const result = await platform.reward();
+    if (result === 'rewarded') {
+      const revived = revive(state);
+      if (revived) { state = revived; previous = null; save(); render(); closeModal(); }
+    } else { toast(result === 'skipped' ? t.adSkipped : t.adFailed); button.disabled = false; }
+  }
+});
+
+function pauseAudio() { audio?.suspend(); }
+platform.onPause = () => { paused = true; pauseAudio(); };
+platform.onResume = () => { paused = false; syncPlaying(); };
+document.addEventListener('visibilitychange', () => { if (document.hidden) { pauseAudio(); save(); } syncPlaying(); });
+window.addEventListener('blur', () => { platform.stop(); pauseAudio(); });
+window.addEventListener('focus', syncPlaying);
+window.addEventListener('pagehide', save);
+document.addEventListener('contextmenu', event => { if (event.target.closest('.board, .building')) event.preventDefault(); });
+document.addEventListener('keydown', event => {
+  if ($('modal').open || event.altKey || event.ctrlKey || event.metaKey) return;
+  const cell = event.target.closest?.('[data-index]');
+  if (!cell) return;
+  const offset = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: SIZE, ArrowUp: -SIZE }[event.key];
+  if (offset === undefined) return;
+  event.preventDefault();
+  const next = Math.max(0, Math.min(24, Number(cell.dataset.index) + offset));
+  $('board').querySelector(`[data-index="${next}"]`).focus();
+});
+
+$('intro-art').innerHTML = heroArt();
+$('goal-art').innerHTML = building(GOAL_LEVEL);
+// Show a playable interface immediately, then signal platform readiness after initialization.
+localize(); render();
+const language = await platform.init();
+setLanguage(language || (new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'ru'));
+localize(); render();
+platform.ready();
+if (isGameOver(state)) showOver();
+syncPlaying();
+</script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Котоквартал"><span class="brand-mark" aria-hidden="true">к<span>•</span></span><span data-i18n="brand">котоквартал</span></a>
+      <div class="header-right"><span class="edition" data-i18n="edition">МАЛЕНЬКИЙ ГОРОД. БОЛЬШАЯ ЛЮБОВЬ.</span><button id="sound" class="icon-button" aria-label="Включить звук" aria-pressed="false">♪<span class="sound-slash">/</span></button><button id="help" class="icon-button" aria-label="Как играть">?</button></div>
+    </header>
+    <main>
+      <section class="intro">
+        <div><div class="eyebrow"><span class="live-dot"></span><span data-i18n="eyebrow">ТВОЙ УЮТНЫЙ УГОЛОК</span></div><h1 data-i18n="headline">Большой город<br>начинается с домика<span>.</span></h1><p data-i18n="subtitle">Соединяй одинаковое. Создавай новое. Не спеши.</p></div>
+        <div class="intro-art" id="intro-art" aria-hidden="true"></div>
+      </section>
+      <section class="game-layout" aria-label="Игра">
+        <aside class="sidebar">
+          <section class="next-card"><div class="card-label" data-i18n="next">СЛЕДУЮЩИЙ ДОМИК</div><div id="next-art"></div><div class="next-copy"><h2 id="next-name"></h2><p data-i18n="placeHint">Выбери свободную клетку</p></div><span class="next-badge">+<span id="next-level">1</span></span></section>
+          <section class="goal-card"><div class="card-label" data-i18n="goal">МАЛЕНЬКАЯ БОЛЬШАЯ ЦЕЛЬ</div><div class="goal-heading"><span id="goal-art"></span><h2 data-i18n="goalTitle">Построй<br>котобашню</h2></div><div class="progress-track"><div id="goal-progress"></div></div><p id="goal-caption"></p></section>
+          <div class="tip"><span class="tip-icon">✦</span><p data-i18n="tip">Три одинаковых здания рядом станут одним новым. Попробуй собрать цепочку!</p></div>
+        </aside>
+        <div class="play-column">
+          <div class="scorebar"><div><span class="card-label" data-i18n="score">ТВОИ ОЧКИ</span><strong id="score">0</strong></div><div class="best-score"><span class="card-label"><span aria-hidden="true">♛ </span><span data-i18n="best">ЛИЧНЫЙ РЕКОРД</span></span><strong id="best">0</strong></div></div>
+          <div class="board-frame"><div id="board" class="board" role="group" aria-label="Игровое поле, 5 на 5"></div><div id="merge-message" class="merge-message" aria-live="polite"></div></div>
+          <div class="board-toolbar"><span id="board-hint" data-i18n="boardHint">Каждому коту — по домику</span><button id="undo" class="text-button" disabled><span aria-hidden="true">↶</span> <span data-i18n="undo">Отменить ход</span></button><button id="restart" class="text-button" aria-label="Начать заново">↻</button></div>
+        </div>
+      </section>
+      <section class="collection"><div class="collection-heading"><h2 data-i18n="collection">От домика до мечты</h2><span id="collection-count"></span></div><div id="collection" class="collection-items"></div></section>
+    </main>
+    <footer><span data-i18n="footer">Построено с мурчанием</span><span id="platform-status" data-i18n="local">Локальный прототип · без рекламы</span><span>v0.1</span></footer>
+  </div>
+  <dialog id="modal"><div id="modal-content"></div></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

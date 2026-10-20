@@ -1,6 +1,7 @@
 import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: './tests/browser',
+  testMatch: 'kids.spec.js',
   fullyParallel: true,
   workers: 2,
   timeout: 20000,

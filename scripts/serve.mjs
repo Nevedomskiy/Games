@@ -15,4 +15,4 @@ const server = http.createServer(async (req, res) => {
     res.end(await readFile(target));
   } catch { res.writeHead(404); res.end('Not found'); }
 });
-server.listen(port, '0.0.0.0', () => console.log(`Cat Quarter development server listening on port ${port}`));
+server.listen(port, '0.0.0.0', () => console.log(`Games development server listening on port ${port}`));

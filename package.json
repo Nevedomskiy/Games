@@ -1,16 +1,16 @@
 {
-  "name": "kotokvartal",
+  "name": "lapki-i-kraski",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Котоквартал — уютная головоломка об объединении домиков",
+  "description": "Лапки и краски — зверята, цвета и формы для малышей 2–4 лет",
   "engines": { "node": ">=22" },
   "scripts": {
     "dev": "node scripts/serve.mjs",
     "build": "node scripts/build.mjs",
     "export:demo": "npm run build && node scripts/export-demo.mjs",
     "preview": "node scripts/serve.mjs dist",
-    "test": "node --test tests/engine.test.mjs",
+    "test": "node --test tests/kids.test.mjs",
     "test:browser": "playwright test"
   },
   "devDependencies": { "@playwright/test": "1.64.1" }
