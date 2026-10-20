@@ -1,7 +1,7 @@
 import { ACTIVITIES, STICKERS, SESSION_LENGTH, getItem } from './data.js';
 import { createSession, answer, advance, validSession } from './engine.js';
 import { animal, balloon, shape, itemArt, meadow, icon } from './art.js';
-import { Platform } from '../src/platform.js';
+import { Platform } from './platform.js';
 
 const $=id=>document.getElementById(id);
 const SAVE_KEY='lapki-i-kraski.v1';

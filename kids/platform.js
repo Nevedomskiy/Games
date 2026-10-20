@@ -1,7 +1,6 @@
 export class Platform {
   sdk = null;
   playing = false;
-  adOpen = false;
   available = false;
   failed = false;
   onPause = () => {};
@@ -28,7 +27,7 @@ export class Platform {
 
   ready() { this.sdk?.features?.LoadingAPI?.ready(); }
   start() {
-    if (this.playing || this.adOpen || document.hidden) return;
+    if (this.playing || document.hidden) return;
     this.playing = true;
     this.sdk?.features?.GameplayAPI?.start();
   }
@@ -36,30 +35,5 @@ export class Platform {
     if (!this.playing) return;
     this.playing = false;
     this.sdk?.features?.GameplayAPI?.stop();
-  }
-  reward() {
-    if (!this.available || !this.sdk?.adv?.showRewardedVideo || this.adOpen) return Promise.resolve('unavailable');
-    this.stop();
-    this.adOpen = true;
-    this.onPause();
-    return new Promise(resolve => {
-      let rewarded = false;
-      let finished = false;
-      const finish = (result) => {
-        if (finished) return;
-        finished = true;
-        this.adOpen = false;
-        this.onResume();
-        resolve(result);
-      };
-      try {
-        this.sdk.adv.showRewardedVideo({ callbacks: {
-          onOpen: () => { this.stop(); this.onPause(); },
-          onRewarded: () => { rewarded = true; },
-          onClose: () => finish(rewarded ? 'rewarded' : 'skipped'),
-          onError: () => finish('unavailable'),
-        }});
-      } catch { finish('unavailable'); }
-    });
   }
 }
