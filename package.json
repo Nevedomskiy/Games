@@ -19,6 +19,7 @@
     "export:vk": "npm run build:vk && node scripts/export-vk.mjs",
     "export:vk-icons": "node scripts/export-vk-icons.mjs",
     "export:vk-images": "npm run build:vk && node scripts/export-vk-images.mjs",
+    "export:vk-launch-icon": "node scripts/export-vk-launch-icon.mjs",
     "publish:pages": "npm run build:vk && node scripts/publish-pages.mjs"
   },
   "devDependencies": {
