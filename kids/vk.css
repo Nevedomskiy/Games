@@ -1,0 +1,4 @@
+/* VK can embed the game with scrolling="no". Scroll an element inside the
+   viewport rather than relying on the iframe document's own scrollbar. */
+html{height:100%;overflow:hidden}
+body{height:100%;overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch}
