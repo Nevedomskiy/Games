@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { ACTIVITIES,SESSION_LENGTH } from '../kids/data.js';
-import { createSession,answer,advance,validSession,shuffled,selectPiece,placePiece } from '../kids/engine.js';
+import { createSession,answer,advance,validSession,shuffled,selectPiece,placePiece,restoreSession } from '../kids/engine.js';
 
 function solve(s){
   if(s.mode!=='puzzles')return answer(s,s.task.target).session;
@@ -16,7 +16,7 @@ for(const mode of Object.keys(ACTIVITIES)) {
     if(mode==='puzzles')assert.deepEqual([...s.task.choices].sort(),['0','1','2','3']);
     else assert.equal(s.task.choices.filter(id=>id===s.task.target).length,1);
   });
-  test(`${mode}: five solved tasks finish a session without repeating adjacent targets`,()=>{
+  test(`${mode}: ten different targets finish a session without repeats`,()=>{
     let s=createSession(mode,()=>.4);
     for(let i=0;i<SESSION_LENGTH;i++){
       const old=structuredClone(s),target=s.task.target;
@@ -26,7 +26,7 @@ for(const mode of Object.keys(ACTIVITIES)) {
       s=advance(result,()=>.4);assert.ok(validSession(s));
       if(i<SESSION_LENGTH-1){assert.equal(s.status,'playing');assert.notEqual(s.task.target,target);}else assert.equal(s.status,'finished');
     }
-    assert.equal(answer(s,s.task.target),null);assert.equal(s.history.length,SESSION_LENGTH);
+    assert.equal(answer(s,s.task.target),null);assert.equal(s.history.length,SESSION_LENGTH);assert.equal(new Set(s.history).size,SESSION_LENGTH);assert.equal(ACTIVITIES[mode].items.length,SESSION_LENGTH);
   });
 }
 test('mistakes never reduce progress or remove the target; help can use attempts',()=>{
@@ -56,7 +56,7 @@ test('generated tasks remain valid over different seeded sessions',()=>{
     }
     assert.ok(validSession({...s,rewarded:true}));
   }
-  assert.equal(observed.size,36);
+  assert.equal(observed.size,60);
 });
 test('shuffle does not mutate or lose input elements',()=>{
   const a=['a','b','c'];const b=shuffled(a,()=>0);assert.deepEqual(a,['a','b','c']);assert.deepEqual([...b].sort(),a);assert.notEqual(a,b);
@@ -84,4 +84,60 @@ test('requested animal associations use distinct pictured answers',()=>{
   assert.equal(ACTIVITIES.foods.items.find(i=>i.id==='monkey').answerId,'banana');
   assert.equal(ACTIVITIES.foods.items.find(i=>i.id==='bee').answerId,'flower');
   for(const mode of ['homes','foods'])assert.equal(new Set(ACTIVITIES[mode].items.map(i=>i.answerId)).size,ACTIVITIES[mode].items.length);
+});
+
+test('the saved deck survives errors, serialization and every advance without repeated targets',()=>{
+  for(const mode of Object.keys(ACTIVITIES)){
+    let s=createSession(mode),order=[...s.order];
+    while(s.status!=='finished'){
+      s=restoreSession(JSON.parse(JSON.stringify(s)));assert.deepEqual(s.order,order);
+      if(mode!=='puzzles')s=answer(s,s.task.choices.find(id=>id!==s.task.target)).session;
+      s=advance(solve(s));
+    }
+    assert.deepEqual(s.history,order);
+  }
+});
+test('duplicate or inconsistent saved decks are rejected',()=>{
+  const s=createSession();
+  for(const order of [[],s.order.slice(1),s.order.map(()=>s.order[0]),[...s.order.slice(0,9),'bad'],[...s.order].reverse()]){
+    assert.equal(validSession({...s,order}),false);assert.equal(restoreSession({...s,order}),null);
+  }
+});
+function legacy(mode,history,target,status='playing'){
+  const s=createSession(mode);delete s.order;s.version=1;s.history=history;s.completed=history.length;s.status=status;
+  s.task={...s.task,target};
+  if(mode!=='puzzles')s.task.choices=[target,...ACTIVITIES[mode].items.filter(i=>i.id!==target).slice(0,2).map(i=>i.id)];
+  return s;
+}
+test('old walks with repeats migrate once to a unique persisted deck',()=>{
+  for(const [status,target] of [['playing','ant'],['feedback','ant'],['playing','dog']]){
+    const old=legacy('homes',['frog','ant','bird','ant'],target,status),original=structuredClone(old),s=restoreSession(old,()=>.4);
+    assert.ok(validSession(s));assert.deepEqual(old,original);assert.equal(s.version,2);assert.equal(s.completed,3);
+    if(status==='playing'&&target==='ant')assert.notEqual(s.task.target,'ant');else assert.equal(s.task.target,target);
+    let final=s;if(final.status==='feedback')final=advance(final);
+    while(final.status!=='finished')final=advance(solve(final));
+    assert.equal(new Set(final.history).size,10);assert.equal(final.history.length,10);assert.deepEqual(restoreSession(s),s);
+  }
+});
+test('old partially assembled puzzle keeps its pieces and selected position',()=>{
+  const old=legacy('puzzles',['bunny'],'cat');old.task.placed=['0'];old.task.selected='2';old.task.attempts=2;
+  const s=restoreSession(old);assert.ok(validSession(s));assert.deepEqual(s.task,old.task);assert.equal(s.completed,1);
+  assert.equal(s.order[1],'cat');
+});
+test('old final feedback continues the longer walk, finished and corrupt legacy saves do not restart a reward',()=>{
+  const old=legacy('homes',['frog','bee','bird','squirrel','dog'],'dog','feedback');const s=restoreSession(old);
+  assert.ok(validSession(s));assert.equal(advance(s).status,'playing');assert.equal(advance(s).completed,5);
+  assert.equal(restoreSession({...old,status:'finished',rewarded:true}),null);
+  assert.equal(restoreSession({...old,history:['bad']}),null);assert.equal(restoreSession(null),null);
+});
+test('food questions have three choices without familiar alternative edible answers',()=>{
+  for(let n=0;n<50;n++){
+    let s=createSession('foods');
+    while(s.status!=='finished'){
+      const target=ACTIVITIES.foods.items.find(i=>i.id===s.task.target);
+      assert.equal(s.task.choices.length,3);
+      for(const id of s.task.choices.filter(id=>id!==target.id))assert.ok(!target.alsoEats.includes(ACTIVITIES.foods.items.find(i=>i.id===id).answerId));
+      s=advance(solve(s));
+    }
+  }
 });

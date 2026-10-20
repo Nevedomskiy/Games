@@ -1,5 +1,5 @@
 import { ACTIVITIES, STICKERS, SESSION_LENGTH, PIECE_LABELS, getItem, choiceLabel } from './data.js';
-import { createSession, answer, advance, validSession, selectPiece, placePiece } from './engine.js';
+import { createSession, answer, advance, restoreSession, selectPiece, placePiece } from './engine.js';
 import { animal, balloon, shape, itemArt, puzzlePiece, meadow, icon } from './art.js';
 import { Platform } from './platform.js';
 
@@ -11,7 +11,7 @@ let audioContext,feedbackTime=0,lastTime=0,toastTimer,storageWarned=false,keyboa
 let lastReward='bunny';
 try {
   const saved=JSON.parse(localStorage.getItem(SAVE_KEY));
-  if(validSession(saved?.session))session=saved.session;
+  session=restoreSession(saved?.session);
   if(Array.isArray(saved?.album))album=[...new Set(saved.album.filter(id=>STICKERS.includes(id)))];
   if(Number.isSafeInteger(saved?.completedSessions)&&saved.completedSessions>=0)completedSessions=saved.completedSessions;
   if(saved?.sound===false)sound=false;
@@ -99,7 +99,7 @@ function finishSession(){
   if(!session.rewarded){lastReward=STICKERS.find(id=>!album.includes(id))||STICKERS[completedSessions%STICKERS.length];if(!album.includes(lastReward))album.push(lastReward);completedSessions++;session={...session,rewarded:true};save();}
   showScreen('reward');$('sticker-reward').innerHTML=animal(lastReward);$('sticker-name').textContent=getItem('animals',lastReward).label;
   $('reward-caption').textContent=album.length===STICKERS.length?'Все друзья уже в альбоме. Здорово играть вместе!':'Новый маленький друг поселится в твоём альбоме.';
-  chime(true);say('Здорово! Все пять заданий готовы. Вот твой маленький друг.');renderHome();
+  chime(true);say('Здорово! Все десять заданий готовы. Вот твой маленький друг.');renderHome();
 }
 function goHome(){showScreen('home');renderHome();save();}
 function showModal(content){cancelVoice();audioContext?.suspend();$('modal-content').innerHTML=content;$('modal').showModal();syncPlatform();}
@@ -117,7 +117,7 @@ function processAnswer(result){
   session=result.session;save();renderTask();
   if(result.kind==='correct'){
     feedbackTime=0;chime(true);const item=getItem(session.mode,session.task.target);
-    say(item.fact||(session.mode==='puzzles'?'Молодец! Картинка собрана.':`Здорово! Это ${item.label.toLocaleLowerCase('ru')}.`));syncPlatform();
+    say((['homes','foods'].includes(session.mode)?'Верно!':null)||(session.mode==='puzzles'?'Молодец! Картинка собрана.':`Здорово! Это ${item.label.toLocaleLowerCase('ru')}.`));syncPlatform();
   }else if(result.kind==='piece'){chime();}else promptTask();
 }
 $('piece-tray').addEventListener('click',event=>{
@@ -130,8 +130,8 @@ $('puzzle-board').addEventListener('click',event=>{
   const button=event.target.closest('[data-slot]');if(!button||!active())return;
   const result=placePiece(session,button.dataset.slot);if(result)processAnswer(result);else if(session.task.selected===null)say('Сначала выбери кусочек внизу.');
 });
-$('parents').addEventListener('click',()=>showModal(`<div class="modal-symbol">${icon('heart')}</div><h2>Играем вместе</h2><p>Шесть занятий для малышей 2–4 лет: тени зверят и фигур, цвета, пазлы из четырёх частей, домики и угощения животных.</p><p>В пазле сначала нажмите на кусочек, затем на его место. Перетаскивание не требуется. Прозрачная картинка помогает понять, что получится.</p><p>В занятиях с домиками и едой нажмите на пару для зверёнка. При успехе появится соединяющая линия. Угощения — знакомые примеры еды, а не полный рацион животных; домики — примеры жилищ.</p><p>После двух неточных попыток появляется мягкая подсказка. Здесь нет таймера, проигрыша и рекламы. Пять заданий — одна прогулка; можно остановиться в любой момент.</p><p>Голос зависит от устройства. Альбом сохраняется только в этом браузере. Игра не запрашивает данные ребёнка или регистрацию.</p>`));
-function showAlbum(){showModal(`<span class="eyebrow">МАЛЕНЬКИЕ ДРУЗЬЯ</span><h2>Твой альбом</h2><p>За пять заданий — одна наклейка. Все друзья обязательно встретятся!</p><div class="album-grid">${STICKERS.map(id=>`<div class="album-item ${album.includes(id)?'':'waiting'}">${animal(id)}<span>${album.includes(id)?getItem('animals',id).label:'Ещё встретимся'}</span></div>`).join('')}</div>`);}
+$('parents').addEventListener('click',()=>showModal(`<div class="modal-symbol">${icon('heart')}</div><h2>Играем вместе</h2><p>Шесть занятий для малышей 2–4 лет: тени зверят и фигур, цвета, пазлы из четырёх частей, домики и угощения животных.</p><p>В пазле сначала нажмите на кусочек, затем на его место. Перетаскивание не требуется. Прозрачная картинка помогает понять, что получится.</p><p>В занятиях с домиками и едой нажмите на пару для зверёнка. При успехе появится соединяющая линия. Угощения — знакомые примеры еды, а не полный рацион животных; домики — примеры жилищ.</p><p>После двух неточных попыток появляется мягкая подсказка. Здесь нет таймера, проигрыша и рекламы. Десять заданий — одна прогулка; можно остановиться в любой момент.</p><p>Голос зависит от устройства. Альбом сохраняется только в этом браузере. Игра не запрашивает данные ребёнка или регистрацию.</p>`));
+function showAlbum(){showModal(`<span class="eyebrow">МАЛЕНЬКИЕ ДРУЗЬЯ</span><h2>Твой альбом</h2><p>За десять заданий — одна наклейка. Все друзья обязательно встретятся!</p><div class="album-grid">${STICKERS.map(id=>`<div class="album-item ${album.includes(id)?'':'waiting'}">${animal(id)}<span>${album.includes(id)?getItem('animals',id).label:'Ещё встретимся'}</span></div>`).join('')}</div>`);}
 $('album-button').addEventListener('click',showAlbum);$('see-album').addEventListener('click',showAlbum);$('close-modal').addEventListener('click',()=>$('modal').close());$('modal').addEventListener('close',syncPlatform);
 document.addEventListener('keydown',event=>{if(event.key==='Tab'||event.key.startsWith('Arrow'))keyboardUser=true;});document.addEventListener('pointerdown',()=>{keyboardUser=false;});
 function pause(){cancelVoice();audioContext?.suspend();platform.stop();save();}
@@ -139,6 +139,6 @@ platform.onPause=()=>{sdkPaused=true;pause();};platform.onResume=()=>{sdkPaused=
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();else syncPlatform();});window.addEventListener('blur',pause);window.addEventListener('focus',syncPlatform);window.addEventListener('pagehide',save);
 document.addEventListener('contextmenu',event=>{if(event.target.closest('.choice,.target,.activity-art'))event.preventDefault();});
 window.addEventListener('resize',drawConnection);
-function tick(timestamp){const dt=Math.min(100,timestamp-lastTime||0);lastTime=timestamp;if(screen==='game'&&session?.status==='feedback'&&active()){feedbackTime+=dt;const duration=['homes','foods'].includes(session.mode)?3200:1600;if(feedbackTime>=duration){session=advance(session);feedbackTime=0;save();if(session.status==='finished')finishSession();else{renderTask();promptTask();syncPlatform();}}}requestAnimationFrame(tick);}
+function tick(timestamp){const dt=Math.min(100,timestamp-lastTime||0);lastTime=timestamp;if(screen==='game'&&session?.status==='feedback'&&active()){feedbackTime+=dt;const duration=['homes','foods'].includes(session.mode)?900:1600;if(feedbackTime>=duration){session=advance(session);feedbackTime=0;save();if(session.status==='finished')finishSession();else{renderTask();promptTask();syncPlatform();}}}requestAnimationFrame(tick);}
 $('brand-picture').innerHTML=animal('bunny');$('hero-art').innerHTML=meadow();$('play-arrow').innerHTML=icon('arrow');$('album-icon').innerHTML=icon('book');$('album-button').innerHTML=icon('book');$('home-icon').innerHTML=icon('home');$('repeat-icon').innerHTML=icon('sound');$('game-heart').innerHTML=icon('heart');$('again-icon').innerHTML=icon('arrow');
 renderHome();renderSound();requestAnimationFrame(tick);await platform.init();platform.ready();syncPlatform();

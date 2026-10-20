@@ -1,7 +1,7 @@
 import { test,expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { createSession,answer,advance } from '../../kids/engine.js';
-import { ACTIVITIES } from '../../kids/data.js';
+import { ACTIVITIES,SESSION_LENGTH } from '../../kids/data.js';
 import { itemArt,animal,puzzlePiece } from '../../kids/art.js';
 const KEY='lapki-i-kraski.v1';
 async function state(page){return page.evaluate(key=>JSON.parse(localStorage.getItem(key)),KEY);}
@@ -12,11 +12,15 @@ async function chooseCorrect(page){
   }else await page.locator(`[data-choice="${saved.session.task.target}"]`).click();
 }
 async function complete(page){
-  for(let i=0;i<5;i++){
+  const seen=[];
+  for(let i=0;i<SESSION_LENGTH;i++){
+    const current=(await state(page)).session;expect(seen).not.toContain(current.task.target);seen.push(current.task.target);
+    if(i===5&&['homes','foods'].includes(current.mode)){await page.reload();await page.locator('#play').click();expect((await state(page)).session.order).toEqual(current.order);expect((await state(page)).session.task.target).toBe(current.task.target);}
     await chooseCorrect(page);
-    if(i<4)await expect.poll(async()=>{const s=(await state(page)).session;return `${s.status}:${s.completed}`;}).toBe(`playing:${i+1}`);
+    if(i<SESSION_LENGTH-1)await expect.poll(async()=>{const s=(await state(page)).session;return `${s.status}:${s.completed}`;}).toBe(`playing:${i+1}`);
   }
   await expect(page.locator('#reward-screen')).toBeVisible();
+  expect(seen).toHaveLength(10);expect((await state(page)).session.history).toEqual(seen);
 }
 function mockPlatform(page){return page.addInitScript(()=>{
   window.sdkCalls={ready:0,start:0,stop:0,ads:0};window.sdkEvents={};
@@ -34,7 +38,8 @@ test('desktop home and task render without errors or external assets',async({pag
   await page.screenshot({path:'artifacts/kids-desktop.png',fullPage:true});
   expect(errors).toEqual([]);expect(external).toEqual([]);
 });
-for(const mode of ['animals','colors','shapes'])test(`${mode}: complete five tasks, receive one sticker and replay`,async({page})=>{
+for(const mode of ['animals','colors','shapes'])test(`${mode}: complete ten unique tasks, receive one sticker and replay`,async({page})=>{
+  test.setTimeout(35000);
   await page.goto('/');await page.locator(`[data-mode="${mode}"]`).click();await complete(page);
   const saved=await state(page);expect(saved.album).toEqual(['bunny']);expect(saved.completedSessions).toBe(1);expect(saved.session.rewarded).toBe(true);
   await page.locator('#again').click();await expect(page.locator('#game-screen')).toBeVisible();expect((await state(page)).session.completed).toBe(0);
@@ -103,7 +108,7 @@ test('dialog stops advancement and can be closed with keyboard',async({page})=>{
   await page.keyboard.press('Escape');await expect.poll(async()=>(await state(page)).session.status).toBe('playing');
 });
 test('saved final feedback awards a sticker once and survives reload',async({page})=>{
-  let s=createSession();for(let i=0;i<5;i++){s=answer(s,s.task.target).session;if(i<4)s=advance(s);}
+  let s=createSession();for(let i=0;i<SESSION_LENGTH;i++){s=answer(s,s.task.target).session;if(i<SESSION_LENGTH-1)s=advance(s);}
   await page.addInitScript(({key,s})=>{if(!localStorage.getItem(key))localStorage.setItem(key,JSON.stringify({session:s,album:[],completedSessions:0,sound:false}));},{key:KEY,s});
   await page.goto('/');await page.locator('#play').click();await expect(page.locator('#reward-screen')).toBeVisible();expect((await state(page)).completedSessions).toBe(1);
   await page.reload();await page.locator('#album-button').click();await expect(page.locator('.album-item:not(.waiting)')).toHaveCount(1);expect((await state(page)).completedSessions).toBe(1);
@@ -163,7 +168,8 @@ test('color activity retains its colored reference',async({page})=>{
 });
 
 for(const mode of ['puzzles','homes','foods'])test(`${mode}: full new activity saves progress and awards one sticker`,async({page})=>{
-  test.setTimeout(35000);
+  // Ten puzzles require 80 real pointer actions plus feedback animations.
+  test.setTimeout(mode==='puzzles'?150000:45000);
   await page.goto('/');await page.locator(`[data-mode="${mode}"]`).click();
   await page.screenshot({path:`artifacts/kids-${mode}.png`,fullPage:true});
   await complete(page);const saved=await state(page);expect(saved.completedSessions).toBe(1);expect(saved.album).toEqual(['bunny']);
@@ -221,7 +227,7 @@ test('cat and fox have different outlines and puzzle quarters reconstruct the or
 });
 
 test('updated cat and fox are visible together in the shadow game',async({page})=>{
-  const s=createSession('animals');s.task={...s.task,target:'cat',choices:['cat','fox','bunny']};
+  const s=createSession('animals');const i=s.order.indexOf('cat');[s.order[0],s.order[i]]=[s.order[i],s.order[0]];s.task={...s.task,target:'cat',choices:['cat','fox','bunny']};
   await page.addInitScript(({key,s})=>localStorage.setItem(key,JSON.stringify({session:s,sound:false})),{key:KEY,s});
   await page.goto('/');await page.locator('#play').click();
   await page.screenshot({path:'artifacts/kids-animals.png',fullPage:true});
@@ -235,4 +241,43 @@ test('new modes also run from the standalone export without external requests',a
   await page.locator('#home').click();await page.locator('[data-mode="homes"]').click();await page.getByRole('button',{name:'Пруд',exact:true}).click();await expect(page.locator('#pair-line')).toBeVisible();
   await page.locator('#home').click();await page.locator('[data-mode="foods"]').click();await page.getByRole('button',{name:'Банан',exact:true}).click();await expect(page.locator('#pair-line')).toBeVisible();
   expect(errors).toEqual([]);expect(requests).toEqual([]);
+});
+
+for(const mode of ['homes','foods'])test(`${mode}: next question arrives promptly after a correct answer`,async({page})=>{
+  await page.goto('/');await page.locator(`[data-mode="${mode}"]`).click();
+  const start=await page.evaluate(()=>performance.now());await chooseCorrect(page);
+  await expect(page.locator('#pair-line')).toBeVisible();
+  await expect.poll(async()=>(await state(page)).session.status,{timeout:2000,intervals:[50,100,100]}).toBe('playing');
+  const elapsed=await page.evaluate(()=>performance.now())-start;
+  expect(elapsed).toBeGreaterThan(700);expect(elapsed).toBeLessThan(2000);
+  expect((await state(page)).session.completed).toBe(1);
+});
+
+test('a legacy save upgrades in the browser without losing album, settings or puzzle progress',async({page})=>{
+  const s=createSession('puzzles');delete s.order;s.version=1;s.completed=1;s.history=['cat'];s.task.placed=['0'];s.task.selected='2';
+  await page.addInitScript(({key,s})=>{if(!localStorage.getItem(key))localStorage.setItem(key,JSON.stringify({session:s,album:['bunny','cat'],completedSessions:2,sound:false}));},{key:KEY,s});
+  await page.goto('/');await page.locator('#play').click();await expect(page.locator('.filled')).toHaveCount(1);
+  const saved=await state(page);expect(saved.session.version).toBe(2);expect(saved.session.order).toHaveLength(10);expect(saved.session.task.selected).toBe('2');expect(saved.album).toEqual(['bunny','cat']);expect(saved.completedSessions).toBe(2);expect(saved.sound).toBe(false);
+  await page.reload();await page.locator('#play').click();expect((await state(page)).session.order).toEqual(saved.session.order);
+});
+
+test('all expanded animal, home and food illustrations render distinct visible pictures',async({page})=>{
+  await page.goto('/');
+  const groups={animals:[...new Set(['animals','homes','foods'].flatMap(mode=>ACTIVITIES[mode].items.map(i=>i.id)))].map(id=>({id,label:Object.values(ACTIVITIES).flatMap(a=>a.items).find(i=>i.id===id).label,svg:animal(id)})),homes:ACTIVITIES.homes.items.map(i=>({id:i.id,label:i.answerLabel,svg:itemArt('homes',i.id)})),foods:ACTIVITIES.foods.items.map(i=>({id:i.id,label:i.answerLabel,svg:itemArt('foods',i.id)}))};
+  for(const examples of Object.values(groups)){
+    const signatures=await page.evaluate(async examples=>{
+      const rendered=[];
+      for(const example of examples){
+        const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(example.svg);});
+        const canvas=document.createElement('canvas');canvas.width=240;canvas.height=220;const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0);const pixels=ctx.getImageData(0,0,240,220).data;let opaque=0,hash=2166136261;
+        for(let i=0;i<pixels.length;i++){hash=Math.imul(hash^pixels[i],16777619)>>>0;if(i%4===3&&pixels[i]>250)opaque++;}
+        rendered.push({id:example.id,opaque,hash});
+      }
+      return rendered;
+    },examples);
+    for(const illustration of signatures)expect(illustration.opaque,illustration.id).toBeGreaterThan(1000);
+    expect(new Set(signatures.map(i=>i.hash)).size).toBe(examples.length);
+  }
+  await page.setContent(`<style>body{font:16px sans-serif;background:#fbf8ee;margin:24px}.group{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}.tile{text-align:center;background:white;border-radius:16px;padding:12px}.tile svg{display:block;width:140px;height:130px;margin:auto}h2{margin-top:24px}</style>${Object.entries(groups).map(([name,examples])=>`<h2>${{animals:'Наши зверята',homes:'Домики',foods:'Угощения'}[name]}</h2><div class="group">${examples.map(i=>`<div class="tile">${i.svg}${i.label}</div>`).join('')}</div>`).join('')}`);
+  await page.setViewportSize({width:1200,height:900});await page.screenshot({path:'artifacts/expanded-catalog.png',fullPage:true});
 });

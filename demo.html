@@ -13,6 +13,9 @@
 @media(max-width:350px){.parent-button{display:none}.hero h1{font-size:29px}.hero p{font-size:9px}.activity-art>svg{width:90px}.activity-copy h3{font-size:12px}.activity-copy p{font-size:6px}.activity-arrow{width:19px;height:19px;padding:4px;right:5px}.activity-number{font-size:6px}.task h1{font-size:20px}.task p{font-size:8px}.target{width:91px;height:91px}.choice>svg{height:97px}.choice{min-height:135px}.choice-name{font-size:8px}.game-note{font-size:6px}.album-strip h2{font-size:11px}.album-strip p{font-size:6px}.little-sticker{width:34px;height:34px}}
 .activity-card.puzzles{background:#e9e2f0;border-color:#ddd5e6}.activity-card.homes{background:#e2ecdd;border-color:#d5e2cd}.activity-card.foods{background:#f6ead2;border-color:#eadcc0}.puzzles .activity-art{position:relative}.puzzles .activity-art:after{content:'';position:absolute;width:110px;height:110px;background:linear-gradient(90deg,transparent 49%,#fcf9f0 49%,#fcf9f0 51%,transparent 51%),linear-gradient(0deg,transparent 49%,#fcf9f0 49%,#fcf9f0 51%,transparent 51%);pointer-events:none}.playground{position:relative}.pair-line{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;overflow:visible}.pair-line path{fill:none;stroke:#93ad7d;stroke-width:3;stroke-linecap:round;stroke-dasharray:7 5;animation:connection-in .45s ease-out}.pair-line circle{fill:#93ad7d}.puzzle-layout{display:flex;align-items:center;justify-content:center;gap:48px}.puzzle-board{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;width:260px;flex-shrink:0;border:8px solid #e3ddc7;border-radius:20px;overflow:hidden;background:#e3ddc7}.puzzle-slot{position:relative;aspect-ratio:120/110;border:0;padding:0;background:#f6f1df;touch-action:manipulation;min-width:0}.puzzle-slot>span{display:block;width:100%;height:100%}.piece-guide{opacity:.12}.placed-piece{animation:piece-in .3s ease-out}.piece-tray{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:230px}.puzzle-piece{aspect-ratio:120/110;min-width:0;border:3px solid #e8e0cd;border-radius:14px;padding:2px;background:#fff8e8;box-shadow:0 3px 0 #ded6bd;transition:border-color .15s,transform .15s;overflow:hidden}.puzzle-piece.selected{border-color:#8ca77b;background:#f0f2df;transform:translateY(-3px);box-shadow:0 0 0 3px #c7d7b7}.puzzle-piece.used{opacity:.17;box-shadow:none}.puzzle-slot.filled{background:#f6f1df}#game-screen[data-mode="puzzles"] .task{min-height:145px;margin-bottom:20px}#game-screen[data-mode="puzzles"] .target{width:125px;height:125px}#game-screen[data-mode="puzzles"] .task h1{font-size:26px}@keyframes piece-in{from{opacity:.4;transform:scale(.9)}to{opacity:1;transform:scale(1)}}@keyframes connection-in{from{opacity:0}to{opacity:1}}@media(max-width:700px){.puzzle-layout{gap:20px}.puzzle-board{width:220px}.piece-tray{width:190px;gap:9px}#game-screen[data-mode="puzzles"] .task h1{font-size:23px}#game-screen[data-mode="puzzles"] .target{width:105px;height:105px}}@media(max-width:540px){.puzzle-layout{display:flex;flex-direction:column;gap:16px}.puzzle-board{width:225px}.piece-tray{grid-template-columns:repeat(4,minmax(0,1fr));width:100%;gap:8px;max-width:360px}.puzzle-piece{border-width:2px;border-radius:10px;padding:1px;min-height:58px}.puzzle-board{border-width:6px}.puzzles .activity-art:after{width:85px;height:85px}#game-screen[data-mode="puzzles"] .task{min-height:126px;margin-bottom:16px}#game-screen[data-mode="puzzles"] .target{width:95px;height:95px}#game-screen[data-mode="puzzles"] .task h1{font-size:22px}.activity-card.foods .activity-copy h3{font-size:12px;max-width:76px}.activity-card.homes .activity-copy h3{font-size:13px}}@media(max-width:350px){.puzzle-board{width:205px}.piece-tray{gap:6px}.puzzle-piece{min-height:52px}.activity-card.foods .activity-copy h3{font-size:11px}.activity-card.homes .activity-copy h3{font-size:11px}#game-screen[data-mode="puzzles"] .task h1{font-size:19px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+@media(max-width:700px){.flowers{display:grid;grid-template-columns:repeat(5,19px);gap:3px 4px}.progress-flower{width:19px;height:19px}}
+@media(max-width:430px){.flowers{grid-template-columns:repeat(5,17px);gap:2px 3px}.progress-flower{width:17px;height:17px}}
 </style><script type="module">const ACTIVITIES = {
   animals: { title:'Зверята', subtitle:'Узнай друга по тени', badge:'УЗНАЁМ ЗВЕРЯТ', instruction:'Кто спрятался в тени?', color:'#f6dfd4', items:[
     {id:'bunny',label:'Зайчик',prompt:'Найди зайчика',color:'#f4ddd4'},
@@ -21,6 +24,10 @@
     {id:'bear',label:'Медвежонок',prompt:'Найди медвежонка',color:'#e9d5bc'},
     {id:'fox',label:'Лисёнок',prompt:'Найди лисёнка',color:'#f8d5bf'},
     {id:'owl',label:'Совёнок',prompt:'Найди совёнка',color:'#e4dbf2'},
+    {id:'frog',label:'Лягушка',prompt:'Найди лягушку',color:'#dcebcf'},
+    {id:'bee',label:'Пчела',prompt:'Найди пчелу',color:'#f1e6bd'},
+    {id:'squirrel',label:'Белочка',prompt:'Найди белочку',color:'#e8d5c0'},
+    {id:'monkey',label:'Обезьянка',prompt:'Найди обезьянку',color:'#eadbc6'},
   ]},
   colors: { title:'Цвета',subtitle:'Собери радугу',badge:'ЗНАКОМИМСЯ С ЦВЕТАМИ',instruction:'Найди такой же цвет',color:'#dfeee4',items:[
     {id:'red',label:'Красный',prompt:'Найди красный цвет',color:'#e97f77'},
@@ -29,6 +36,10 @@
     {id:'green',label:'Зелёный',prompt:'Найди зелёный цвет',color:'#82b88b'},
     {id:'purple',label:'Фиолетовый',prompt:'Найди фиолетовый цвет',color:'#ad96cb'},
     {id:'orange',label:'Оранжевый',prompt:'Найди оранжевый цвет',color:'#efa25f'},
+    {id:'pink',label:'Розовый',prompt:'Найди розовый цвет',color:'#e8a7c8'},
+    {id:'brown',label:'Коричневый',prompt:'Найди коричневый цвет',color:'#997456'},
+    {id:'white',label:'Белый',prompt:'Найди белый цвет',color:'#ffffff'},
+    {id:'black',label:'Чёрный',prompt:'Найди чёрный цвет',color:'#353944'},
   ]},
   shapes: {title:'Формы',subtitle:'Найди фигуру по тени',badge:'ОТКРЫВАЕМ ФОРМЫ',instruction:'Чья это тень?',color:'#e9e0f0',items:[
     {id:'circle',label:'Круг',prompt:'Найди круг',color:'#83b9ac'},
@@ -37,6 +48,10 @@
     {id:'star',label:'Звезда',prompt:'Найди звезду',color:'#e5bf69'},
     {id:'heart',label:'Сердечко',prompt:'Найди сердечко',color:'#d99099'},
     {id:'diamond',label:'Ромб',prompt:'Найди ромб',color:'#b69dcd'},
+    {id:'oval',label:'Овал',prompt:'Найди овал',color:'#83b9ac'},
+    {id:'rectangle',label:'Прямоугольник',prompt:'Найди прямоугольник',color:'#d9a263'},
+    {id:'semicircle',label:'Полукруг',prompt:'Найди полукруг',color:'#99afd1'},
+    {id:'trapezoid',label:'Трапеция',prompt:'Найди трапецию',color:'#b69dcd'},
   ]},
 };
 ACTIVITIES.puzzles = {
@@ -51,22 +66,40 @@ ACTIVITIES.homes = {
     {id:'squirrel',label:'Белочка',answerId:'hollow',answerLabel:'Дупло',prompt:'Найди домик белочки в дереве.',fact:'Белочка может устроить домик в дупле.'},
     {id:'dog',label:'Щенок',answerId:'kennel',answerLabel:'Будка',prompt:'Какой домик построили для щенка?',fact:'Для щенка построили будку.'},
     {id:'ant',label:'Муравей',answerId:'anthill',answerLabel:'Муравейник',prompt:'Найди домик муравья.',fact:'Муравьи живут в муравейнике.'},
+    {id:'fish',label:'Рыбка',answerId:'aquarium',answerLabel:'Аквариум',prompt:'Какой домик приготовили для рыбки?',fact:'Для рыбки приготовили аквариум.'},
+    {id:'beaver',label:'Бобр',answerId:'lodge',answerLabel:'Хатка',prompt:'Найди хатку бобра из веточек у воды.',fact:'Бобр построил хатку из веточек.'},
+    {id:'bat',label:'Летучая мышь',answerId:'cave',answerLabel:'Пещера',prompt:'Где летучая мышь может отдохнуть днём?',fact:'Летучая мышь может отдыхать в пещере.'},
+    {id:'spider',label:'Паучок',answerId:'web',answerLabel:'Паутинка',prompt:'Найди паутинку паучка.',fact:'Паучок сплёл паутинку.'},
   ],
 };
 ACTIVITIES.foods = {
   title:'Кто что любит?',subtitle:'Подбери вкусное угощение',badge:'УГОЩАЕМ ДРУЗЕЙ',instruction:'Чем угостим нашего друга?',color:'#f4e5cc',items:[
-    {id:'monkey',label:'Обезьянка',answerId:'banana',answerLabel:'Банан',prompt:'Чем угостим обезьянку?',fact:'Угостим обезьянку бананом.'},
+    {id:'monkey',label:'Обезьянка',answerId:'banana',answerLabel:'Банан',prompt:'Найди банан для обезьянки.',fact:'Угостим обезьянку бананом.'},
     {id:'bunny',label:'Зайчик',answerId:'carrot',answerLabel:'Морковка',prompt:'Найди угощение для зайчика.',fact:'Угостим зайчика морковкой.'},
     {id:'squirrel',label:'Белочка',answerId:'acorn',answerLabel:'Жёлудь',prompt:'Что любит белочка?',fact:'Белочке подойдёт жёлудь.'},
     {id:'cow',label:'Корова',answerId:'grass',answerLabel:'Трава',prompt:'Найди еду для коровы.',fact:'Корова ест траву.'},
     {id:'bee',label:'Пчела',answerId:'flower',answerLabel:'Нектар цветка',prompt:'Где пчела найдёт сладкий нектар?',fact:'Пчела собирает нектар с цветка.'},
     {id:'cat',label:'Котёнок',answerId:'fish',answerLabel:'Рыбка',prompt:'Выбери угощение для котёнка.',fact:'Котёнку подойдёт рыбка.'},
+    {id:'panda',label:'Панда',answerId:'bamboo',answerLabel:'Бамбук',prompt:'Найди бамбук для панды.',fact:'Панда ест бамбук.'},
+    {id:'horse',label:'Лошадка',answerId:'hay',answerLabel:'Сено',prompt:'Чем угостим лошадку?',fact:'Лошадке подойдёт сено.'},
+    {id:'goat',label:'Козочка',answerId:'cabbage',answerLabel:'Капуста',prompt:'Найди угощение для козочки.',fact:'Угостим козочку капустой.'},
+    {id:'chick',label:'Цыплёнок',answerId:'grain',answerLabel:'Зёрнышки',prompt:'Чем угостим цыплёнка?',fact:'Цыплёнок клюёт зёрнышки.'},
   ],
 };
 const PUZZLE_PARTS = ['0','1','2','3'];
 const PIECE_LABELS = ['Верхняя левая часть','Верхняя правая часть','Нижняя левая часть','Нижняя правая часть'];
 const STICKERS = ['bunny','cat','dog','bear','fox','owl'];
-const SESSION_LENGTH = 5;
+// Do not offer other familiar edible foods as an incorrect answer.
+const OTHER_FOODS = {
+  monkey:['carrot','acorn','fish','bamboo','cabbage','grain'],
+  bunny:['grass','hay','cabbage','grain','banana'], squirrel:['banana','carrot','grain','cabbage'],
+  cow:['hay','grain','cabbage','carrot','banana'], bee:[], cat:[],
+  panda:['carrot','grass','hay','grain','cabbage','banana'],
+  horse:['grass','carrot','cabbage','grain','banana'],
+  goat:['carrot','grass','hay','grain','bamboo','banana','acorn'], chick:['grass','cabbage','carrot','banana'],
+};
+for(const item of ACTIVITIES.foods.items)item.alsoEats=OTHER_FOODS[item.id];
+const SESSION_LENGTH = 10;
 function getItem(mode,id) { return ACTIVITIES[mode]?.items?.find(item=>item.id===id); }
 function choiceLabel(mode,id) {const item=getItem(mode,id);return item?.answerLabel||item?.label||'';}
 
@@ -76,17 +109,18 @@ function shuffled(items,rng=Math.random) {
   for(let i=copy.length-1;i>0;i--){const j=Math.min(i,Math.max(0,Math.floor(rng()*(i+1))));[copy[i],copy[j]]=[copy[j],copy[i]];}
   return copy;
 }
-function makeTask(mode,previous=null,rng=Math.random) {
-  const items=ACTIVITIES[mode].items;
-  const candidates=items.filter(item=>item.id!==previous);
-  const target=previous?candidates[Math.min(candidates.length-1,Math.floor(rng()*candidates.length))].id:items[0].id;
+function makeTask(mode,target=ACTIVITIES[mode].items[0].id,rng=Math.random) {
+  const items=ACTIVITIES[mode].items,item=getItem(mode,target);
   if(mode==='puzzles')return {target,choices:shuffled(PUZZLE_PARTS,rng),attempts:0,placed:[],selected:null};
-  const distractors=shuffled(items.filter(item=>item.id!==target),rng).slice(0,2).map(item=>item.id);
+  const distractors=shuffled(items.filter(other=>other.id!==target&&!item.alsoEats?.includes(other.answerId)),rng).slice(0,2).map(other=>other.id);
   return {target,choices:shuffled([target,...distractors],rng),attempts:0};
 }
 function createSession(mode='animals',rng=Math.random) {
   if(!Object.hasOwn(ACTIVITIES,mode))throw new Error('Unknown activity');
-  return {version:1,mode,completed:0,status:'playing',task:makeTask(mode,null,rng),history:[],rewarded:false};
+  const ids=ACTIVITIES[mode].items.map(item=>item.id);
+  // Keep the introductory question familiar; shuffle the rest once and persist it.
+  const order=[ids[0],...shuffled(ids.slice(1),rng)].slice(0,SESSION_LENGTH);
+  return {version:2,mode,order,completed:0,status:'playing',task:makeTask(mode,order[0],rng),history:[],rewarded:false};
 }
 function answer(session,choice) {
   if(session.mode==='puzzles'||session.status!=='playing'||!session.task.choices.includes(choice)) return null;
@@ -107,17 +141,17 @@ function placePiece(session,slot){
 function advance(session,rng=Math.random) {
   if(session.status!=='feedback')return session;
   if(session.completed===SESSION_LENGTH)return {...session,status:'finished'};
-  return {...session,status:'playing',task:makeTask(session.mode,session.task.target,rng)};
+  return {...session,status:'playing',task:makeTask(session.mode,session.order[session.completed],rng)};
 }
-function validSession(s) {
-  const common=Boolean(s&&s.version===1&&Object.hasOwn(ACTIVITIES,s.mode)&&['playing','feedback','finished'].includes(s.status)&&
-    Number.isInteger(s.completed)&&s.completed>=0&&s.completed<=SESSION_LENGTH&&
+function validState(s,version,limit) {
+  const common=Boolean(s&&s.version===version&&Object.hasOwn(ACTIVITIES,s.mode)&&['playing','feedback','finished'].includes(s.status)&&
+    Number.isInteger(s.completed)&&s.completed>=0&&s.completed<=limit&&
     Array.isArray(s.history)&&s.history.length===s.completed&&s.history.every(id=>getItem(s.mode,id))&&
     typeof s.rewarded==='boolean'&&(!s.rewarded||s.status==='finished')&&
     s.task&&getItem(s.mode,s.task.target)&&Array.isArray(s.task.choices)&&
     Number.isSafeInteger(s.task.attempts)&&s.task.attempts>=0&&
-    (s.status==='playing'?s.completed<SESSION_LENGTH:s.completed>0)&&
-    (s.status!=='finished'||s.completed===SESSION_LENGTH)&&
+    (s.status==='playing'?s.completed<limit:s.completed>0)&&
+    (s.status!=='finished'||s.completed===limit)&&
     (s.status==='playing'||s.history.at(-1)===s.task.target));
   if(!common)return false;
   if(s.mode==='puzzles')return s.task.choices.length===4&&new Set(s.task.choices).size===4&&s.task.choices.every(p=>PUZZLE_PARTS.includes(p))&&
@@ -126,11 +160,34 @@ function validSession(s) {
     (s.status==='playing'?s.task.placed.length<4:s.task.placed.length===4&&s.task.selected===null);
   return s.task.choices.length===3&&new Set(s.task.choices).size===3&&s.task.choices.includes(s.task.target)&&s.task.choices.every(id=>getItem(s.mode,id));
 }
+function validSession(s) {
+  return validState(s,2,SESSION_LENGTH)&&Array.isArray(s.order)&&s.order.length===SESSION_LENGTH&&
+    new Set(s.order).size===SESSION_LENGTH&&s.order.every(id=>getItem(s.mode,id))&&
+    s.history.every((id,i)=>s.order[i]===id)&&s.task.target===s.order[s.status==='playing'?s.completed:s.completed-1];
+}
+function restoreSession(saved,rng=Math.random){
+  if(validSession(saved))return saved;
+  if(!validState(saved,1,5)||saved.status==='finished')return null;
+  // Upgrade old five-question walks, removing repeats but keeping earned progress
+  // and the current puzzle where possible. Album/settings are stored separately.
+  let history=[...new Set(saved.history)],task=saved.task;
+  if(saved.status==='feedback')history=[...history.filter(id=>id!==task.target),task.target];
+  const pending=saved.status==='playing'&&!history.includes(task.target)?[task.target]:[];
+  const rest=shuffled(ACTIVITIES[saved.mode].items.map(item=>item.id).filter(id=>!history.includes(id)&&!pending.includes(id)),rng);
+  const order=[...history,...pending,...rest].slice(0,SESSION_LENGTH);
+  if(saved.status==='playing'&&!pending.length)task=makeTask(saved.mode,order[history.length],rng);
+  const upgraded={...saved,version:2,order,task,history,completed:history.length,rewarded:false};
+  return validSession(upgraded)?upgraded:null;
+}
 
 function worldSvg(content){return `<svg viewBox="0 0 240 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${content}</svg>`;}
 function habitat(id){
   const ground='<ellipse cx="120" cy="191" rx="94" ry="13" fill="#a5bb8c33"/>';
   const drawings={
+    aquarium:'<rect x="37" y="52" width="166" height="134" rx="14" fill="#d8e6e5" stroke="#9aaeb1" stroke-width="7"/><path d="M42 98q40-12 78 0t78 0v69q0 14-14 14H56q-14 0-14-14Z" fill="#a9d0d7"/><path d="M48 170h142v9H48Z" fill="#d7c7a2"/><path d="M70 170q-17-27 0-47m0 29 14-15" stroke="#8aaf83" stroke-width="6" stroke-linecap="round"/><ellipse cx="131" cy="133" rx="23" ry="14" fill="#e5b374"/><path d="m151 133 16-14v28Z" fill="#d5a16c"/><circle cx="120" cy="129" r="3" fill="#74624e"/><circle cx="107" cy="104" r="4" stroke="#eaf4ef" stroke-width="2"/>',
+    lodge:'<ellipse cx="120" cy="178" rx="99" ry="25" fill="#abcdd0"/><path d="M42 169q12-105 79-105 65 0 79 105Z" fill="#ab8a65"/><path d="m56 153 109-56M68 162l105-43m-97-28 107 62M86 76l101 61m-74-67-51 86m86-78-23 87m38-61-9 61m-105-13 144 6" stroke="#d0b28a" stroke-width="7" stroke-linecap="round"/><path d="M99 172v-20q21-30 42 0v20" fill="#725e4b"/><path d="M27 190h49m90-5h44" stroke="#dce8dc" stroke-width="3" stroke-linecap="round"/>',
+    cave:'<path d="M25 187 46 102 83 48l51-16 48 44 35 111Z" fill="#b8b6ae"/><path d="m47 102 39-13-3-41m51-16-13 54 49 17 12-27m-61 10-20 53m69-36 23 49" stroke="#a09f98" stroke-width="5" stroke-linejoin="round"/><path d="M69 188q-3-100 51-99 56 0 51 99Z" fill="#777c7a"/><path d="M90 188q0-71 30-74 32 2 31 74Z" fill="#5e6664"/>',
+    web:'<g stroke="#adb9bc" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M120 25v171M34 110h172M58 48l124 124M58 172 182 48"/><path d="m120 42 48 20 20 48-20 48-48 20-48-20-20-48 20-48Zm0 24 31 13 13 31-13 31-31 13-31-13-13-31 13-31Zm0 25 14 5 6 14-6 14-14 6-14-6-6-14 6-14Z"/></g><circle cx="120" cy="110" r="6" fill="#c5d2d0"/>',
     pond:'<ellipse cx="120" cy="153" rx="91" ry="39" fill="#9bc8d0"/><ellipse cx="116" cy="149" rx="74" ry="23" fill="#b5d9d9"/><path d="M36 139V91m9 44V73m-9 27-11-15m20 2 12-13m-12 39 15-12" stroke="#86a274" stroke-width="5" stroke-linecap="round"/><ellipse cx="45" cy="74" rx="4" ry="13" fill="#ad9274"/><path d="M170 143c-41-24-55 17-15 19 19-2 22-8 15-19l-14 11Z" fill="#81ac83"/><path d="M151 137q-20-18-4-21 6-15 13-1 20 0 3 21Z" fill="#dca6ab"/><path d="M84 154h31m-10-16h30" stroke="#e4f2e6" stroke-width="3" stroke-linecap="round"/>',
     hive:'<path d="M120 30v22" stroke="#ad9872" stroke-width="7"/><path d="M92 24h79" stroke="#9baa7e" stroke-width="13" stroke-linecap="round"/><path d="M72 170C38 149 62 127 72 122 55 102 72 83 89 80 77 49 160 49 152 80 178 83 191 105 173 123 197 148 181 173 162 177H89Z" fill="#e6c17d"/><path d="M89 80h63m-80 42h101m-91 23h92m-88 24h70" stroke="#cba260" stroke-width="6" stroke-linecap="round"/><path d="M101 180v-28q18-25 37 0v28" fill="#8c7758"/>',
     nest:'<path d="M30 184h181m-156 0 26-27m110 27-25-23" stroke="#ac916c" stroke-width="11" stroke-linecap="round"/><ellipse cx="121" cy="135" rx="77" ry="36" fill="#a88963"/><path d="M45 130q7 70 76 63 66 2 78-63" fill="#bc9b73"/><ellipse cx="120" cy="131" rx="63" ry="22" fill="#8f7758"/><ellipse cx="96" cy="119" rx="15" ry="25" transform="rotate(-15 96 119)" fill="#f6e8ce"/><ellipse cx="143" cy="117" rx="15" ry="26" transform="rotate(14 143 117)" fill="#e8dcc0"/><path d="m58 155 119 19M67 172l110-22m-97 34 81-37m-98-9 98 37" stroke="#d6b88b" stroke-width="4" stroke-linecap="round"/>',
@@ -143,6 +200,10 @@ function habitat(id){
 function food(id){
   const ground='<ellipse cx="120" cy="193" rx="66" ry="9" fill="#9caf8a19"/>';
   const drawings={
+    bamboo:'<path d="M94 186V40m48 146V27" stroke="#91b07e" stroke-width="18" stroke-linecap="round"/><path d="M85 66h18m-18 40h18m-18 40h18m30-92h18m-18 43h18m-18 42h18m-18 35h18" stroke="#d4ddb0" stroke-width="5"/><path d="M140 84q27-45 61-30-12 34-61 30m-43 44q-43-4-49-36 33-7 49 36m46 16q31-32 59-15-15 29-59 15" fill="#a1bc87"/>',
+    hay:'<path d="m59 162 26-99m-10 109 22-114m-3 113 17-117m-1 118 11-122m5 121 1-123m14 123-4-114m19 115-10-111m25 108-16-97m30 93-19-82" stroke="#d9bc73" stroke-width="8" stroke-linecap="round"/><path d="M65 157q58 17 114 0m-101-35q42 12 87 0" stroke="#a88a5e" stroke-width="8" stroke-linecap="round"/><path d="m83 122 86 36m-5-37-95 37" stroke="#bb9b64" stroke-width="4"/>',
+    cabbage:'<circle cx="120" cy="121" r="72" fill="#a8c18d"/><path d="M118 54q-42 22-29 77 7 33 31 52M169 70q-54 7-53 66 10 33 4 47M51 105q49-5 69 78m68-83q-37 37-68 83" stroke="#d8e1b8" stroke-width="5" stroke-linecap="round"/><path d="M59 156q9-17 34-3 19 21 27 30-46 9-61-27m122 0q-9-17-34-3-19 21-27 30 46 9 61-27" fill="#92ae7d"/>',
+    grain:'<path d="M120 179V53m0 72-33-36m33 59 34-39" stroke="#b89d63" stroke-width="4" stroke-linecap="round"/><g fill="#dfc27b"><ellipse cx="110" cy="69" rx="8" ry="17" transform="rotate(-35 110 69)"/><ellipse cx="131" cy="83" rx="8" ry="17" transform="rotate(35 131 83)"/><ellipse cx="109" cy="100" rx="8" ry="17" transform="rotate(-35 109 100)"/><ellipse cx="131" cy="114" rx="8" ry="17" transform="rotate(35 131 114)"/><ellipse cx="96" cy="143" rx="8" ry="13" transform="rotate(-30 96 143)"/><ellipse cx="73" cy="183" rx="11" ry="7" transform="rotate(-20 73 183)"/><ellipse cx="108" cy="192" rx="11" ry="7"/><ellipse cx="146" cy="182" rx="11" ry="7" transform="rotate(25 146 182)"/><ellipse cx="172" cy="191" rx="11" ry="7" transform="rotate(-20 172 191)"/></g>',
     banana:'<path d="M65 57q-2 100 91 118 35 7 38-29Q105 166 79 58Z" fill="#edd078"/><path d="M83 52q11 96 91 105 27 0 23-22Q124 143 96 50Z" fill="#f4dc8c"/><path d="M65 57h15m3-5 13-2m96 96 5-12" stroke="#9e8b5f" stroke-width="8" stroke-linecap="round"/>',
     carrot:'<path d="M101 67q26-12 42 6l-33 116q-3 8-8 0L75 83Z" fill="#e9a36e"/><path d="m105 66-12-27m18 23 5-36m1 40 21-25" stroke="#8eaf82" stroke-width="12" stroke-linecap="round"/><path d="m89 104 26 6m-18 28 21 4m-15 22 9 2" stroke="#cc885a" stroke-width="4" stroke-linecap="round"/>',
     acorn:'<path d="M77 103h85v35q-3 39-43 55-41-18-42-55Z" fill="#bf9366"/><path d="M67 110q-3-53 53-52 56-1 53 52Z" fill="#907a5c"/><path d="M120 59q-6-23 9-30" stroke="#a58c69" stroke-width="9" stroke-linecap="round"/><path d="m80 82 27 25m-10-38 38 38m-6-40 31 32m-3-19-27 25m5-39-36 41m1-38-24 27" stroke="#aa916b" stroke-width="3"/>',
@@ -174,16 +235,24 @@ function animal(id,shadow=false) {
   if(id==='ant') body=`<path d="m98 119-40-12m42 24-42 20m49-8-28 42m39-62 38-13m-34 25 40 21m-48-13 25 42" stroke="#9b806a" stroke-width="5" stroke-linecap="round"/><ellipse cx="101" cy="163" rx="31" ry="34" fill="#a98b73"/><ellipse cx="111" cy="118" rx="21" ry="25" fill="#b99a7e"/><circle cx="124" cy="75" r="32" fill="#c4a384"/><path d="m109 48-16-20m41 16 16-20" stroke="#a98b73" stroke-width="4" stroke-linecap="round"/><circle cx="91" cy="25" r="5" fill="#a98b73"/><circle cx="152" cy="22" r="5" fill="#a98b73"/><circle cx="115" cy="72" r="4" fill="#67594e"/><circle cx="136" cy="72" r="4" fill="#67594e"/><path d="M116 88q10 7 19-1" stroke="#8d6e57" stroke-width="2.5" stroke-linecap="round"/>`;
   if(id==='monkey') body=`<path d="M157 170q68 18 59-37-7-24-24-8" stroke="#b89a76" stroke-width="12" stroke-linecap="round"/><ellipse cx="122" cy="160" rx="42" ry="39" fill="#bda07c"/><ellipse cx="122" cy="165" rx="25" ry="27" fill="#ead1ac"/><circle cx="69" cy="86" r="24" fill="#b89a76"/><circle cx="175" cy="86" r="24" fill="#b89a76"/><circle cx="69" cy="86" r="15" fill="#e7c69f"/><circle cx="175" cy="86" r="15" fill="#e7c69f"/><circle cx="122" cy="87" r="51" fill="#bda07c"/><path d="M78 88q-3-43 32-34l12 11 12-11q35-9 32 34 18 54-44 57-62-3-44-57" fill="#f0d8b4"/><g transform="translate(2 -6)">${face(96,'#ab8264',21)}</g><ellipse cx="92" cy="194" rx="24" ry="10" fill="#ac8c67"/><ellipse cx="151" cy="194" rx="24" ry="10" fill="#ac8c67"/>`;
   if(id==='cow') body=`<ellipse cx="120" cy="164" rx="47" ry="34" fill="#eee7d9"/><path d="M139 139q29-6 27 25-8 24-26 12-13-18-1-37" fill="#9d978a"/><ellipse cx="87" cy="194" rx="21" ry="10" fill="#a39b8c"/><ellipse cx="152" cy="194" rx="21" ry="10" fill="#a39b8c"/><path d="M89 58 80 35m70 23 10-23" stroke="#c7b18a" stroke-width="12" stroke-linecap="round"/><ellipse cx="61" cy="79" rx="25" ry="16" transform="rotate(22 61 79)" fill="#d4c6b0"/><ellipse cx="179" cy="79" rx="25" ry="16" transform="rotate(-22 179 79)" fill="#d4c6b0"/><ellipse cx="120" cy="96" rx="56" ry="48" fill="#f4eedf"/><path d="M83 59q32-20 32 13-3 28-36 16Z" fill="#aaa295"/><ellipse cx="120" cy="129" rx="40" ry="22" fill="#dcaeab"/><circle cx="96" cy="93" r="5" fill="#635c52"/><circle cx="144" cy="93" r="5" fill="#635c52"/><ellipse cx="106" cy="128" rx="4" ry="3" fill="#b48382"/><ellipse cx="134" cy="128" rx="4" ry="3" fill="#b48382"/><path d="M110 140q10 5 20 0" stroke="#b48382" stroke-width="2" stroke-linecap="round"/>`;
+  if(id==='fish')body=inner(food('fish'));
+  if(id==='beaver')body=`<ellipse cx="181" cy="168" rx="28" ry="43" transform="rotate(38 181 168)" fill="#977b60"/><path d="m169 144 26 37m-37-22 28 37m-9-53-22 26m39-10-23 28" stroke="#b49776" stroke-width="3"/><ellipse cx="112" cy="158" rx="46" ry="39" fill="#b99a78"/><ellipse cx="112" cy="165" rx="28" ry="27" fill="#ddc6a4"/><circle cx="74" cy="65" r="18" fill="#b39675"/><circle cx="150" cy="65" r="18" fill="#b39675"/><ellipse cx="112" cy="103" rx="52" ry="46" fill="#c7a884"/><ellipse cx="112" cy="125" rx="31" ry="22" fill="#e7d3b3"/><path d="M101 130h22v21h-22Z" fill="#fff5dd"/><path d="M112 133v17" stroke="#c7b28c" stroke-width="2"/><g transform="translate(-8 0)">${face(97,'#8d7056',21)}</g><ellipse cx="80" cy="191" rx="23" ry="11" fill="#a78a6a"/><ellipse cx="145" cy="191" rx="23" ry="11" fill="#a78a6a"/>`;
+  if(id==='bat')body=`<path d="M103 107Q67 42 16 72l19 30-18 38 33-2 15 37 30-11 25 25 25-25 30 11 15-37 33 2-18-38 19-30q-51-30-87 35Z" fill="#a49aba"/><path d="m28 78 75 48m-68-23 57 37m-26 23 27-23m119-62-75 48m68-23-57 37m26 23-27-23" stroke="#847a9d" stroke-width="4" stroke-linecap="round"/><ellipse cx="120" cy="143" rx="29" ry="46" fill="#b8acc8"/><path d="m91 88-3-47 29 26h8l28-26-4 47" fill="#ab9dbd"/><ellipse cx="120" cy="96" rx="37" ry="34" fill="#c9bdd4"/><g transform="translate(0 1)">${face(92,'#8b7897',16)}</g>`;
+  if(id==='spider')body=`<g stroke="#9d8baa" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="m83 115-35-35-20 22m52 28-44-8-14 28m59-3-38 20-7 30m56-34-22 31v15m87-94 35-35 20 22m-52 28 44-8 14 28m-59-3 38 20 7 30m-56-34 22 31v15"/></g><ellipse cx="120" cy="148" rx="45" ry="45" fill="#b8a5c7"/><circle cx="120" cy="97" r="34" fill="#d0bddb"/><g transform="translate(0 -4)">${face(95,'#947b9f',16)}</g><circle cx="107" cy="146" r="7" fill="#dacde1"/><circle cx="135" cy="162" r="8" fill="#dacde1"/>`;
+  if(id==='panda')body=`<ellipse cx="120" cy="157" rx="49" ry="41" fill="#646975"/><ellipse cx="120" cy="159" rx="31" ry="30" fill="#f5eee1"/><ellipse cx="80" cy="190" rx="24" ry="13" fill="#646975"/><ellipse cx="160" cy="190" rx="24" ry="13" fill="#646975"/><circle cx="77" cy="54" r="23" fill="#646975"/><circle cx="163" cy="54" r="23" fill="#646975"/><ellipse cx="120" cy="96" rx="60" ry="53" fill="#f6f0e6"/><ellipse cx="94" cy="94" rx="16" ry="22" transform="rotate(25 94 94)" fill="#666b76"/><ellipse cx="146" cy="94" rx="16" ry="22" transform="rotate(-25 146 94)" fill="#666b76"/><circle cx="97" cy="94" r="5" fill="#fff"/><circle cx="143" cy="94" r="5" fill="#fff"/><path d="m112 116 8 6 8-6Z" fill="#626773"/><path d="M120 121v8m-10 0q10 8 20 0" stroke="#777785" stroke-width="3" stroke-linecap="round"/>`;
+  if(id==='horse')body=`<path d="M172 129q32 6 29 47" stroke="#9a795b" stroke-width="13" stroke-linecap="round"/><ellipse cx="130" cy="146" rx="57" ry="32" fill="#c5a078"/><path d="m91 158-4 39h20l7-35m32-1 6 36h20l-3-43" fill="#b18b67"/><path d="M76 132 67 83l12-40 37 17 3 85" fill="#c9a47b"/><path d="m74 57-3-32 17 18m10 3 11-25 4 39" fill="#bc946f"/><path d="M108 55q32 30 14 76l-16-5 1-62Z" fill="#947256"/><ellipse cx="77" cy="100" rx="32" ry="39" transform="rotate(20 77 100)" fill="#d7b48c"/><ellipse cx="64" cy="119" rx="27" ry="20" fill="#e9cfab"/><circle cx="83" cy="88" r="5" fill="#6b5748"/><circle cx="53" cy="118" r="3" fill="#a4896c"/><path d="M58 129q9 5 18 0" stroke="#ad8d6d" stroke-width="2.5" stroke-linecap="round"/><path d="M85 197h23m43 0h22" stroke="#8c7057" stroke-width="7" stroke-linecap="round"/>`;
+  if(id==='goat')body=`<ellipse cx="120" cy="159" rx="44" ry="36" fill="#e6e0d1"/><path d="m89 177-3 22h19l4-23m22 0 4 23h19l-3-22" fill="#c9bfad"/><path d="M90 65Q67 39 79 19m71 46q23-26 11-46" stroke="#baa98b" stroke-width="10" stroke-linecap="round"/><ellipse cx="67" cy="88" rx="27" ry="13" transform="rotate(25 67 88)" fill="#cec4b1"/><ellipse cx="173" cy="88" rx="27" ry="13" transform="rotate(-25 173 88)" fill="#cec4b1"/><path d="m104 129 16 35 17-35" fill="#c7bcaa"/><path d="M77 78q43-40 86 0l-13 54q-30 30-60 0Z" fill="#eee9dc"/><ellipse cx="120" cy="123" rx="29" ry="20" fill="#d8ccba"/><g transform="translate(0 0)">${face(96,'#a58c77',19)}</g>`;
+  if(id==='chick')body=`<path d="M107 186v14m26-14v14m-32 2h14m12 0h14" stroke="#c99c64" stroke-width="6" stroke-linecap="round"/><ellipse cx="120" cy="150" rx="53" ry="44" fill="#edcf80"/><ellipse cx="76" cy="148" rx="17" ry="28" transform="rotate(-24 76 148)" fill="#dfbb6c"/><ellipse cx="164" cy="148" rx="17" ry="28" transform="rotate(24 164 148)" fill="#dfbb6c"/><path d="M109 57q-15-30 6-19l9 16q14-25 23-10l-13 16" fill="#e3be6b"/><circle cx="120" cy="93" r="43" fill="#f2d88f"/><circle cx="103" cy="91" r="5" fill="#746448"/><circle cx="137" cy="91" r="5" fill="#746448"/><path d="m110 108 10 13 10-13Z" fill="#d79c62"/><ellipse cx="120" cy="157" rx="27" ry="23" fill="#f5e1a7"/>`;
   // Flatten the composed animal: hide facial and fur details, keep the outline.
   // The ground ellipse is excluded so it cannot give the silhouette a pedestal.
   if(shadow)return svg(`<defs><filter id="animal-shadow-${id}" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB"><feFlood flood-color="#69786f"/><feComposite in2="SourceAlpha" operator="in"/></filter></defs><g filter="url(#animal-shadow-${id})">${body}</g>`);
   return svg(ground+body);
 }
 function balloon(color) {
-  return svg(`<path d="M121 163q-17 16 0 29 17 14 2 24" stroke="#b8b5a4" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="120" cy="88" rx="54" ry="68" fill="${color}"/><path d="m120 150-9 15h18Z" fill="${color}"/><path d="M89 54q-14 15-11 35" stroke="#ffffff80" stroke-width="9" stroke-linecap="round"/><ellipse cx="111" cy="101" rx="3" ry="4" fill="#685f5c" opacity=".55"/><ellipse cx="133" cy="101" rx="3" ry="4" fill="#685f5c" opacity=".55"/><path d="M115 115q7 6 14 0" stroke="#685f5c" opacity=".55" stroke-width="2.5" stroke-linecap="round"/>`);
+  return svg(`<path d="M121 163q-17 16 0 29 17 14 2 24" stroke="#b8b5a4" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="120" cy="88" rx="54" ry="68" fill="${color}" stroke="${color==='#ffffff'?'#c6c8bc':color}" stroke-width="2"/><path d="m120 150-9 15h18Z" fill="${color}"/><path d="M89 54q-14 15-11 35" stroke="#ffffff80" stroke-width="9" stroke-linecap="round"/><ellipse cx="111" cy="101" rx="3" ry="4" fill="#685f5c" opacity=".55"/><ellipse cx="133" cy="101" rx="3" ry="4" fill="#685f5c" opacity=".55"/><path d="M115 115q7 6 14 0" stroke="#685f5c" opacity=".55" stroke-width="2.5" stroke-linecap="round"/>`);
 }
 function shape(id,color='#8bbcaf',shadow=false) {
-  const paths={circle:'<circle cx="120" cy="105" r="65"/>',square:'<rect x="57" y="42" width="126" height="126" rx="17"/>',triangle:'<path d="m120 31 75 132q5 9-6 9H51q-11 0-6-9l66-126q4-8 9-6"/>',star:'<path d="m120 25 25 52 57 8-41 40 10 57-51-27-51 27 10-57-41-40 57-8Z" stroke-linejoin="round" stroke-width="10"/>',heart:'<path d="M120 178 57 116C-3 45 86-1 120 60 155-1 242 45 183 116Z"/>',diamond:'<path d="m120 25 72 80-72 80-72-80Z" stroke-width="10" stroke-linejoin="round"/>'};
+  const paths={oval:'<ellipse cx="120" cy="105" rx="43" ry="81"/>',rectangle:'<rect x="32" y="65" width="176" height="88" rx="10"/>',semicircle:'<path d="M43 137a77 77 0 0 1 154 0Z"/>',trapezoid:'<path d="m80 51 80 0 47 115H33Z" stroke-width="7" stroke-linejoin="round"/>',circle:'<circle cx="120" cy="105" r="65"/>',square:'<rect x="57" y="42" width="126" height="126" rx="17"/>',triangle:'<path d="m120 31 75 132q5 9-6 9H51q-11 0-6-9l66-126q4-8 9-6"/>',star:'<path d="m120 25 25 52 57 8-41 40 10 57-51-27-51 27 10-57-41-40 57-8Z" stroke-linejoin="round" stroke-width="10"/>',heart:'<path d="M120 178 57 116C-3 45 86-1 120 60 155-1 242 45 183 116Z"/>',diamond:'<path d="m120 25 72 80-72 80-72-80Z" stroke-width="10" stroke-linejoin="round"/>'};
   const outline=`<g fill="${color}" stroke="${color}">${paths[id]||paths.circle}</g>`;
   if(shadow)return svg(outline);
   return svg(`<ellipse cx="120" cy="197" rx="55" ry="7" fill="#6b8a6910"/>${outline}<ellipse cx="105" cy="109" rx="3.5" ry="5" fill="#4d635d"/><ellipse cx="135" cy="109" rx="3.5" ry="5" fill="#4d635d"/><path d="M113 124q7 7 14 0" stroke="#4d635d" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="92" cy="122" rx="7" ry="4" fill="#fff" opacity=".25"/><ellipse cx="148" cy="122" rx="7" ry="4" fill="#fff" opacity=".25"/>`);
@@ -259,7 +328,7 @@ let audioContext,feedbackTime=0,lastTime=0,toastTimer,storageWarned=false,keyboa
 let lastReward='bunny';
 try {
   const saved=JSON.parse(localStorage.getItem(SAVE_KEY));
-  if(validSession(saved?.session))session=saved.session;
+  session=restoreSession(saved?.session);
   if(Array.isArray(saved?.album))album=[...new Set(saved.album.filter(id=>STICKERS.includes(id)))];
   if(Number.isSafeInteger(saved?.completedSessions)&&saved.completedSessions>=0)completedSessions=saved.completedSessions;
   if(saved?.sound===false)sound=false;
@@ -347,7 +416,7 @@ function finishSession(){
   if(!session.rewarded){lastReward=STICKERS.find(id=>!album.includes(id))||STICKERS[completedSessions%STICKERS.length];if(!album.includes(lastReward))album.push(lastReward);completedSessions++;session={...session,rewarded:true};save();}
   showScreen('reward');$('sticker-reward').innerHTML=animal(lastReward);$('sticker-name').textContent=getItem('animals',lastReward).label;
   $('reward-caption').textContent=album.length===STICKERS.length?'Все друзья уже в альбоме. Здорово играть вместе!':'Новый маленький друг поселится в твоём альбоме.';
-  chime(true);say('Здорово! Все пять заданий готовы. Вот твой маленький друг.');renderHome();
+  chime(true);say('Здорово! Все десять заданий готовы. Вот твой маленький друг.');renderHome();
 }
 function goHome(){showScreen('home');renderHome();save();}
 function showModal(content){cancelVoice();audioContext?.suspend();$('modal-content').innerHTML=content;$('modal').showModal();syncPlatform();}
@@ -365,7 +434,7 @@ function processAnswer(result){
   session=result.session;save();renderTask();
   if(result.kind==='correct'){
     feedbackTime=0;chime(true);const item=getItem(session.mode,session.task.target);
-    say(item.fact||(session.mode==='puzzles'?'Молодец! Картинка собрана.':`Здорово! Это ${item.label.toLocaleLowerCase('ru')}.`));syncPlatform();
+    say((['homes','foods'].includes(session.mode)?'Верно!':null)||(session.mode==='puzzles'?'Молодец! Картинка собрана.':`Здорово! Это ${item.label.toLocaleLowerCase('ru')}.`));syncPlatform();
   }else if(result.kind==='piece'){chime();}else promptTask();
 }
 $('piece-tray').addEventListener('click',event=>{
@@ -378,8 +447,8 @@ $('puzzle-board').addEventListener('click',event=>{
   const button=event.target.closest('[data-slot]');if(!button||!active())return;
   const result=placePiece(session,button.dataset.slot);if(result)processAnswer(result);else if(session.task.selected===null)say('Сначала выбери кусочек внизу.');
 });
-$('parents').addEventListener('click',()=>showModal(`<div class="modal-symbol">${icon('heart')}</div><h2>Играем вместе</h2><p>Шесть занятий для малышей 2–4 лет: тени зверят и фигур, цвета, пазлы из четырёх частей, домики и угощения животных.</p><p>В пазле сначала нажмите на кусочек, затем на его место. Перетаскивание не требуется. Прозрачная картинка помогает понять, что получится.</p><p>В занятиях с домиками и едой нажмите на пару для зверёнка. При успехе появится соединяющая линия. Угощения — знакомые примеры еды, а не полный рацион животных; домики — примеры жилищ.</p><p>После двух неточных попыток появляется мягкая подсказка. Здесь нет таймера, проигрыша и рекламы. Пять заданий — одна прогулка; можно остановиться в любой момент.</p><p>Голос зависит от устройства. Альбом сохраняется только в этом браузере. Игра не запрашивает данные ребёнка или регистрацию.</p>`));
-function showAlbum(){showModal(`<span class="eyebrow">МАЛЕНЬКИЕ ДРУЗЬЯ</span><h2>Твой альбом</h2><p>За пять заданий — одна наклейка. Все друзья обязательно встретятся!</p><div class="album-grid">${STICKERS.map(id=>`<div class="album-item ${album.includes(id)?'':'waiting'}">${animal(id)}<span>${album.includes(id)?getItem('animals',id).label:'Ещё встретимся'}</span></div>`).join('')}</div>`);}
+$('parents').addEventListener('click',()=>showModal(`<div class="modal-symbol">${icon('heart')}</div><h2>Играем вместе</h2><p>Шесть занятий для малышей 2–4 лет: тени зверят и фигур, цвета, пазлы из четырёх частей, домики и угощения животных.</p><p>В пазле сначала нажмите на кусочек, затем на его место. Перетаскивание не требуется. Прозрачная картинка помогает понять, что получится.</p><p>В занятиях с домиками и едой нажмите на пару для зверёнка. При успехе появится соединяющая линия. Угощения — знакомые примеры еды, а не полный рацион животных; домики — примеры жилищ.</p><p>После двух неточных попыток появляется мягкая подсказка. Здесь нет таймера, проигрыша и рекламы. Десять заданий — одна прогулка; можно остановиться в любой момент.</p><p>Голос зависит от устройства. Альбом сохраняется только в этом браузере. Игра не запрашивает данные ребёнка или регистрацию.</p>`));
+function showAlbum(){showModal(`<span class="eyebrow">МАЛЕНЬКИЕ ДРУЗЬЯ</span><h2>Твой альбом</h2><p>За десять заданий — одна наклейка. Все друзья обязательно встретятся!</p><div class="album-grid">${STICKERS.map(id=>`<div class="album-item ${album.includes(id)?'':'waiting'}">${animal(id)}<span>${album.includes(id)?getItem('animals',id).label:'Ещё встретимся'}</span></div>`).join('')}</div>`);}
 $('album-button').addEventListener('click',showAlbum);$('see-album').addEventListener('click',showAlbum);$('close-modal').addEventListener('click',()=>$('modal').close());$('modal').addEventListener('close',syncPlatform);
 document.addEventListener('keydown',event=>{if(event.key==='Tab'||event.key.startsWith('Arrow'))keyboardUser=true;});document.addEventListener('pointerdown',()=>{keyboardUser=false;});
 function pause(){cancelVoice();audioContext?.suspend();platform.stop();save();}
@@ -387,7 +456,7 @@ platform.onPause=()=>{sdkPaused=true;pause();};platform.onResume=()=>{sdkPaused=
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();else syncPlatform();});window.addEventListener('blur',pause);window.addEventListener('focus',syncPlatform);window.addEventListener('pagehide',save);
 document.addEventListener('contextmenu',event=>{if(event.target.closest('.choice,.target,.activity-art'))event.preventDefault();});
 window.addEventListener('resize',drawConnection);
-function tick(timestamp){const dt=Math.min(100,timestamp-lastTime||0);lastTime=timestamp;if(screen==='game'&&session?.status==='feedback'&&active()){feedbackTime+=dt;const duration=['homes','foods'].includes(session.mode)?3200:1600;if(feedbackTime>=duration){session=advance(session);feedbackTime=0;save();if(session.status==='finished')finishSession();else{renderTask();promptTask();syncPlatform();}}}requestAnimationFrame(tick);}
+function tick(timestamp){const dt=Math.min(100,timestamp-lastTime||0);lastTime=timestamp;if(screen==='game'&&session?.status==='feedback'&&active()){feedbackTime+=dt;const duration=['homes','foods'].includes(session.mode)?900:1600;if(feedbackTime>=duration){session=advance(session);feedbackTime=0;save();if(session.status==='finished')finishSession();else{renderTask();promptTask();syncPlatform();}}}requestAnimationFrame(tick);}
 $('brand-picture').innerHTML=animal('bunny');$('hero-art').innerHTML=meadow();$('play-arrow').innerHTML=icon('arrow');$('album-icon').innerHTML=icon('book');$('album-button').innerHTML=icon('book');$('home-icon').innerHTML=icon('home');$('repeat-icon').innerHTML=icon('sound');$('game-heart').innerHTML=icon('heart');$('again-icon').innerHTML=icon('arrow');
 renderHome();renderSound();requestAnimationFrame(tick);await platform.init();platform.ready();syncPlatform();
 </script>
@@ -398,7 +467,7 @@ renderHome();renderSound();requestAnimationFrame(tick);await platform.init();pla
     <section class="activities"><div class="section-heading"><h2>Куда отправимся сегодня?</h2><span>ШЕСТЬ МАЛЕНЬКИХ ПРИКЛЮЧЕНИЙ</span></div><div class="activity-grid" id="activities"></div></section>
     <section class="album-strip"><div><span class="album-icon" id="album-icon"></span><div><h2>Мои маленькие друзья</h2><p>За каждую прогулку — новый друг в альбоме</p></div></div><div class="album-preview" id="album-preview"></div><button id="see-album" class="text-button">Весь альбом <span aria-hidden="true">↗</span></button></section></section>
     <section id="game-screen" hidden><div class="game-top"><button id="home" class="back-button"><span id="home-icon"></span><span>Домой</span></button><span id="activity-label" class="eyebrow"></span><div class="flowers" id="flowers" aria-label="Выполнено заданий"></div></div><div class="playground" id="playground"><svg id="pair-line" class="pair-line" aria-hidden="true" hidden></svg><div class="task"><div class="task-speech"><span class="eyebrow">ПОСМОТРИ И ВЫБЕРИ</span><h1 id="task-title"></h1><p id="task-hint">Нажми на такую же картинку внизу</p><button id="repeat" class="repeat-button"><span id="repeat-icon"></span>Послушать ещё</button></div><div id="target" class="target" role="img"></div></div><div id="choices" class="choices"></div><div id="puzzle-area" class="puzzle-area" hidden><div class="puzzle-layout"><div id="puzzle-board" class="puzzle-board" role="group" aria-label="Пазл из четырёх частей"></div><div id="piece-tray" class="piece-tray" role="group" aria-label="Выбери кусочек"></div></div></div><p class="feedback" id="feedback" role="status" aria-live="polite">Не спеши. У тебя всё получится!</p></div><div class="game-note"><span id="game-heart"></span>Каждое маленькое открытие — большая радость</div></section>
-    <section id="reward-screen" class="reward-screen" hidden><div class="eyebrow">ПЯТЬ МАЛЕНЬКИХ ОТКРЫТИЙ</div><h1>Вот это прогулка!</h1><p id="reward-caption"></p><div class="sticker-reward" id="sticker-reward"></div><h2 id="sticker-name"></h2><div class="reward-actions"><button id="again" class="primary-button">Ещё играть <span id="again-icon"></span></button><button id="reward-home" class="secondary-button">К другим приключениям</button></div></section>
+    <section id="reward-screen" class="reward-screen" hidden><div class="eyebrow">ДЕСЯТЬ МАЛЕНЬКИХ ОТКРЫТИЙ</div><h1>Вот это прогулка!</h1><p id="reward-caption"></p><div class="sticker-reward" id="sticker-reward"></div><h2 id="sticker-name"></h2><div class="reward-actions"><button id="again" class="primary-button">Ещё играть <span id="again-icon"></span></button><button id="reward-home" class="secondary-button">К другим приключениям</button></div></section>
   </main><footer><span class="footer-paw">✿</span><span>Сделано для маленьких открывателей</span><span>Лучше играть вместе со взрослым</span></footer>
   </div><dialog id="modal"><div id="modal-content"></div><button id="close-modal" class="primary-button">Понятно</button></dialog><div id="toast" role="status" aria-live="polite"></div>
 </body></html>
