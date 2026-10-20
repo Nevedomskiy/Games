@@ -45,7 +45,24 @@ try {
   await cover.close();
 
   const errors = [], external = [];
-  for (const mode of ['animals', 'puzzles', 'homes', 'foods']) {
+  const observe = page => {
+    page.on('pageerror', error => errors.push(error.message));
+    page.on('request', request => { if (!request.url().startsWith(`${base}/`)) external.push(request.url()); });
+  };
+  // Capture the opening desktop view at a device scale that produces 1200×600.
+  const homeContext = await browser.newContext({ viewport: { width: 1600, height: 800 }, deviceScaleFactor: .75 });
+  try {
+    const home = await homeContext.newPage();
+    observe(home);
+    await home.goto(base);
+    await home.locator('#activities .activity-card').first().waitFor();
+    const hero = await home.locator('.hero').boundingBox();
+    if (!hero || hero.y + hero.height > 800) throw new Error('Home hero does not fit');
+    const name = 'screenshot-home-1200x600.png';
+    await home.screenshot({ path: path.join(out, name), animations: 'disabled' });
+    files.push(name);
+  } finally { await homeContext.close(); }
+  for (const mode of ['animals', 'colors', 'shapes', 'puzzles', 'homes', 'foods']) {
     const context = await browser.newContext({ viewport: { width: 1200, height: 900 }, deviceScaleFactor: 1 });
     try {
       const session = createSession(mode, () => .4);
@@ -59,10 +76,10 @@ try {
         localStorage.setItem('lapki-i-kraski.v1', JSON.stringify({ session, sound: false }));
       }, session);
       const page = await context.newPage();
-      page.on('pageerror', error => errors.push(error.message));
-      page.on('request', request => { if (!request.url().startsWith(`${base}/`)) external.push(request.url()); });
+      observe(page);
       await page.goto(base);
       await page.locator('#play').click();
+      if (await page.locator('#game-screen').getAttribute('data-mode') !== mode) throw new Error(`Wrong activity: ${mode}`);
       if (mode === 'puzzles') {
         for (const piece of ['0', '3']) {
           await page.locator(`[data-piece="${piece}"]`).click();
@@ -95,12 +112,16 @@ try {
   execFileSync('python3', ['-c', `import pathlib,sys,zipfile
 folder=pathlib.Path(sys.argv[1])
 names=sys.argv[2:]
-with zipfile.ZipFile(folder/'vk-images.zip','w',zipfile.ZIP_DEFLATED) as archive:
-    for name in names: archive.write(folder/name,arcname=name)
-with zipfile.ZipFile(folder/'vk-images.zip') as archive:
-    assert archive.namelist()==names and archive.testzip() is None
-    for name in names: assert archive.read(name)==(folder/name).read_bytes()
-print('vk-images.zip: verified five PNG files at archive root')
+for filename,entries in [
+    ('vk-images.zip',[(name,name) for name in names]),
+    ('vk-screenshots.zip',[(name,f'{i:02d}-{name}') for i,name in enumerate(names[1:],1)])
+]:
+    with zipfile.ZipFile(folder/filename,'w',zipfile.ZIP_DEFLATED) as archive:
+        for source,target in entries: archive.write(folder/source,arcname=target)
+    with zipfile.ZipFile(folder/filename) as archive:
+        assert archive.namelist()==[target for source,target in entries] and archive.testzip() is None
+        for source,target in entries: assert archive.read(target)==(folder/source).read_bytes()
+    print(f'{filename}: verified {len(entries)} PNG files at archive root')
 `, out, ...files], { stdio: 'inherit' });
 } finally {
   await browser?.close();
