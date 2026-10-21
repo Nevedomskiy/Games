@@ -90,6 +90,49 @@ test('speech prompt, repeat and mute are controlled by the user',async({page})=>
   await page.locator('#sound').click();await page.locator('#repeat').click();expect(await page.evaluate(()=>window.spoken.length)).toBe(2);
   await expect(page.locator('#sound')).toHaveAttribute('aria-pressed','false');
 });
+async function mockLongFeedbackVoice(page){
+  await page.clock.install();
+  await page.addInitScript(()=>{
+    window.voiceLog=[];window.currentUtterance=null;
+    window.SpeechSynthesisUtterance=class{constructor(text){this.text=text;}};
+    Object.defineProperty(window,'speechSynthesis',{value:{
+      getVoices(){return[{lang:'ru-RU',localService:true}];},
+      cancel(){if(window.currentUtterance){window.voiceLog.push({event:'cancel',text:window.currentUtterance.text});window.currentUtterance.onerror?.({error:'canceled'});window.currentUtterance=null;}},
+      speak(utterance){window.currentUtterance=utterance;window.voiceLog.push({event:'speak',text:utterance.text});},
+    }});
+    window.finishVoice=error=>{const utterance=window.currentUtterance;window.currentUtterance=null;window.voiceLog.push({event:error?'error':'end',text:utterance?.text});if(error)utterance?.onerror?.({error});else utterance?.onend?.();};
+  });
+}
+test('voice feedback: colors wait for the spoken answer before starting the next task',async({page})=>{
+  await mockLongFeedbackVoice(page);await page.goto('/');await page.locator('[data-mode="colors"]').click();
+  const target=(await state(page)).session.task.target;
+  await page.evaluate(()=>window.previousQuestion=window.currentUtterance);
+  await chooseCorrect(page);
+  // A late callback from the canceled question must not finish the answer.
+  await page.evaluate(()=>window.previousQuestion.onend?.());await page.clock.runFor(2500);
+  expect((await state(page)).session.status).toBe('feedback');
+  expect((await state(page)).session.task.target).toBe(target);
+  expect(await page.evaluate(()=>window.voiceLog.filter(event=>event.event==='speak').length)).toBe(2);
+  await page.evaluate(()=>window.finishVoice());await page.clock.runFor(100);
+  expect((await state(page)).session.status).toBe('playing');
+  expect((await state(page)).session.task.target).not.toBe(target);
+  expect(await page.evaluate(()=>window.voiceLog.filter(event=>event.event==='speak').length)).toBe(3);
+});
+test('voice feedback: a short answer still leaves time to see the correct color',async({page})=>{
+  await mockLongFeedbackVoice(page);await page.goto('/');await page.locator('[data-mode="colors"]').click();await chooseCorrect(page);
+  await page.evaluate(()=>window.finishVoice());await page.clock.runFor(700);
+  expect((await state(page)).session.status).toBe('feedback');
+  await page.clock.runFor(1100);expect((await state(page)).session.status).toBe('playing');
+});
+for(const recovery of ['error','mute','timeout'])test(`voice feedback: ${recovery} never leaves the next task blocked`,async({page})=>{
+  await mockLongFeedbackVoice(page);await page.goto('/');await page.locator('[data-mode="colors"]').click();await chooseCorrect(page);
+  await page.clock.runFor(2000);expect((await state(page)).session.status).toBe('feedback');
+  if(recovery==='error')await page.evaluate(()=>window.finishVoice('synthesis-failed'));
+  if(recovery==='mute')await page.locator('#sound').click();
+  await page.clock.runFor(recovery==='timeout'?8200:100);
+  expect((await state(page)).session.status).toBe('playing');expect((await state(page)).session.completed).toBe(1);
+  if(recovery==='mute')expect(await page.evaluate(()=>window.voiceLog.filter(event=>event.event==='speak').length)).toBe(2);
+});
 test('storage unavailable and speech unavailable still allow visual play',async({page})=>{
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.addInitScript(()=>{Object.defineProperty(window,'localStorage',{get(){throw new Error('blocked');}});Object.defineProperty(window,'speechSynthesis',{value:undefined});});
