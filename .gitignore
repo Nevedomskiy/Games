@@ -8,6 +8,7 @@ playwright-report/
 dist-vk/
 vk-hosting-config.json
 dist-android/
+dist-site/
 android/.gradle/
 android/local.properties
 android/**/build/

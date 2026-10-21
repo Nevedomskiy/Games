@@ -31,7 +31,11 @@
     "export:vk-icons": "node scripts/export-vk-icons.mjs",
     "export:vk-images": "npm run build:vk && node scripts/export-vk-images.mjs",
     "export:vk-launch-icon": "node scripts/export-vk-launch-icon.mjs",
-    "publish:pages": "npm run build:vk && node scripts/publish-pages.mjs"
+    "publish:pages": "npm run build:vk && node scripts/publish-pages.mjs",
+    "build:site": "node scripts/build-site.mjs",
+    "preview:site": "node scripts/serve.mjs dist-site",
+    "test:site": "playwright test --config playwright.site.config.js",
+    "publish:site": "npm run build:site && node scripts/publish-pages.mjs --site-only"
   },
   "devDependencies": {
     "@capacitor/cli": "8.5.3",
