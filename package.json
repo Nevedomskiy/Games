@@ -24,6 +24,7 @@
     "apk:android": "npm run sync:android && cd android && ./gradlew assembleDebug lintDebug --console=plain",
     "export:android": "npm run apk:android && node scripts/export-android.mjs",
     "prepare:rustore": "npm run sync:android && cd android && ./gradlew assembleRelease bundleRelease lintRelease --console=plain && cd .. && node scripts/export-rustore.mjs",
+    "sign:android": "node scripts/sign-android-release.mjs",
     "export:rustore-images": "npm run build:android && node scripts/export-rustore-images.mjs",
     "test:android-web": "playwright test --config playwright.android.config.js",
     "export:vk": "npm run build:vk && node scripts/export-vk.mjs",
