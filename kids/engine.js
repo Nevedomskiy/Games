@@ -12,7 +12,7 @@ export function makeTask(mode,target=ACTIVITIES[mode].items[0].id,rng=Math.rando
   return {target,choices:shuffled([target,...distractors],rng),attempts:0};
 }
 export function createSession(mode='animals',rng=Math.random) {
-  if(!Object.hasOwn(ACTIVITIES,mode))throw new Error('Unknown activity');
+  if(!Object.prototype.hasOwnProperty.call(ACTIVITIES,mode))throw new Error('Unknown activity');
   const ids=ACTIVITIES[mode].items.map(item=>item.id);
   // Keep the introductory question familiar; shuffle the rest once and persist it.
   const order=[ids[0],...shuffled(ids.slice(1),rng)].slice(0,SESSION_LENGTH);
@@ -40,7 +40,7 @@ export function advance(session,rng=Math.random) {
   return {...session,status:'playing',task:makeTask(session.mode,session.order[session.completed],rng)};
 }
 function validState(s,version,limit) {
-  const common=Boolean(s&&s.version===version&&Object.hasOwn(ACTIVITIES,s.mode)&&['playing','feedback','finished'].includes(s.status)&&
+  const common=Boolean(s&&s.version===version&&Object.prototype.hasOwnProperty.call(ACTIVITIES,s.mode)&&['playing','feedback','finished'].includes(s.status)&&
     Number.isInteger(s.completed)&&s.completed>=0&&s.completed<=limit&&
     Array.isArray(s.history)&&s.history.length===s.completed&&s.history.every(id=>getItem(s.mode,id))&&
     typeof s.rewarded==='boolean'&&(!s.rewarded||s.status==='finished')&&
@@ -48,7 +48,7 @@ function validState(s,version,limit) {
     Number.isSafeInteger(s.task.attempts)&&s.task.attempts>=0&&
     (s.status==='playing'?s.completed<limit:s.completed>0)&&
     (s.status!=='finished'||s.completed===limit)&&
-    (s.status==='playing'||s.history.at(-1)===s.task.target));
+    (s.status==='playing'||s.history[s.history.length-1]===s.task.target));
   if(!common)return false;
   if(s.mode==='puzzles')return s.task.choices.length===4&&new Set(s.task.choices).size===4&&s.task.choices.every(p=>PUZZLE_PARTS.includes(p))&&
     Array.isArray(s.task.placed)&&new Set(s.task.placed).size===s.task.placed.length&&s.task.placed.every(p=>PUZZLE_PARTS.includes(p))&&

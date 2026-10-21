@@ -3,6 +3,8 @@ const key='lapki-i-kraski.v1';
 const saved=page=>page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
 
 test('Android assets play all six modes without external requests and retain a partial puzzle',async({page,context})=>{
+  // Android WebView 89–92 lacks these builtins; transpilation alone does not add them.
+  await page.addInitScript(()=>{Object.hasOwn=undefined;Array.prototype.at=undefined;});
   const errors=[],external=[];
   page.on('pageerror',e=>errors.push(e.message));
   await context.route('**/*',route=>{
@@ -12,6 +14,10 @@ test('Android assets play all six modes without external requests and retain a p
   await page.goto('/');await expect(page.locator('[data-mode]')).toHaveCount(6);
   await page.locator('[data-mode="foods"]').scrollIntoViewIfNeeded();await page.locator('[data-mode="foods"]').click();
   await page.locator(`[data-choice="${(await saved(page)).session.task.target}"]`).click();
+  // Restore while feedback is still pending, which validates the last history item.
+  await page.reload();await page.locator('#play').click();
+  expect((await saved(page)).session.mode).toBe('foods');
+  expect((await saved(page)).session.completed).toBe(1);
   await expect.poll(async()=>(await saved(page)).session.status).toBe('playing');
   await page.reload();await page.locator('#play').click();expect((await saved(page)).session.completed).toBe(1);
   await page.locator('#home').click();await page.locator('[data-mode="puzzles"]').click();

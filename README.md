@@ -68,6 +68,6 @@ npm run test:browser
 
 ## Android / RuStore
 
-Подготовлен отдельный проект Capacitor и тестовый APK для телефона. Все шесть занятий включены; рекламы и покупок нет. Сборка и проверка: `npm run export:android` (требуются JDK 21 и Android SDK). [Скачать тестовый APK](https://raw.githubusercontent.com/Nevedomskiy/Games/main/docs/store/android/lapki-i-kraski-android-test-0.1.0.apk) · [Инструкция Android](platforms/android/README.md).
+Подготовлен отдельный проект Capacitor и тестовый APK. Все шесть занятий включены; рекламы и покупок нет. Сборка и проверка: `npm run export:android` (требуются JDK 21 и Android SDK). [Скачать тестовый APK 0.1.1](https://raw.githubusercontent.com/Nevedomskiy/Games/main/docs/store/android/lapki-i-kraski-android-test-0.1.1.apk) · [Инструкция Android](platforms/android/README.md) · [Проверка без телефона на Windows](docs/ANDROID-TESTING.md).
 
 APK подписан отладочным сертификатом и не предназначен для подачи на модерацию RuStore. Сначала проверка на телефоне, затем релизная подпись, карточка и выпуск. Консоль RuStore подтверждает недоступность платных приложений/товаров/подписок физлицам; рекламная модель требует отдельного подключения и проверки допустимости для детской аудитории.
