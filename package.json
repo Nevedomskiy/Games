@@ -4,18 +4,26 @@
   "private": true,
   "type": "module",
   "description": "Лапки и краски — зверята, цвета и формы для малышей 2–4 лет",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "node scripts/serve.mjs",
     "build": "node scripts/build.mjs",
     "export:demo": "npm run build && node scripts/export-demo.mjs",
     "preview": "node scripts/serve.mjs dist",
-    "test": "node --test tests/kids.test.mjs tests/vk-platform.test.mjs",
+    "test": "node --test tests/kids.test.mjs tests/vk-platform.test.mjs tests/android-platform.test.mjs",
     "test:browser": "playwright test",
     "export:store": "npm run build && node scripts/export-store.mjs",
     "build:vk": "npm run build && node scripts/build-vk.mjs",
     "preview:vk": "node scripts/serve.mjs dist-vk",
     "test:vk": "playwright test --config playwright.vk.config.js",
+    "build:android": "node scripts/build-android.mjs",
+    "sync:android": "npm run build:android && cap sync android",
+    "export:android-icons": "node scripts/export-android-icons.mjs",
+    "apk:android": "npm run sync:android && cd android && ./gradlew assembleDebug lintDebug --console=plain",
+    "export:android": "npm run apk:android && node scripts/export-android.mjs",
+    "test:android-web": "playwright test --config playwright.android.config.js",
     "export:vk": "npm run build:vk && node scripts/export-vk.mjs",
     "export:vk-icons": "node scripts/export-vk-icons.mjs",
     "export:vk-images": "npm run build:vk && node scripts/export-vk-images.mjs",
@@ -23,8 +31,15 @@
     "publish:pages": "npm run build:vk && node scripts/publish-pages.mjs"
   },
   "devDependencies": {
+    "@capacitor/cli": "8.5.3",
     "@playwright/test": "1.64.1",
     "@vkontakte/vk-bridge": "3.0.2",
-    "@vkontakte/vk-miniapps-deploy": "1.0.3"
+    "@vkontakte/vk-miniapps-deploy": "1.0.3",
+    "esbuild": "0.25.12"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.5.3"
   }
 }

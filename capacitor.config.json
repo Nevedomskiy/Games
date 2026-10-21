@@ -1,0 +1,8 @@
+{
+  "appId": "ru.nevedomskiy.lapki",
+  "appName": "Лапки и краски",
+  "webDir": "dist-android",
+  "server": { "androidScheme": "https" },
+  "android": { "backgroundColor": "#fcf9f0", "allowMixedContent": false, "minWebViewVersion": 89 },
+  "plugins": { "SystemBars": { "insetsHandling": "native", "initialViewportFitValueHint": "cover", "style": "LIGHT" } }
+}

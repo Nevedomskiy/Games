@@ -7,3 +7,12 @@ playwright-report/
 
 dist-vk/
 vk-hosting-config.json
+dist-android/
+android/.gradle/
+android/local.properties
+android/**/build/
+android/app/src/main/assets/
+android/capacitor-cordova-android-plugins/
+*.keystore
+*.jks
+keystore.properties

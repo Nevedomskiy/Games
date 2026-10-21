@@ -20,10 +20,12 @@ try {
 function toast(message){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),4500);}
 function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({session,album,completedSessions,sound,lastReward}));}catch{if(!storageWarned){storageWarned=true;toast('Браузер не сохраняет альбом. Сейчас всё равно можно играть.');}}}
 function active(){return !document.hidden&&!sdkPaused&&!$('modal').open&&document.hasFocus();}
-function cancelVoice(){try{window.speechSynthesis?.cancel();}catch{}}
+function cancelVoice(){platform.cancelVoice?.();try{window.speechSynthesis?.cancel();}catch{}}
 function say(text){
   cancelVoice();
-  if(!sound||!active()||!window.speechSynthesis||!window.SpeechSynthesisUtterance)return;
+  if(!sound||!active())return;
+  if(platform.say){platform.say(text);return;}
+  if(!window.speechSynthesis||!window.SpeechSynthesisUtterance)return;
   const utterance=new SpeechSynthesisUtterance(text);utterance.lang='ru-RU';utterance.rate=.82;utterance.pitch=1.12;utterance.volume=.8;
   const voices=speechSynthesis.getVoices();utterance.voice=voices.find(v=>v.lang.startsWith('ru')&&v.localService)||voices.find(v=>v.lang.startsWith('ru'))||null;
   try{speechSynthesis.speak(utterance);}catch{}
@@ -102,6 +104,8 @@ function finishSession(){
   chime(true);say('Здорово! Все десять заданий готовы. Вот твой маленький друг.');renderHome();
 }
 function goHome(){showScreen('home');renderHome();save();}
+// Native containers can handle Back without making a browser history entry for every task.
+platform.onBack=()=>{if($('modal').open){$('modal').close();return true;}if(screen!=='home'){goHome();return true;}return false;};
 function showModal(content){cancelVoice();audioContext?.suspend();$('modal-content').innerHTML=content;$('modal').showModal();syncPlatform();}
 $('play').addEventListener('click',()=>begin(session?.mode||'animals'));
 $('activities').addEventListener('click',event=>{const card=event.target.closest('[data-mode]');if(card)begin(card.dataset.mode);});
