@@ -8,6 +8,7 @@ const SAVE_KEY='lapki-i-kraski.v1';
 const platform=new Platform();
 let session=null,album=[],completedSessions=0,sound=true,screen='home',sdkPaused=false;
 let audioContext,feedbackTime=0,lastTime=0,toastTimer,storageWarned=false,keyboardUser=false;
+let currentVoice=null,feedbackVoice=null;
 let lastReward='bunny';
 try {
   const saved=JSON.parse(localStorage.getItem(SAVE_KEY));
@@ -20,13 +21,29 @@ try {
 function toast(message){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),4500);}
 function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({session,album,completedSessions,sound,lastReward}));}catch{if(!storageWarned){storageWarned=true;toast('Браузер не сохраняет альбом. Сейчас всё равно можно играть.');}}}
 function active(){return !document.hidden&&!sdkPaused&&!$('modal').open&&document.hasFocus();}
-function cancelVoice(){try{window.speechSynthesis?.cancel();}catch{}}
+function cancelVoice(){
+  if(currentVoice){currentVoice.pending=false;clearTimeout(currentVoice.timeout);currentVoice=null;}
+  platform.cancelVoice?.();try{window.speechSynthesis?.cancel();}catch{}
+}
 function say(text){
   cancelVoice();
-  if(!sound||!active()||!window.speechSynthesis||!window.SpeechSynthesisUtterance)return;
+  if(!sound||!active())return null;
+  if(platform.say){platform.say(text);return null;}
+  if(!window.speechSynthesis||!window.SpeechSynthesisUtterance)return null;
   const utterance=new SpeechSynthesisUtterance(text);utterance.lang='ru-RU';utterance.rate=.82;utterance.pitch=1.12;utterance.volume=.8;
-  const voices=speechSynthesis.getVoices();utterance.voice=voices.find(v=>v.lang.startsWith('ru')&&v.localService)||voices.find(v=>v.lang.startsWith('ru'))||null;
-  try{speechSynthesis.speak(utterance);}catch{}
+  // Keep the utterance alive and track this specific playback. Old cancellation
+  // callbacks must not settle the following spoken task or answer.
+  const playback={pending:true,utterance,timeout:null};currentVoice=playback;
+  const finished=()=>{playback.pending=false;clearTimeout(playback.timeout);if(currentVoice===playback)currentVoice=null;};
+  utterance.onend=finished;utterance.onerror=finished;
+  // Some mobile voice services never send completion/error events. Visual play
+  // must recover even if speech is unavailable or the service stops responding.
+  playback.timeout=setTimeout(finished,10000);
+  try{
+    const voices=speechSynthesis.getVoices();utterance.voice=voices.find(v=>v.lang.startsWith('ru')&&v.localService)||voices.find(v=>v.lang.startsWith('ru'))||null;
+    speechSynthesis.speak(utterance);
+  }catch{finished();}
+  return playback;
 }
 function chime(success=false){
   if(!sound||!active())return;
@@ -94,7 +111,7 @@ function promptTask(){
   else if(session.task.attempts>=2)say('В тени появилась подсказка. Найди подходящую картинку.');
   else say(session.mode==='animals'?'Кто спрятался в тени? Найди зверёнка.':'Чья это тень? Найди подходящую фигуру.');
 }
-function begin(mode,force=false){if(force||!session||session.mode!==mode||session.status==='finished')session=createSession(mode);feedbackTime=0;save();showScreen('game');renderTask();promptTask();}
+function begin(mode,force=false){if(force||!session||session.mode!==mode||session.status==='finished')session=createSession(mode);feedbackTime=0;feedbackVoice=null;save();showScreen('game');renderTask();promptTask();}
 function finishSession(){
   if(!session.rewarded){lastReward=STICKERS.find(id=>!album.includes(id))||STICKERS[completedSessions%STICKERS.length];if(!album.includes(lastReward))album.push(lastReward);completedSessions++;session={...session,rewarded:true};save();}
   showScreen('reward');$('sticker-reward').innerHTML=animal(lastReward);$('sticker-name').textContent=getItem('animals',lastReward).label;
@@ -102,6 +119,8 @@ function finishSession(){
   chime(true);say('Здорово! Все десять заданий готовы. Вот твой маленький друг.');renderHome();
 }
 function goHome(){showScreen('home');renderHome();save();}
+// Native containers can handle Back without making a browser history entry for every task.
+platform.onBack=()=>{if($('modal').open){$('modal').close();return true;}if(screen!=='home'){goHome();return true;}return false;};
 function showModal(content){cancelVoice();audioContext?.suspend();$('modal-content').innerHTML=content;$('modal').showModal();syncPlatform();}
 $('play').addEventListener('click',()=>begin(session?.mode||'animals'));
 $('activities').addEventListener('click',event=>{const card=event.target.closest('[data-mode]');if(card)begin(card.dataset.mode);});
@@ -117,7 +136,7 @@ function processAnswer(result){
   session=result.session;save();renderTask();
   if(result.kind==='correct'){
     feedbackTime=0;chime(true);const item=getItem(session.mode,session.task.target);
-    say((['homes','foods'].includes(session.mode)?'Верно!':null)||(session.mode==='puzzles'?'Молодец! Картинка собрана.':`Здорово! Это ${item.label.toLocaleLowerCase('ru')}.`));syncPlatform();
+    feedbackVoice=say((['homes','foods'].includes(session.mode)?'Верно!':null)||(session.mode==='puzzles'?'Молодец! Картинка собрана.':`Здорово! Это ${item.label.toLocaleLowerCase('ru')}.`));syncPlatform();
   }else if(result.kind==='piece'){chime();}else promptTask();
 }
 $('piece-tray').addEventListener('click',event=>{
@@ -139,6 +158,6 @@ platform.onPause=()=>{sdkPaused=true;pause();};platform.onResume=()=>{sdkPaused=
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();else syncPlatform();});window.addEventListener('blur',pause);window.addEventListener('focus',syncPlatform);window.addEventListener('pagehide',save);
 document.addEventListener('contextmenu',event=>{if(event.target.closest('.choice,.target,.activity-art'))event.preventDefault();});
 window.addEventListener('resize',drawConnection);
-function tick(timestamp){const dt=Math.min(100,timestamp-lastTime||0);lastTime=timestamp;if(screen==='game'&&session?.status==='feedback'&&active()){feedbackTime+=dt;const duration=['homes','foods'].includes(session.mode)?900:1600;if(feedbackTime>=duration){session=advance(session);feedbackTime=0;save();if(session.status==='finished')finishSession();else{renderTask();promptTask();syncPlatform();}}}requestAnimationFrame(tick);}
+function tick(timestamp){const dt=Math.min(100,timestamp-lastTime||0);lastTime=timestamp;if(screen==='game'&&session?.status==='feedback'&&active()){feedbackTime+=dt;const duration=['homes','foods'].includes(session.mode)?900:1600;if(feedbackTime>=duration&&!feedbackVoice?.pending){session=advance(session);feedbackTime=0;feedbackVoice=null;save();if(session.status==='finished')finishSession();else{renderTask();promptTask();syncPlatform();}}}requestAnimationFrame(tick);}
 $('brand-picture').innerHTML=animal('bunny');$('hero-art').innerHTML=meadow();$('play-arrow').innerHTML=icon('arrow');$('album-icon').innerHTML=icon('book');$('album-button').innerHTML=icon('book');$('home-icon').innerHTML=icon('home');$('repeat-icon').innerHTML=icon('sound');$('game-heart').innerHTML=icon('heart');$('again-icon').innerHTML=icon('replay');$('reward-home-icon').innerHTML=icon('home');
 renderHome();renderSound();requestAnimationFrame(tick);await platform.init();platform.ready();syncPlatform();
