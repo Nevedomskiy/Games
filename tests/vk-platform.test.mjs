@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { Platform } from '../platforms/vk/platform.js';
 
-function fixture(t,{bridge,search='?vk_app_id=12345'}={}){
+function fixture(t,{bridge,search='?vk_app_id=12345&vk_platform=desktop_web'}={}){
   const previous={window:globalThis.window,location:globalThis.location,document:globalThis.document};
   globalThis.window={vkBridge:bridge};globalThis.location={search};globalThis.document={hidden:false};
   t.after(()=>{for(const [key,value] of Object.entries(previous)){if(value===undefined)delete globalThis[key];else globalThis[key]=value;}});
@@ -33,6 +33,11 @@ test('missing, rejected or broken VK bridge fails safely without aborting the ga
   for(const bridge of [undefined,{send:async()=>{throw new Error('offline');},subscribe(){}},{send:async()=>({result:false}),subscribe(){}},{send:async()=>({result:true}),subscribe(){throw new Error('broken transport');}}]){
     window.vkBridge=bridge;const platform=new Platform();assert.equal(await platform.init(),null);assert.equal(platform.failed,true);assert.equal(platform.available,false);
   }
+});
+test('missing SDK in an embedded launch with unknown network never falls back to the shared save',async t=>{
+  fixture(t,{search:'?vk_app_id=12345'});const platform=new Platform();await platform.init();
+  let status;platform.onProgressStatus=value=>status=value;
+  assert.equal(await platform.loadProgress(),null);assert.equal(status,'unknown');
 });
 test('a stalled VK initialization times out and a late response cannot mark it ready',async t=>{
   let resolve;fixture(t,{bridge:{send:()=>new Promise(done=>resolve=done),subscribe(){}}});

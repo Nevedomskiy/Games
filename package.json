@@ -12,7 +12,7 @@
     "build": "node scripts/build.mjs",
     "export:demo": "npm run build && node scripts/export-demo.mjs",
     "preview": "node scripts/serve.mjs dist",
-    "test": "node --test tests/kids.test.mjs tests/vk-platform.test.mjs tests/android-platform.test.mjs",
+    "test": "node --test tests/kids.test.mjs tests/vk-platform.test.mjs tests/ok-progress.test.mjs tests/android-platform.test.mjs",
     "test:browser": "playwright test",
     "export:store": "npm run build && node scripts/export-store.mjs",
     "build:vk": "npm run build && node scripts/build-vk.mjs",

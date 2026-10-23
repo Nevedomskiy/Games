@@ -9,17 +9,22 @@ const platform=new Platform();
 let session=null,album=[],completedSessions=0,sound=true,screen='home',sdkPaused=false;
 let audioContext,feedbackTime=0,lastTime=0,toastTimer,storageWarned=false,keyboardUser=false;
 let currentVoice=null,feedbackVoice=null;
-let lastReward='bunny';
-try {
-  const saved=JSON.parse(localStorage.getItem(SAVE_KEY));
+let lastReward='bunny',progressReady=false,platformProgress=false;
+function restoreProgress(saved){
   session=restoreSession(saved?.session);
   if(Array.isArray(saved?.album))album=[...new Set(saved.album.filter(id=>STICKERS.includes(id)))];
   if(Number.isSafeInteger(saved?.completedSessions)&&saved.completedSessions>=0)completedSessions=saved.completedSessions;
   if(saved?.sound===false)sound=false;
   if(STICKERS.includes(saved?.lastReward))lastReward=saved.lastReward;
-}catch{}
+}
 function toast(message){$('toast').textContent=message;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),4500);}
-function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({session,album,completedSessions,sound,lastReward}));}catch{if(!storageWarned){storageWarned=true;toast('Браузер не сохраняет альбом. Сейчас всё равно можно играть.');}}}
+function save(){
+  if(!progressReady)return;
+  const value={session,album,completedSessions,sound,lastReward};
+  if(platformProgress){platform.saveProgress(value);return;}
+  try{localStorage.setItem(SAVE_KEY,JSON.stringify(value));}catch{if(!storageWarned){storageWarned=true;toast('Браузер не сохраняет альбом. Сейчас всё равно можно играть.');}}
+}
+function progressNote(){return platform.cloudProgress?'В Одноклассниках альбом и занятие сохраняются в хранилище вашего аккаунта и загружаются при входе на другом устройстве. Для синхронизации нужен интернет.':platformProgress?'Сохранение недоступно. Сейчас можно играть, но после закрытия прогресс может потеряться.':'Альбом сохраняется только в этом браузере.';}
 function active(){return !document.hidden&&!sdkPaused&&!$('modal').open&&document.hasFocus();}
 function cancelVoice(){
   if(currentVoice){currentVoice.pending=false;clearTimeout(currentVoice.timeout);currentVoice=null;}
@@ -149,7 +154,7 @@ $('puzzle-board').addEventListener('click',event=>{
   const button=event.target.closest('[data-slot]');if(!button||!active())return;
   const result=placePiece(session,button.dataset.slot);if(result)processAnswer(result);else if(session.task.selected===null)say('Сначала выбери кусочек внизу.');
 });
-$('parents').addEventListener('click',()=>showModal(`<div class="modal-symbol">${icon('heart')}</div><h2>Играем вместе</h2><p>Шесть занятий для малышей 2–4 лет: тени зверят и фигур, цвета, пазлы из четырёх частей, домики и угощения животных.</p><p>В пазле сначала нажмите на кусочек, затем на его место. Перетаскивание не требуется. Прозрачная картинка помогает понять, что получится.</p><p>В занятиях с домиками и едой нажмите на пару для зверёнка. При успехе появится соединяющая линия. Угощения — знакомые примеры еды, а не полный рацион животных; домики — примеры жилищ.</p><p>После двух неточных попыток появляется мягкая подсказка. Здесь нет таймера, проигрыша и рекламы. Десять заданий — одна прогулка; можно остановиться в любой момент.</p><p>Голос зависит от устройства. Альбом сохраняется только в этом браузере. Игра не запрашивает данные ребёнка или регистрацию.</p>`));
+$('parents').addEventListener('click',()=>showModal(`<div class="modal-symbol">${icon('heart')}</div><h2>Играем вместе</h2><p>Шесть занятий для малышей 2–4 лет: тени зверят и фигур, цвета, пазлы из четырёх частей, домики и угощения животных.</p><p>В пазле сначала нажмите на кусочек, затем на его место. Перетаскивание не требуется. Прозрачная картинка помогает понять, что получится.</p><p>В занятиях с домиками и едой нажмите на пару для зверёнка. При успехе появится соединяющая линия. Угощения — знакомые примеры еды, а не полный рацион животных; домики — примеры жилищ.</p><p>После двух неточных попыток появляется мягкая подсказка. Здесь нет таймера, проигрыша и рекламы. Десять заданий — одна прогулка; можно остановиться в любой момент.</p><p>Голос зависит от устройства. ${progressNote()} Игра не запрашивает данные ребёнка или отдельную регистрацию.</p>`));
 function showAlbum(){showModal(`<span class="eyebrow">МАЛЕНЬКИЕ ДРУЗЬЯ</span><h2>Твой альбом</h2><p>За десять заданий — одна наклейка. Все друзья обязательно встретятся!</p><div class="album-grid">${STICKERS.map(id=>`<div class="album-item ${album.includes(id)?'':'waiting'}">${animal(id)}<span>${album.includes(id)?getItem('animals',id).label:'Ещё встретимся'}</span></div>`).join('')}</div>`);}
 $('album-button').addEventListener('click',showAlbum);$('see-album').addEventListener('click',showAlbum);$('close-modal').addEventListener('click',()=>$('modal').close());$('modal').addEventListener('close',syncPlatform);
 document.addEventListener('keydown',event=>{if(event.key==='Tab'||event.key.startsWith('Arrow'))keyboardUser=true;});document.addEventListener('pointerdown',()=>{keyboardUser=false;});
@@ -160,4 +165,27 @@ document.addEventListener('contextmenu',event=>{if(event.target.closest('.choice
 window.addEventListener('resize',drawConnection);
 function tick(timestamp){const dt=Math.min(100,timestamp-lastTime||0);lastTime=timestamp;if(screen==='game'&&session?.status==='feedback'&&active()){feedbackTime+=dt;const duration=['homes','foods'].includes(session.mode)?900:1600;if(feedbackTime>=duration&&!feedbackVoice?.pending){session=advance(session);feedbackTime=0;feedbackVoice=null;save();if(session.status==='finished')finishSession();else{renderTask();promptTask();syncPlatform();}}}requestAnimationFrame(tick);}
 $('brand-picture').innerHTML=animal('bunny');$('hero-art').innerHTML=meadow();$('play-arrow').innerHTML=icon('arrow');$('album-icon').innerHTML=icon('book');$('album-button').innerHTML=icon('book');$('home-icon').innerHTML=icon('home');$('repeat-icon').innerHTML=icon('sound');$('game-heart').innerHTML=icon('heart');$('again-icon').innerHTML=icon('replay');$('reward-home-icon').innerHTML=icon('home');
-renderHome();renderSound();requestAnimationFrame(tick);await platform.init();platform.ready();syncPlatform();
+// Resolve the hosting network before reading the common browser key. In OK,
+// never show or upload another network's album while the cloud read is pending.
+const shell=document.querySelector('.shell');
+if(platform.loadProgress){
+  shell.inert=true;
+  const status=document.createElement('p');status.id='progress-status';status.role='status';status.style.cssText='text-align:center;padding:8px 20px;font-size:14px';
+  shell.after(status);status.textContent='Загружаем игру…';
+  let previousProgressStatus;
+  platform.onProgressStatus=state=>{
+    status.textContent=({loading:'Загружаем альбом…',saving:'Сохраняем альбом…',saved:'Альбом сохранён в Одноклассниках.',error:'Не удалось синхронизировать альбом. Сейчас можно играть; проверьте интернет перед выходом.',unknown:'Не удалось определить площадку. Сейчас можно играть без сохранения.'})[state]||'';
+    if((state==='error'||state==='unknown')&&previousProgressStatus!==state)toast(status.textContent);
+    previousProgressStatus=state;
+  };
+  try{
+    await platform.init();
+    const saved=await platform.loadProgress();
+    platformProgress=saved!==undefined;
+    if(platformProgress)restoreProgress(saved);
+    else{status.remove();try{restoreProgress(JSON.parse(localStorage.getItem(SAVE_KEY)));}catch{}}
+  }finally{shell.inert=false;}
+  window.addEventListener('online',()=>platform.retryProgress());
+  window.addEventListener('focus',()=>platform.retryProgress());
+}else{try{restoreProgress(JSON.parse(localStorage.getItem(SAVE_KEY)));}catch{}}
+progressReady=true;renderHome();renderSound();requestAnimationFrame(tick);await platform.init();platform.ready();syncPlatform();

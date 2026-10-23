@@ -15,7 +15,7 @@ test('VK build runs locally with the official bundled SDK and no external assets
   expect(errors).toEqual([]);expect(external).toEqual([]);
 });
 test('VK lifecycle events block taps, pause feedback, resume and never request ads',async({page})=>{
-  await mockVK(page);await page.goto('/?vk_app_id=12345');await page.locator('[data-mode="homes"]').click();
+  await mockVK(page);await page.goto('/?vk_app_id=12345&vk_platform=desktop_web');await page.locator('[data-mode="homes"]').click();
   await page.evaluate(()=>window.vkListener({detail:{type:'VKWebAppViewHide'}}));await page.locator('[data-choice="frog"]').click();expect((await state(page)).session.completed).toBe(0);
   await page.evaluate(()=>window.vkListener({detail:{type:'VKWebAppViewRestore'}}));await page.locator('[data-choice="frog"]').click();
   await page.evaluate(()=>window.vkListener({detail:{type:'VKWebAppViewHide'}}));await page.waitForTimeout(1100);expect((await state(page)).session.status).toBe('feedback');
@@ -23,13 +23,13 @@ test('VK lifecycle events block taps, pause feedback, resume and never request a
   expect(await page.evaluate(()=>window.vkCalls)).toEqual(['VKWebAppInit']);
 });
 test('VK initialization failure still allows play and reload preserves progress',async({page})=>{
-  const errors=[];page.on('pageerror',e=>errors.push(e.message));await mockVK(page,true);await page.goto('/?vk_app_id=12345');
+  const errors=[];page.on('pageerror',e=>errors.push(e.message));await mockVK(page,true);await page.goto('/?vk_app_id=12345&vk_platform=desktop_web');
   await page.locator('#play').click();await page.locator('[data-choice="bunny"]').click();await expect.poll(async()=>(await state(page)).session.status).toBe('playing');
   const saved=(await state(page)).session;await page.reload();await page.locator('#play').click();expect((await state(page)).session.order).toEqual(saved.order);expect((await state(page)).session.completed).toBe(1);expect(errors).toEqual([]);
 });
 test('VK build remains usable on a phone including puzzles and navigation',async({browser})=>{
   const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true}),page=await context.newPage();
-  await mockVK(page);await page.goto('/?vk_app_id=12345');await page.locator('[data-mode="puzzles"]').tap();
+  await mockVK(page);await page.goto('/?vk_app_id=12345&vk_platform=desktop_web');await page.locator('[data-mode="puzzles"]').tap();
   for(const p of ['0','1','2','3']){await page.locator(`[data-piece="${p}"]`).tap();await page.locator(`[data-slot="${p}"]`).tap();}
   expect((await state(page)).session.completed).toBe(1);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.locator('#home').tap();await expect(page.locator('#home-screen')).toBeVisible();await context.close();
@@ -59,7 +59,7 @@ test('VK wide iframe permits wheel scrolling to the lower activities and album',
   await mockVK(page);
   await page.route('**/vk-frame-host',route=>route.fulfill({contentType:'text/html',body:`<!doctype html>
     <style>html,body{margin:0;height:100%;overflow:hidden}header{height:50px}iframe{display:block;width:100%;height:calc(100% - 110px);border:0}footer{height:60px}</style>
-    <header>Game platform header</header><iframe title="Game" scrolling="no" src="/?vk_app_id=12345"></iframe><footer>Game platform footer</footer>`}));
+    <header>Game platform header</header><iframe title="Game" scrolling="no" src="/?vk_app_id=12345&vk_platform=desktop_web"></iframe><footer>Game platform footer</footer>`}));
   await page.goto('/vk-frame-host');
   await page.frameLocator('iframe').locator('#activities .activity-card').first().waitFor();
   const game=page.frames().find(frame=>frame.url().includes('vk_app_id=12345'));

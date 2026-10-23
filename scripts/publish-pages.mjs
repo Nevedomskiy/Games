@@ -45,7 +45,8 @@ if(siteOnly){
 }else{
   for(const required of ['index.html','kids/app.js','kids/platform.js','vendor/vk-bridge.js'])if(!files.some(([name])=>name===required))throw new Error(`Missing ${required}. Run npm run build:vk first.`);
   if(!files.every(([name])=>name==='index.html'||name.startsWith('kids/')||name.startsWith('vendor/')))throw new Error('Unexpected file in VK build.');
-  if(!files.find(([name])=>name==='kids/platform.js')[1].equals(await readFile(path.join(root,'platforms/vk/platform.js'))))throw new Error('VK adapter differs from source; rebuild before publication.');
+  const unversion=content=>content.toString().replace(/(from '\.\/[^']+\.js)\?v=[a-f0-9]{12}'/g,"$1'");
+  for(const name of ['platform.js','ok-progress.js'])if(unversion(files.find(([file])=>file===`kids/${name}`)?.[1]||'')!==await readFile(path.join(root,'platforms/vk',name),'utf8'))throw new Error('VK adapter differs from source; rebuild before publication.');
   files.push(['.nojekyll',Buffer.alloc(0)]);
   files.push(['build-info.json',Buffer.from(JSON.stringify({publisher:'lapki-vk-pages',repository:`${owner}/${repository}`,sourceCommit,platform:'VK',vkApplicationId:54837649},null,2)+'\n')]);
 }
