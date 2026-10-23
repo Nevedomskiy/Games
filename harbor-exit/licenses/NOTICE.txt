@@ -1,0 +1,5 @@
+VK Bridge 3.0.2: Copyright VK authors. MIT license in vendor/VK-BRIDGE-LICENSE.txt.
+Android only: myTarget SDK 5.52.5, GNU LGPL 3. Official distribution and corresponding source/materials: https://github.com/myTargetSDK/mytarget-android
+SDK distributed unmodified. License texts included. Reverse engineering of the library to debug modifications is permitted under the applicable license.
+Android transitive components: AndroidX and ExoPlayer/Media3 (Apache License 2.0), Kotlin standard library (Apache License 2.0); their embedded notices remain in the APK.
+Game code and boat artwork: Nikita Nevedomskiy. All rights reserved except for the third-party components above.
