@@ -36,7 +36,7 @@ footer{flex-wrap:wrap}footer #privacy{background:transparent;border:0;color:inhe
 html.in-app-frame{height:100%;overflow:hidden}
 body.is-embedded{height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden}
 .is-embedded .topbar{flex:0 0 auto;width:100%;margin:0 auto;padding:12px 24px}
-.is-embedded .layout{display:grid;flex:1 1 0;width:100%;min-height:0;grid-template-rows:minmax(0,1fr);align-items:stretch;margin:12px auto 0;padding:0 24px}
+.is-embedded .layout{display:grid;flex:1 1 0;width:100%;max-width:720px;min-height:0;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);align-items:stretch;margin:12px auto 0;padding:0 24px}
 .is-embedded .game{display:flex;flex-direction:column;min-height:0}
 .is-embedded .level-bar{flex:0 0 auto;margin:0 7px 10px}
 .is-embedded .harbor-scroll{flex:1 1 0;min-height:0;max-height:none}
@@ -44,7 +44,7 @@ body.is-embedded{height:100%;min-height:0;display:flex;flex-direction:column;ove
 .is-embedded .board-note{flex:0 0 auto;margin:5px 0 0}
 .is-embedded .controls{flex:0 0 auto;margin-top:8px}
 .is-embedded .status{flex:0 0 auto;margin:7px auto 0;min-height:32px}
-.is-embedded .side-panel{min-height:0;overflow:auto;padding:8px 0;scrollbar-width:thin}
+.is-embedded .side-panel{display:none}
 .is-embedded footer{flex:0 0 auto;padding:5px 12px}
 @media(max-width:720px){.is-embedded .layout{max-width:500px;grid-template-columns:minmax(0,1fr);padding:0 12px;margin-top:10px}.is-embedded .topbar{padding:10px 16px}.is-embedded .status{min-height:30px}}
 @media(max-height:600px){.is-embedded .topbar{padding-top:7px;padding-bottom:7px}.is-embedded .side-panel .howto,.is-embedded .side-panel .shore-note{display:none}.is-embedded .layout{margin-top:8px}.is-embedded .status{min-height:27px;margin-top:5px}}
