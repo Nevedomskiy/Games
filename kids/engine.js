@@ -1,4 +1,4 @@
-import { ACTIVITIES, SESSION_LENGTH, PUZZLE_PARTS, getItem } from './data.js';
+import { ACTIVITIES, SESSION_LENGTH, PUZZLE_PARTS, getItem } from './data.js?v=87a9afdbd81c';
 
 export function shuffled(items,rng=Math.random) {
   const copy=[...items];

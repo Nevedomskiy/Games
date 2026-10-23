@@ -1,5 +1,5 @@
-import { getItem } from './data.js';
-import { habitat,food } from './world-art.js';
+import { getItem } from './data.js?v=87a9afdbd81c';
+import { habitat,food } from './world-art.js?v=87a9afdbd81c';
 
 function svg(content,extra='') {return `<svg viewBox="0 0 240 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" ${extra}>${content}</svg>`;}
 function face(y=98,nose='#a9776b',gap=23) {
