@@ -1,9 +1,9 @@
 {
   "name": "Лодочки: найди выход",
   "version": "1.0.0",
-  "sourceCommit": "31e328bd2eabde1f7c2de561c410cd6b3725c144",
+  "sourceCommit": "816d303f15153abecd6a15a50b85bf59642c770f",
   "levels": 50,
   "androidAdSlotConfigured": true,
-  "androidVersion": "1.0.1",
-  "androidVersionCode": 2
+  "androidVersion": "1.0.2",
+  "androidVersionCode": 3
 }
