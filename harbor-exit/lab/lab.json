@@ -1,6 +1,6 @@
 {
-  "version": "lab-2",
-  "name": "Прежний вид и новые корабли",
+  "version": "lab-3",
+  "name": "Спокойная вода и компактное управление",
   "levelCount": 1,
   "levelId": "four-steps",
   "boats": 15,
@@ -11,11 +11,17 @@
     "b",
     "c"
   ],
+  "waterColors": [
+    "teal",
+    "blue",
+    "sage"
+  ],
+  "defaultWater": "teal",
   "productionVersion": "1.5.0",
   "productionUpdated": false,
   "storage": "memory-only",
   "ads": false,
-  "sha256": "ddc56cb3713eb010ebe743a37d5b3d6202b85e13dfe7dbda0b13ec6dccbdc6fe",
+  "sha256": "b3baec4336ce7088fb5eb2aaef383dd90b44691b845b33defe4e9bd6e5bbe24c",
   "files": [
     "index.html",
     "lab.json",
