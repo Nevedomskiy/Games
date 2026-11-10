@@ -1,6 +1,6 @@
 {
-  "version": "lab-3",
-  "name": "Спокойная вода и компактное управление",
+  "version": "lab-4",
+  "name": "Здания и земля как единая гавань",
   "levelCount": 1,
   "levelId": "four-steps",
   "boats": 15,
@@ -12,16 +12,17 @@
     "c"
   ],
   "waterColors": [
+    "original",
     "teal",
     "blue",
     "sage"
   ],
-  "defaultWater": "teal",
+  "defaultWater": "original",
   "productionVersion": "1.5.0",
   "productionUpdated": false,
   "storage": "memory-only",
   "ads": false,
-  "sha256": "b3baec4336ce7088fb5eb2aaef383dd90b44691b845b33defe4e9bd6e5bbe24c",
+  "sha256": "419da29703b5a942de13e267ab9e2ec06385e9f5639b147985cf75083e3cf2bd",
   "files": [
     "index.html",
     "lab.json",
@@ -300,6 +301,13 @@
     "art/v14/lagoon/s/m1.webp",
     "art/v14/lagoon/s/m2.webp",
     "art/v14/lagoon/s/m3.webp",
-    "art/v14/lagoon/s/m4.webp"
+    "art/v14/lagoon/s/m4.webp",
+    "art/city/terrain.webp",
+    "art/city/building-10.webp",
+    "art/city/building-11.webp",
+    "art/city/building-20.webp",
+    "art/city/plot-courtyard.webp",
+    "art/city/plot-workyard.webp",
+    "art/city/plot-garden.webp"
   ]
 }
