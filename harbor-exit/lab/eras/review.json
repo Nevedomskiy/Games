@@ -1,0 +1,16 @@
+{
+  "version": "epochs-1",
+  "epochCount": 4,
+  "implementedEpochs": 1,
+  "mode": "art-review",
+  "gameRollout": false,
+  "files": [
+    "index.html",
+    "benefits.html",
+    "review.json",
+    "01-current.webp",
+    "02-modern.webp",
+    "03-future.webp",
+    "04-past.webp"
+  ]
+}

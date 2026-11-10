@@ -1,6 +1,6 @@
 {
-  "version": "lab-4",
-  "name": "Здания и земля как единая гавань",
+  "version": "lab-5",
+  "name": "Подсказка за видео и перетаскивание гавани",
   "levelCount": 1,
   "levelId": "four-steps",
   "boats": 15,
@@ -21,8 +21,9 @@
   "productionVersion": "1.5.0",
   "productionUpdated": false,
   "storage": "memory-only",
-  "ads": false,
-  "sha256": "419da29703b5a942de13e267ab9e2ec06385e9f5639b147985cf75083e3cf2bd",
+  "ads": "reward-in-host-only",
+  "hint": "one-per-confirmed-video",
+  "sha256": "85cb5435eb08b769e4b60d8c6b2919931212863677af9877ba0a7f58ae5a6e3d",
   "files": [
     "index.html",
     "lab.json",
