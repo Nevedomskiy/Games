@@ -1,5 +1,5 @@
 {
-  "version": "1.6.2",
+  "version": "1.7.0",
   "levels": 50,
   "buildings": 25,
   "ranks": 5,
@@ -22,7 +22,7 @@
     "reward"
   ],
   "reviewSubmitted": false,
-  "sourceCommit": "95546d36c10957675ed7ee99a5058df51a66bb75",
+  "sourceCommit": "f77ef89a06a4e1db78a2b1b91327979ae8b7da25",
   "files": [
     {
       "name": "art/coast.webp",
@@ -36,8 +36,8 @@
     },
     {
       "name": "index.html",
-      "size": 715880,
-      "sha256": "c709930d890f2f57c3a3c928c53c34298f829ba5a9fc5854443b4cd3894ba1c8"
+      "size": 762881,
+      "sha256": "9a6452cb12fd987ee344c5ce42b4a1559535fe5083ec7e2af1f204754916c23a"
     },
     {
       "name": "art/ships/a-short-0.webp",
@@ -1105,9 +1105,9 @@
       "sha256": "1415a46e0ecbb3fcd8b8c8bd3b59b0c395ed633a4c322b859835ac8068bca632"
     },
     {
-      "name": "review-1.6.2.txt",
-      "size": 2579,
-      "sha256": "6e48922abab4f03a3f38aeaeed95746b5f3a014e2b3c43ae80b3fc1020027890"
+      "name": "review-1.7.0.txt",
+      "size": 2842,
+      "sha256": "5e960b7da9052a980356fad4996a75c768c822b657340bca4d2ad234921b761e"
     }
   ]
 }
