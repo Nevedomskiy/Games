@@ -22,7 +22,7 @@
     "reward"
   ],
   "reviewSubmitted": false,
-  "sourceCommit": "c31b8a63551314f0a02c0beb241a432ef348431a",
+  "sourceCommit": "138a0a61576d38846b9b3984b032a2408a9663a5",
   "files": [
     {
       "name": "art/coast.webp",
@@ -1101,13 +1101,13 @@
     },
     {
       "name": "support.html",
-      "size": 3161,
-      "sha256": "1415a46e0ecbb3fcd8b8c8bd3b59b0c395ed633a4c322b859835ac8068bca632"
+      "size": 4933,
+      "sha256": "5bafcdaad85ecb5254bc03350cccc9cdb6cea61d7ef9596306f9368a95993ead"
     },
     {
       "name": "review-1.7.0.txt",
-      "size": 2842,
-      "sha256": "5e960b7da9052a980356fad4996a75c768c822b657340bca4d2ad234921b761e"
+      "size": 2625,
+      "sha256": "a302f7ad277a5304a0f15d031b620c0fe70e93e5abcdbd99cae40df2919be9aa"
     }
   ]
 }
