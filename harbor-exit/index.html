@@ -322,6 +322,40 @@ body[data-era=modern] .city-terrain-plate{filter:saturate(.85)}body[data-era=fut
  .port-dialog .recipe span{font-size:9px}
  .port-dialog .city-pan-note{font-size:8px;padding:5px 8px}
 }
+
+/* An embedded desktop window crops the wide coast with cover. Reuse its edges
+   at their natural proportions; fullscreen keeps the original wide painting. */
+@media(min-width:600px) and (max-width:1100px) and (min-height:481px){
+ body.is-embedded:not(.is-fullscreen) .sea-decoration{
+  display:block!important;z-index:-1;opacity:1;background:none;filter:none;
+ }
+ body.is-embedded:not(.is-fullscreen) .sea-decoration::before,
+ body.is-embedded:not(.is-fullscreen) .sea-decoration::after{
+  content:'';display:block!important;position:absolute;top:0;bottom:0;
+  width:21%;max-width:220px;opacity:1;pointer-events:none;
+  background-image:var(--epoch-coast,url('./art/coast.webp'));
+  background-size:auto 100%;background-repeat:no-repeat;
+ }
+ body.is-embedded:not(.is-fullscreen) .sea-decoration::before{
+  left:0;right:auto;background-position:left center;
+  mask-image:linear-gradient(to right,#000 0%,#000 87%,transparent 100%);
+ }
+ body.is-embedded:not(.is-fullscreen) .sea-decoration::after{
+  right:0;left:auto;background-position:right center;
+  mask-image:linear-gradient(to left,#000 0%,#000 87%,transparent 100%);
+ }
+ body.is-embedded:not(.is-fullscreen)[data-era=current]:not([data-water-color=original]) .sea-decoration{
+  filter:saturate(.46) brightness(var(--coast-light)) hue-rotate(var(--coast-hue));
+ }
+}
+@media(min-width:1200px){
+ body.is-fullscreen .topbar{padding-top:18px;padding-bottom:9px}
+ body.is-fullscreen .topbar>.level-heading{
+  grid-area:auto;position:absolute;left:50%;top:12px;transform:translateX(-50%);text-align:center;
+ }
+ body.is-fullscreen .topbar .level-heading small{padding:0;font-size:9px}
+ body.is-fullscreen .topbar .level-heading h1{min-width:210px;font-size:27px;padding:8px 22px}
+}
 </style>
 </head>
 <body>
