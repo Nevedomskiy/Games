@@ -1,5 +1,5 @@
 {
-  "version": "1.6.0",
+  "version": "1.6.1",
   "levels": 50,
   "buildings": 25,
   "ranks": 5,
@@ -22,7 +22,7 @@
     "reward"
   ],
   "reviewSubmitted": false,
-  "sourceCommit": "07a7a4b47dc0e07451a8626941d93199b267f960",
+  "sourceCommit": "29a3e980b6b9898fdaf23124a392d5a3ccac703d",
   "files": [
     {
       "name": "art/coast.webp",
@@ -36,8 +36,8 @@
     },
     {
       "name": "index.html",
-      "size": 688169,
-      "sha256": "fa734d0d3c1b16bc994996a4c0abca4f8701f2b82f74f2cd9fb022cc1be85f82"
+      "size": 706422,
+      "sha256": "576d73d9f2efeec77a6d105a2c0e91e8bb17f8af90d6e5b79959e6a768f17029"
     },
     {
       "name": "art/ships/a-short-0.webp",
@@ -1005,6 +1005,66 @@
       "sha256": "931ba68716118dc68d50748d89e27a19fb35b8ad771b396d918e4a69bffef7bd"
     },
     {
+      "name": "art/trophies/0.webp",
+      "size": 56134,
+      "sha256": "ea421f81f90cb0a58296add33dc9747adae0885eb1564c66aac6f538dd3ccf5e"
+    },
+    {
+      "name": "art/trophies/1.webp",
+      "size": 57742,
+      "sha256": "f044d5bfc453d0a6cd480d4ae0189ac6867a90cee283567f6c9d867bf1506fc4"
+    },
+    {
+      "name": "art/trophies/2.webp",
+      "size": 65002,
+      "sha256": "1f0e1c01389d25658d685c16d1db908e8503f3f8ff42a4b23b73e978e6e6a9db"
+    },
+    {
+      "name": "art/trophies/3.webp",
+      "size": 48450,
+      "sha256": "5d3ac14e720c073104c43499935d320ab39b89d856ac50e3812ed4b06fdb2ee7"
+    },
+    {
+      "name": "art/trophies/4.webp",
+      "size": 62830,
+      "sha256": "35dfe49d5f879cef332fd6cd37e9917efbca3d418ad38cb3690be923bdb45f1b"
+    },
+    {
+      "name": "art/trophies/5.webp",
+      "size": 75594,
+      "sha256": "cd961441505a3f1fd6926420ba7e24f085789877ac397f78d9789bcfa4de79fc"
+    },
+    {
+      "name": "art/trophies/6.webp",
+      "size": 70838,
+      "sha256": "e10e6407c5d6cd3f1f2643910596e204143ab7010d5409243198150ab8a3b829"
+    },
+    {
+      "name": "art/trophies/7.webp",
+      "size": 78072,
+      "sha256": "9d405f47e81004ea373b01a020e28c1910d199750f3d5b464e21107333887439"
+    },
+    {
+      "name": "art/trophies/8.webp",
+      "size": 73242,
+      "sha256": "45fe0df40167516ce6cc9094999f4ed653244e949b6a93cb7301a9761d6f4080"
+    },
+    {
+      "name": "art/trophies/9.webp",
+      "size": 93342,
+      "sha256": "f160683bdbf9676fcb3f75f394c163e4bd61b4c306a569805db8c2b7111dc263"
+    },
+    {
+      "name": "art/trophies/10.webp",
+      "size": 67832,
+      "sha256": "7e26aeb8fbb50a83d74170ba15795191a20acf3a363b4bfeaefdd138e8419be5"
+    },
+    {
+      "name": "art/trophies/11.webp",
+      "size": 78806,
+      "sha256": "a03787f6305e9aa941a1884ed6eb1c6c6967b5e7e68e725ae7156d6b869ea596"
+    },
+    {
       "name": "art/era-previews/current.webp",
       "size": 444108,
       "sha256": "a5ff473c0845e22bc4d43718f5b779a318288dfbebfe228d6f47694af0dc0858"
@@ -1045,9 +1105,9 @@
       "sha256": "1415a46e0ecbb3fcd8b8c8bd3b59b0c395ed633a4c322b859835ac8068bca632"
     },
     {
-      "name": "review-1.6.0.txt",
-      "size": 2580,
-      "sha256": "10899210be9f8a7b42cd50ca1f2e346646ef448573cdc514eea6b825a1457ecf"
+      "name": "review-1.6.1.txt",
+      "size": 2579,
+      "sha256": "29e749db21d0ae3c7aa4e63c358f5d7de772a92fb8eaac87c8945180d5091379"
     }
   ]
 }
