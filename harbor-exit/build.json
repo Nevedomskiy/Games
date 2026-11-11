@@ -22,7 +22,7 @@
     "reward"
   ],
   "reviewSubmitted": false,
-  "sourceCommit": "f77ef89a06a4e1db78a2b1b91327979ae8b7da25",
+  "sourceCommit": "c31b8a63551314f0a02c0beb241a432ef348431a",
   "files": [
     {
       "name": "art/coast.webp",
@@ -36,8 +36,8 @@
     },
     {
       "name": "index.html",
-      "size": 762881,
-      "sha256": "9a6452cb12fd987ee344c5ce42b4a1559535fe5083ec7e2af1f204754916c23a"
+      "size": 762961,
+      "sha256": "02feea3932cdeb06730cd876fc8cfebce05ccdfbaf75de7cb0b0143d64210812"
     },
     {
       "name": "art/ships/a-short-0.webp",
